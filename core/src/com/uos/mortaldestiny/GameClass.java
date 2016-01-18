@@ -3,10 +3,12 @@ package com.uos.mortaldestiny;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -22,7 +24,10 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.uos.mortaldestiny.Inputs.InputHandler;
 
 public class GameClass extends ApplicationAdapter {
 
@@ -31,21 +36,33 @@ public class GameClass extends ApplicationAdapter {
 	// private Texture img;
 	private Graphics grafics;
 
+	public static ApplicationAdapter application;
+
 	public PerspectiveCamera cam;
+	// public OrthographicCamera cam;
+	final Matrix4 matrix = new Matrix4();
+
 	public Model model;
+	public Model player;
 	public ModelInstance instance;
 	public ModelBatch modelBatch;
 
 	public Environment environment;
 	public boolean loading;
-	
+
+	public String pathModels = "data/models/";
+	public String pathGrounds = pathModels + "MapParts/Ground/";
+
 	public AssetManager assets;
-    public Array<ModelInstance> instances = new Array<ModelInstance>();
-	
+	public Array<ModelInstance> instances = new Array<ModelInstance>();
+
 	public CameraInputController camController;
+
+	public InputHandler inputs;
 
 	@Override
 	public void create() {
+		application = this;
 		// batch = new SpriteBatch();
 		// font = new BitmapFont();
 		// font.setColor(Color.RED);
@@ -57,43 +74,70 @@ public class GameClass extends ApplicationAdapter {
 		cam.lookAt(0, 0, 0);
 		cam.near = 1f;
 		cam.far = 300f;
+
+		int zoom = 10;
+
+		// cam = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() /
+		// (float)Gdx.graphics.getWidth()));
+		// cam.position.set(10, 15, 10);
+		// cam.direction.set(-1, -1, -1);
+		// cam.near = 1;
+		// cam.far = 100;
+		// matrix.setToRotation(new Vector3(1, 0, 0), 90);
+
 		cam.update();
 
-//		ModelBuilder modelBuilder = new ModelBuilder();
-//		model = modelBuilder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.GREEN)),
-//				Usage.Position | Usage.Normal);
-//		instance = new ModelInstance(model);
-		
-		ModelLoader loader = new ObjLoader();
-		model = loader.loadModel(Gdx.files.internal("data/player/player.obj"));
-		instance = new ModelInstance(model);
+		// ModelBuilder modelBuilder = new ModelBuilder();
+		// model = modelBuilder.createBox(5f, 5f, 5f, new
+		// Material(ColorAttribute.createDiffuse(Color.GREEN)),
+		// Usage.Position | Usage.Normal);
+		// instance = new ModelInstance(model);
 
 		modelBatch = new ModelBatch();
 
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-		
+
 		camController = new CameraInputController(cam);
-        Gdx.input.setInputProcessor(camController);
-        
-        assets = new AssetManager();
-        assets.load("data/ship/ship.obj", Model.class);
-        assets.load("data/ship/ship.obj", Model.class);
-        loading = true;
+		// Gdx.input.setInputProcessor(camController);
+
+		inputs = new InputHandler();
+		Gdx.input.setInputProcessor(inputs);
+
+		assets = new AssetManager();
+
+		loading = true;
+
+		ModelLoader loader = new ObjLoader();
+		model = loader.loadModel(Gdx.files.internal(pathGrounds + "GroundTile5x5.obj"));
+
+		player = loader.loadModel(Gdx.files.internal(pathModels + "Player/player.obj"));
+
+		assets.load("data/models/ship/ship.obj", Model.class);
 	}
-	
+
 	private void doneLoading() {
-		Model ship = assets.get("data/ship/ship.obj", Model.class);
-        for (float x = -5f; x <= 5f; x += 2f) {
-            for (float z = -5f; z <= 5f; z += 2f) {
-                ModelInstance shipInstance = new ModelInstance(ship);
-                shipInstance.transform.setToTranslation(x, 0, z);
-                instances.add(shipInstance);
-            }
-        }
-        loading = false;
-    }
+
+		float stepx = 11f;
+		float maxx = 3 * (stepx + 2);
+
+		float stepy = 11f;
+		float maxy = 3 * (stepy + 2);
+
+		ModelInstance playerInstance = new ModelInstance(player);
+		playerInstance.transform.setToTranslation(0, 2, 0);
+		instances.add(playerInstance);
+
+		for (float x = -maxx; x <= maxx; x += stepx) {
+			for (float z = -maxy; z <= maxy; z += stepy) {
+				ModelInstance shipInstance = new ModelInstance(model);
+				shipInstance.transform.setToTranslation(x, 0, z);
+				instances.add(shipInstance);
+			}
+		}
+		loading = false;
+	}
 
 	@Override
 	public void resize(int width, int height) {
@@ -110,6 +154,7 @@ public class GameClass extends ApplicationAdapter {
 
 	@Override
 	public void pause() {
+
 	}
 
 	@Override
@@ -120,8 +165,31 @@ public class GameClass extends ApplicationAdapter {
 	public void dispose() {
 		// batch.dispose();
 		// font.dispose();
-//		model.dispose();
+		// model.dispose();
 		modelBatch.dispose();
+	}
+
+	public void move() {
+		float dx = 0;
+		float dz = 0;
+		
+		float speed = 0.5f;
+
+		if (inputs.keys[Keys.LEFT] || inputs.keys[Keys.A]) {
+			dz+=speed;
+		}
+		if (inputs.keys[Keys.RIGHT] || inputs.keys[Keys.D]) {
+			dz-=speed;
+		}
+		if (inputs.keys[Keys.UP] || inputs.keys[Keys.W]) {
+			dx-=speed;
+		}
+		if (inputs.keys[Keys.DOWN] || inputs.keys[Keys.S]) {
+			dx+=speed;
+		}
+		
+		cam.translate(dx, 0, dz);
+		cam.update();
 	}
 
 	@Override
@@ -134,10 +202,12 @@ public class GameClass extends ApplicationAdapter {
 		//// batch.draw(img, 0, 0);
 		// font.draw(batch, getWidth()+" x "+getHeight(), 250, getHeight()/2);
 		// batch.end();
-		
-		if (loading && assets.update())
-            doneLoading();
-		
+
+		if (loading && assets.update()) {
+			doneLoading();
+		}
+
+		move();
 		camController.update();
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -145,7 +215,6 @@ public class GameClass extends ApplicationAdapter {
 
 		modelBatch.begin(cam);
 		modelBatch.render(instances, environment);
-		modelBatch.render(instance, environment);
 		modelBatch.end();
 	}
 }
