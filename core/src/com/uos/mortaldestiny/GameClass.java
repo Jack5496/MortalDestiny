@@ -64,10 +64,9 @@ public class GameClass extends ApplicationAdapter {
 //				Usage.Position | Usage.Normal);
 //		instance = new ModelInstance(model);
 		
-//		ModelLoader loader = new ObjLoader();
-//      model = loader.loadModel(Gdx.files.internal("data/ship/ship.obj"));
-      
-//		instance = new ModelInstance(model);
+		ModelLoader loader = new ObjLoader();
+		model = loader.loadModel(Gdx.files.internal("data/player/player.obj"));
+		instance = new ModelInstance(model);
 
 		modelBatch = new ModelBatch();
 
@@ -79,6 +78,7 @@ public class GameClass extends ApplicationAdapter {
         Gdx.input.setInputProcessor(camController);
         
         assets = new AssetManager();
+        assets.load("data/ship/ship.obj", Model.class);
         assets.load("data/ship/ship.obj", Model.class);
         loading = true;
 	}
@@ -145,6 +145,7 @@ public class GameClass extends ApplicationAdapter {
 
 		modelBatch.begin(cam);
 		modelBatch.render(instances, environment);
+		modelBatch.render(instance, environment);
 		modelBatch.end();
 	}
 }
