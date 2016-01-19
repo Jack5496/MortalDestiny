@@ -9,6 +9,8 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.uos.mortaldestiny.GameClass;
 
 public class KeyboardHandler implements InputProcessor {
@@ -85,34 +87,25 @@ public class KeyboardHandler implements InputProcessor {
 		return false;
 	}
 
+	Vector3 tmpVector = new Vector3();
+	
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 
-		double xpos = screenX - GameClass.getInstance().getWidth()/2.0;
-		double ypos = screenY - GameClass.getInstance().getHeight()/2.0;
-		
-		double length = Math.sqrt(Math.pow(xpos, 2)+Math.pow(ypos, 2));
-		
-		double angle = Math.atan2(ypos, xpos)/Math.PI;
-		System.out.println("Angle: "+angle+" | Length: "+length);
-		
-				int axisCode = 0;
-				
-				if (axisCode == 0) { // Stick Left Y
-					//-1 Up	-	1 Down
-				}
-				if (axisCode == 1) { // Stick Left X
-					//-1 Left	-	1 Right
-				}
-				if (axisCode == 2) { // Stick Right Y
-					//-1 Up	-	1 Down
-				}
-				if (axisCode == 3) { // Stick Right X
-					//-1 Left	-	1 Right
-				}
-		
-		
-		return false;
+		Ray ray = GameClass.getInstance().cam.getPickRay(screenX, screenY);
+	    final float distance = -ray.origin.y / ray.direction.y;
+	    tmpVector.set(ray.direction).scl(distance).add(ray.origin);
+//	    GameClass.getInstance().playerInstance.transform.setTranslation(tmpVector);
+//		return true;
+//		
+//		double xpos = screenX - GameClass.getInstance().getWidth()/2.0;
+//		double ypos = screenY - GameClass.getInstance().getHeight()/2.0;
+//		
+//		
+		float dir = Helper.adjustMouseInput(Helper.getDegree(tmpVector.x, tmpVector.z));
+		inputHandler.setDirection(dir);
+//				
+		return true;
 	}
 
 	@Override

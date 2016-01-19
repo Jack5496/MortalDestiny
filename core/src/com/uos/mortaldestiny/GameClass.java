@@ -104,10 +104,12 @@ public class GameClass extends ApplicationAdapter {
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
-		camController = new CameraInputController(cam);
-		// Gdx.input.setInputProcessor(camController);
-
 		inputs = new InputHandler();
+		
+		camController = new CameraInputController(cam);
+//		 Gdx.input.setInputProcessor(camController);
+
+
 
 		assets = new AssetManager();
 
@@ -131,7 +133,7 @@ public class GameClass extends ApplicationAdapter {
 		float maxz = 3 * (stepz + 2);
 
 		playerInstance = new ModelInstance(player);
-		playerInstance.transform.setToTranslation(0, 2, 0);
+		playerInstance.transform.setToTranslation(3, 2, 3);
 		instances.add(playerInstance);
 
 		ModelInstance obstacleInstance = new ModelInstance(obstacle);
@@ -199,7 +201,10 @@ public class GameClass extends ApplicationAdapter {
 
 		if (playerInstance != null) {
 			cam.translate(dx, 0, dz);
+			
 			playerInstance.transform.translate(dx, 0, dz);
+			
+			
 			cam.update();
 		}
 	}

@@ -7,17 +7,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.uos.mortaldestiny.GameClass;
 
 public class InputHandler implements InputProcessor, GestureListener{
-	
-	public boolean[] directions = new boolean[4];
 	
 	public ControllerHandler controllerHandler;
 	public KeyboardHandler keyboardHandler;
 	public GestureHandler gestureHandler;
 
+	
+	//Rechts: 0	//Oben: -0.5	//Unten: 0.5	//Links:	-1/1
+	public float lookDirection = 0;	//[-1;1] 
+	
 	public InputHandler() {		
 		//GamePad
 		controllerHandler = new ControllerHandler(this);
@@ -28,6 +33,14 @@ public class InputHandler implements InputProcessor, GestureListener{
 		
 		//After initilize set Input as this
 		Gdx.input.setInputProcessor(this);	//last
+	}
+	
+	public void setDirection(float lookDir){
+		this.lookDirection = lookDir;
+		
+		
+		ModelInstance player = GameClass.getInstance().playerInstance;
+		player.transform.setToRotation(new Vector3(0,1,0), lookDir);
 	}
 	
 	public boolean downLeft(){
