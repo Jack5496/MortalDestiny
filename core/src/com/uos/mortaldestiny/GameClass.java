@@ -44,7 +44,8 @@ public class GameClass extends ApplicationAdapter {
 
 	public Model model;
 	public Model player;
-	public ModelInstance instance;
+	public Model obstacle;
+	public ModelInstance playerInstance;
 	public ModelBatch modelBatch;
 
 	public Environment environment;
@@ -103,7 +104,6 @@ public class GameClass extends ApplicationAdapter {
 		// Gdx.input.setInputProcessor(camController);
 
 		inputs = new InputHandler();
-		Gdx.input.setInputProcessor(inputs);
 
 		assets = new AssetManager();
 
@@ -113,6 +113,7 @@ public class GameClass extends ApplicationAdapter {
 		model = loader.loadModel(Gdx.files.internal(pathGrounds + "GroundTile5x5.obj"));
 
 		player = loader.loadModel(Gdx.files.internal(pathModels + "Player/player.obj"));
+		obstacle = loader.loadModel(Gdx.files.internal(pathModels + "MapParts/Construction/constructionObstacle.obj"));
 
 		assets.load("data/models/ship/ship.obj", Model.class);
 	}
@@ -122,15 +123,19 @@ public class GameClass extends ApplicationAdapter {
 		float stepx = 11f;
 		float maxx = 3 * (stepx + 2);
 
-		float stepy = 11f;
-		float maxy = 3 * (stepy + 2);
+		float stepz = 11f;
+		float maxz = 3 * (stepz + 2);
 
-		ModelInstance playerInstance = new ModelInstance(player);
+		playerInstance = new ModelInstance(player);
 		playerInstance.transform.setToTranslation(0, 2, 0);
 		instances.add(playerInstance);
 
+		ModelInstance obstacleInstance = new ModelInstance(obstacle);
+		obstacleInstance.transform.setToTranslation(-maxx + 3 * stepx, 0, -maxz + stepz);
+		instances.add(obstacleInstance);
+
 		for (float x = -maxx; x <= maxx; x += stepx) {
-			for (float z = -maxy; z <= maxy; z += stepy) {
+			for (float z = -maxz; z <= maxz; z += stepz) {
 				ModelInstance shipInstance = new ModelInstance(model);
 				shipInstance.transform.setToTranslation(x, 0, z);
 				instances.add(shipInstance);
@@ -172,24 +177,27 @@ public class GameClass extends ApplicationAdapter {
 	public void move() {
 		float dx = 0;
 		float dz = 0;
-		
+
 		float speed = 0.5f;
 
-		if (inputs.keys[Keys.LEFT] || inputs.keys[Keys.A]) {
-			dz+=speed;
+		if (inputs.downLeft()) {
+			dz += speed;
 		}
-		if (inputs.keys[Keys.RIGHT] || inputs.keys[Keys.D]) {
-			dz-=speed;
+		if (inputs.upRight()) {
+			dz -= speed;
 		}
-		if (inputs.keys[Keys.UP] || inputs.keys[Keys.W]) {
-			dx-=speed;
+		if (inputs.upLeft()) {
+			dx -= speed;
 		}
-		if (inputs.keys[Keys.DOWN] || inputs.keys[Keys.S]) {
-			dx+=speed;
+		if (inputs.downRight()) {
+			dx += speed;
 		}
-		
-		cam.translate(dx, 0, dz);
-		cam.update();
+
+		if (playerInstance != null) {
+			cam.translate(dx, 0, dz);
+			playerInstance.transform.translate(dx, 0, dz);
+			cam.update();
+		}
 	}
 
 	@Override

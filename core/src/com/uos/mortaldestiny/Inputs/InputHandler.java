@@ -6,165 +6,134 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 
-public class InputHandler implements InputProcessor, GestureListener {
-
-	private Map<Integer, TouchInfo> touches = new HashMap<Integer, TouchInfo>();
-	public boolean[] keys = new boolean[256];
-	long[] keysTime = new long[256];
+public class InputHandler implements InputProcessor, GestureListener{
+	
+	public boolean[] directions = new boolean[4];
+	
+	public ControllerHandler controllerHandler;
+	public KeyboardHandler keyboardHandler;
+	public GestureHandler gestureHandler;
 
 	public InputHandler() {		
-		for (int i = 0; i < 5; i++) {
-			touches.put(i, new TouchInfo());
-		}
-	}
-
-
-//	public void updateMovePadActiv() {
-//		switch (Gdx.app.getType()) {
-//		case Android:
-//			movePadActiv = true;
-//		case Applet:
-//			movePadActiv = true;
-//		case Desktop:
-//			movePadActiv = useTouch;
-//		case WebGL:
-//			movePadActiv = true;
-//		case iOS:
-//			movePadActiv = true;
-//		}
-//	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (pointer < 5) {
-			touches.get(pointer).startPos.x = screenX;
-			touches.get(pointer).startPos.y = screenY;
-			touches.get(pointer).lastPos.x = screenX;
-			touches.get(pointer).lastPos.y = screenY;
-			touches.get(pointer).touched = true;
-		}
+		controllerHandler = new ControllerHandler(this);
+		Controllers.addListener(controllerHandler);
 		
-		return true;
+		keyboardHandler = new KeyboardHandler(this);
+		gestureHandler = new GestureHandler(this);
+		
+		
+		
+		Gdx.input.setInputProcessor(this);	//als letztes	
 	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		touches.get(pointer).lastPos.x = screenX;
-		touches.get(pointer).lastPos.y = screenY;
-		touches.get(pointer).touched = false;
 	
-		return false;
+	public boolean downLeft(){
+		return keyboardHandler.downLeft();
+	}
+	
+	public boolean downRight(){
+		return keyboardHandler.downRight();
+	}
+	
+	public boolean upLeft(){
+		return keyboardHandler.upLeft();
+	}
+	
+	public boolean upRight(){
+		return keyboardHandler.upRight();
 	}
 
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if (pointer < 5) {
-			touches.get(pointer).lastPos.x = screenX;
-			touches.get(pointer).lastPos.y = screenY;
-			touches.get(pointer).touched = true;
-		}
-		return true;
-	}
-
-	/**
-	 * Updates every Key Input
-	 */
+	
+	
+	///////////////////////////
+	// Leite Methoden Weiter //
+	///////////////////////////
+	
+	
 	@Override
 	public boolean keyDown(int keycode) {
-		keys[keycode] = true;
-		keysTime[keycode] = System.currentTimeMillis();
-		System.out.println("Key: "+keycode+" at: "+keysTime[keycode]);
-		
-		
-
-		return true;
+		return keyboardHandler.keyDown(keycode);
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		keys[keycode] = false;
-
-		if (keycode == Keys.SHIFT_LEFT) {
-			System.out.println("Reset Speed");
-		}
-		if (keycode == Keys.SPACE) {
-			System.out.println("Jump End");
-		}
-
-		return false;
+		return keyboardHandler.keyUp(keycode);
 	}
 
 	@Override
 	public boolean keyTyped(char character) {
-		return false;
+		return keyboardHandler.keyTyped(character);
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		return keyboardHandler.touchDown(screenX, screenY, pointer, button);
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		return keyboardHandler.touchUp(screenX, screenY, pointer, button);
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		return keyboardHandler.touchDragged(screenX, screenY, pointer);
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		return false;
+		return keyboardHandler.mouseMoved(screenX, screenY);
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		return true;
+		return keyboardHandler.scrolled(amount);
 	}
 
-	public Map<Integer, TouchInfo> getTouches() {
-		return touches;
+	@Override
+	public boolean touchDown(float x, float y, int pointer, int button) {
+		return gestureHandler.touchDown(x, y, pointer, button);
 	}
 
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
-		System.out.println("Tap");
-		// TODO Auto-generated method stub
-		return false;
+		return gestureHandler.tap(x, y, count, button);
 	}
 
 	@Override
 	public boolean longPress(float x, float y) {
-		System.out.println("Long Press");
-		return false;
+		return gestureHandler.longPress(x, y);
 	}
 
 	@Override
 	public boolean fling(float velocityX, float velocityY, int button) {
-		System.out.println("Fling");
-		return false;
+		return gestureHandler.fling(velocityX, velocityY, button);
 	}
 
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY) {
-		System.out.println("Pan");
-		return false;
+		return gestureHandler.pan(x, y, deltaX, deltaY);
 	}
 
 	@Override
 	public boolean panStop(float x, float y, int pointer, int button) {
-		System.out.println("PanStop");
-		return false;
+		return gestureHandler.panStop(x, y, pointer, button);
 	}
 
 	@Override
 	public boolean zoom(float initialDistance, float distance) {
-		System.out.println("Zoom");
-		return false;
+		return gestureHandler.zoom(initialDistance, distance);
 	}
 
 	@Override
-	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2,
-			Vector2 pointer1, Vector2 pointer2) {
-		System.out.println("Pinch");
-		return false;
+	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+		return gestureHandler.pinch(initialPointer1, initialPointer2, pointer1, pointer2);
 	}
 
 
-	@Override
-	public boolean touchDown(float x, float y, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
 
 }
