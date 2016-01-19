@@ -30,6 +30,8 @@ import com.badlogic.gdx.utils.Array;
 import com.uos.mortaldestiny.Inputs.InputHandler;
 
 public class GameClass extends ApplicationAdapter {
+	
+	public static boolean debug = true;
 
 	// private SpriteBatch batch;
 	// private BitmapFont font;
@@ -74,14 +76,6 @@ public class GameClass extends ApplicationAdapter {
 		// img = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		grafics = Gdx.app.getGraphics();
 
-		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(10f, 10f, 10f);
-		cam.lookAt(0, 0, 0);
-		cam.near = 1f;
-		cam.far = 300f;
-
-		int zoom = 10;
-
 		// cam = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() /
 		// (float)Gdx.graphics.getWidth()));
 		// cam.position.set(10, 15, 10);
@@ -90,7 +84,6 @@ public class GameClass extends ApplicationAdapter {
 		// cam.far = 100;
 		// matrix.setToRotation(new Vector3(1, 0, 0), 90);
 
-		cam.update();
 
 		// ModelBuilder modelBuilder = new ModelBuilder();
 		// model = modelBuilder.createBox(5f, 5f, 5f, new
@@ -98,19 +91,41 @@ public class GameClass extends ApplicationAdapter {
 		// Usage.Position | Usage.Normal);
 		// instance = new ModelInstance(model);
 
-		modelBatch = new ModelBatch();
-
-		environment = new Environment();
-		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-
-		inputs = new InputHandler();
-		
-		camController = new CameraInputController(cam);
+		initEnvironment();
+		initCamera();
+		initModels();
+		doneLoading();
+		initInputHandler();
+//		camController = new CameraInputController(cam);
 //		 Gdx.input.setInputProcessor(camController);
 
 
 
+
+	}
+	
+	public void initInputHandler(){
+		inputs = new InputHandler();
+	}
+	
+	public void initEnvironment(){
+		environment = new Environment();
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));		
+	}
+	
+	public void initCamera(){
+		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam.position.set(10f, 10f, 10f);
+		cam.lookAt(0, 0, 0);
+		cam.near = 1f;
+		cam.far = 300f;
+		cam.update();
+	}
+	
+	public void initModels(){
+		modelBatch = new ModelBatch();
+		
 		assets = new AssetManager();
 
 		loading = true;
@@ -121,7 +136,7 @@ public class GameClass extends ApplicationAdapter {
 		player = loader.loadModel(Gdx.files.internal(pathModels + "Player/player.obj"));
 		obstacle = loader.loadModel(Gdx.files.internal(pathModels + "MapParts/Construction/constructionObstacle.obj"));
 
-		assets.load("data/models/ship/ship.obj", Model.class);
+		assets.load("data/models/ship/ship.obj", Model.class);		
 	}
 
 	private void doneLoading() {
@@ -133,7 +148,7 @@ public class GameClass extends ApplicationAdapter {
 		float maxz = 3 * (stepz + 2);
 
 		playerInstance = new ModelInstance(player);
-		playerInstance.transform.setToTranslation(3, 2, 3);
+		playerInstance.transform.setToTranslation(0, 1, 0);
 		instances.add(playerInstance);
 
 		ModelInstance obstacleInstance = new ModelInstance(obstacle);
@@ -225,7 +240,7 @@ public class GameClass extends ApplicationAdapter {
 		}
 
 		move();
-		camController.update();
+//		camController.update();
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);

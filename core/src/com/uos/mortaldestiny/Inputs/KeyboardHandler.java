@@ -74,15 +74,21 @@ public class KeyboardHandler implements InputProcessor {
 	public boolean keyTyped(char character) {
 		return false;
 	}
-	
+
 	public float getYawInDegreeOfModelWithMouse(int screenX, int screenY, ModelInstance model) {
 		Vector3 mv = Helper.getMousePointAt(screenX, screenY);
 		Vector3 miv = Helper.getVectorFromModelInstance(model);
 		return Helper.getYawInDegree(mv, miv);
 	}
-	
-	public void rotatePlayer(int screenX, int screenY){
+
+	public void rotatePlayer(int screenX, int screenY) {
 		ModelInstance model = GameClass.getInstance().playerInstance;
+
+		if (GameClass.debug) {
+			float yaw = getYawInDegreeOfModelWithMouse(screenX, screenY, model);
+			System.out.println("Player Yaw: "+yaw);
+		}
+
 		inputHandler.setDirection(getYawInDegreeOfModelWithMouse(screenX, screenY, model));
 	}
 
@@ -92,17 +98,17 @@ public class KeyboardHandler implements InputProcessor {
 
 		return true;
 	}
-	
+
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		
+
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		rotatePlayer(screenX, screenY);
-		
+
 		return false;
 	}
 

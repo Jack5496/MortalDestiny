@@ -17,11 +17,6 @@ public class ControllerHandler implements ControllerListener {
 
 	private InputHandler inputHandler;
 
-	private Controller player1;
-	private Controller player2;
-	private Controller player3;
-	private Controller player4;
-
 	public ControllerHandler(InputHandler inputHandler) {
 		this.inputHandler = inputHandler;
 	}
