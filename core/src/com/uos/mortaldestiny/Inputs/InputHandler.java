@@ -19,15 +19,15 @@ public class InputHandler implements InputProcessor, GestureListener{
 	public GestureHandler gestureHandler;
 
 	public InputHandler() {		
+		//GamePad
 		controllerHandler = new ControllerHandler(this);
-		Controllers.addListener(controllerHandler);
+		Controllers.addListener(controllerHandler);	//Activate as extra Input
 		
-		keyboardHandler = new KeyboardHandler(this);
-		gestureHandler = new GestureHandler(this);
+		keyboardHandler = new KeyboardHandler(this);	//Keyboard class
+		gestureHandler = new GestureHandler(this);		//Touch class
 		
-		
-		
-		Gdx.input.setInputProcessor(this);	//als letztes	
+		//After initilize set Input as this
+		Gdx.input.setInputProcessor(this);	//last
 	}
 	
 	public boolean downLeft(){

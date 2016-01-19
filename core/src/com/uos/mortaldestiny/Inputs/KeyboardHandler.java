@@ -9,6 +9,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
+import com.uos.mortaldestiny.GameClass;
 
 public class KeyboardHandler implements InputProcessor {
 
@@ -38,7 +39,6 @@ public class KeyboardHandler implements InputProcessor {
 	}
 	
 	
-
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		return false;
@@ -71,10 +71,10 @@ public class KeyboardHandler implements InputProcessor {
 		keys[keycode] = false;
 
 		if (keycode == Keys.SHIFT_LEFT) {
-			System.out.println("Reset Speed");
+			System.out.println("Shift");
 		}
 		if (keycode == Keys.SPACE) {
-			System.out.println("Jump End");
+			System.out.println("Space");
 		}
 
 		return false;
@@ -87,6 +87,31 @@ public class KeyboardHandler implements InputProcessor {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+
+		double xpos = screenX - GameClass.getInstance().getWidth()/2.0;
+		double ypos = screenY - GameClass.getInstance().getHeight()/2.0;
+		
+		double length = Math.sqrt(Math.pow(xpos, 2)+Math.pow(ypos, 2));
+		
+		double angle = Math.atan2(ypos, xpos)/Math.PI;
+		System.out.println("Angle: "+angle+" | Length: "+length);
+		
+				int axisCode = 0;
+				
+				if (axisCode == 0) { // Stick Left Y
+					//-1 Up	-	1 Down
+				}
+				if (axisCode == 1) { // Stick Left X
+					//-1 Left	-	1 Right
+				}
+				if (axisCode == 2) { // Stick Right Y
+					//-1 Up	-	1 Down
+				}
+				if (axisCode == 3) { // Stick Right X
+					//-1 Left	-	1 Right
+				}
+		
+		
 		return false;
 	}
 

@@ -36,7 +36,7 @@ public class GameClass extends ApplicationAdapter {
 	// private Texture img;
 	private Graphics grafics;
 
-	public static ApplicationAdapter application;
+	public static GameClass application;
 
 	public PerspectiveCamera cam;
 	// public OrthographicCamera cam;
@@ -60,6 +60,10 @@ public class GameClass extends ApplicationAdapter {
 	public CameraInputController camController;
 
 	public InputHandler inputs;
+	
+	public static GameClass getInstance(){
+		return application;
+	}
 
 	@Override
 	public void create() {
@@ -146,7 +150,7 @@ public class GameClass extends ApplicationAdapter {
 
 	@Override
 	public void resize(int width, int height) {
-
+		
 	}
 
 	public int getWidth() {
