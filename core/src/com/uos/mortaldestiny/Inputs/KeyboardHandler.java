@@ -102,7 +102,9 @@ public class KeyboardHandler implements InputProcessor {
 //		double ypos = screenY - GameClass.getInstance().getHeight()/2.0;
 //		
 //		
-		float dir = Helper.adjustMouseInput(Helper.getDegree(tmpVector.x, tmpVector.z));
+	    Vector3 playerPosition = new Vector3();
+	    GameClass.getInstance().playerInstance.transform.getTranslation(playerPosition);
+		float dir = Helper.adjustMouseInput(Helper.getDegree(tmpVector.x-playerPosition.x, tmpVector.z-playerPosition.z));
 		inputHandler.setDirection(dir);
 //				
 		return true;

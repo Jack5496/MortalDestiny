@@ -202,7 +202,7 @@ public class GameClass extends ApplicationAdapter {
 		if (playerInstance != null) {
 			cam.translate(dx, 0, dz);
 			
-			playerInstance.transform.translate(dx, 0, dz);
+			playerInstance.transform.trn(dx, 0, dz);
 			
 			
 			cam.update();

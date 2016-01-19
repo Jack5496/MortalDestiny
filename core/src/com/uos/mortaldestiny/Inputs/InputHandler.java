@@ -40,7 +40,11 @@ public class InputHandler implements InputProcessor, GestureListener{
 		
 		
 		ModelInstance player = GameClass.getInstance().playerInstance;
+		
+		Vector3 position = new Vector3();
+		player.transform.getTranslation(position);
 		player.transform.setToRotation(new Vector3(0,1,0), lookDir);
+		player.transform.trn(position);
 	}
 	
 	public boolean downLeft(){
