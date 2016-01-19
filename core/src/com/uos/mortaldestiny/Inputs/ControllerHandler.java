@@ -20,7 +20,6 @@ public class ControllerHandler implements ControllerListener {
 	public ControllerHandler(InputHandler inputHandler) {
 		this.inputHandler = inputHandler;
 	}
-
 	
 	@Override
 	public void connected(Controller controller) {
