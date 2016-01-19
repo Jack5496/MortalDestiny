@@ -13,32 +13,50 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.uos.mortaldestiny.GameClass;
+import com.uos.mortaldestiny.entitys.Player;
 
 public class KeyboardHandler implements InputProcessor {
 
 	public boolean[] keys = new boolean[256];
 	long[] keysTime = new long[256];
+	Player p;
 
 	private InputHandler inputHandler;
 
 	public KeyboardHandler(InputHandler inputHandler) {
 		this.inputHandler = inputHandler;
+		this.p = GameClass.getInstance().player;
 	}
 
-	public boolean downLeft() {
-		return keys[Keys.LEFT] || keys[Keys.A];
+	public void updateInputLogic() {
+		updateWalkDir();
 	}
 
-	public boolean downRight() {
-		return keys[Keys.DOWN] || keys[Keys.S];
-	}
+	public void updateWalkDir() {
+		Vector3 dir = new Vector3(0, 0, 0);
 
-	public boolean upLeft() {
-		return keys[Keys.UP] || keys[Keys.W];
-	}
+		if (keys[Keys.A]) {
+			dir.add(new Vector3(1, 0, 0));	//links unten
+			dir.add(new Vector3(0, 0, 1));	//links oben
+		}
+		if (keys[Keys.D]) {
+			dir.add(new Vector3(-1, 0, 0));	//rechts oben
+			dir.add(new Vector3(0, 0, -1));	//rechts unten
+		}
+		if (keys[Keys.W]) {
+			dir.add(new Vector3(0, 0, 1));	//links oben
+			dir.add(new Vector3(-1, 0, 0));	//rechts oben
+		}
+		if (keys[Keys.S]) {
+			dir.add(new Vector3(0, 0, -1));	//rechts unten
+			dir.add(new Vector3(1, 0, 0));	//links unten
+		}
 
-	public boolean upRight() {
-		return keys[Keys.RIGHT] || keys[Keys.D];
+		if (dir.len() > 0) {	//Problem: if degree is 0° --> sin(0) will result a direction
+			p.move(Helper.getYawInDegree(dir));
+		}
+
+		 
 	}
 
 	@Override
@@ -82,14 +100,7 @@ public class KeyboardHandler implements InputProcessor {
 	}
 
 	public void rotatePlayer(int screenX, int screenY) {
-		ModelInstance model = GameClass.getInstance().playerInstance;
-
-		if (GameClass.debug) {
-			float yaw = getYawInDegreeOfModelWithMouse(screenX, screenY, model);
-			System.out.println("Player Yaw: "+yaw);
-		}
-
-		inputHandler.setDirection(getYawInDegreeOfModelWithMouse(screenX, screenY, model));
+		p.setDirection(getYawInDegreeOfModelWithMouse(screenX, screenY, p.getModelInstance()));
 	}
 
 	@Override

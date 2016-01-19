@@ -28,9 +28,11 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.uos.mortaldestiny.Inputs.InputHandler;
+import com.uos.mortaldestiny.entitys.CameraController;
+import com.uos.mortaldestiny.entitys.Player;
 
 public class GameClass extends ApplicationAdapter {
-	
+
 	public static boolean debug = true;
 
 	// private SpriteBatch batch;
@@ -40,15 +42,13 @@ public class GameClass extends ApplicationAdapter {
 
 	public static GameClass application;
 
-	public PerspectiveCamera cam;
-	// public OrthographicCamera cam;
 	final Matrix4 matrix = new Matrix4();
 
 	public Model model;
-	public Model player;
+	public Model playerModel;
 	public Model obstacle;
-	public ModelInstance playerInstance;
 	public ModelBatch modelBatch;
+	public Player player;
 
 	public Environment environment;
 	public boolean loading;
@@ -59,11 +59,12 @@ public class GameClass extends ApplicationAdapter {
 	public AssetManager assets;
 	public Array<ModelInstance> instances = new Array<ModelInstance>();
 
-	public CameraInputController camController;
+//	public CameraInputController camController;
 
 	public InputHandler inputs;
-	
-	public static GameClass getInstance(){
+	public CameraController cameraController;
+
+	public static GameClass getInstance() {
 		return application;
 	}
 
@@ -84,7 +85,6 @@ public class GameClass extends ApplicationAdapter {
 		// cam.far = 100;
 		// matrix.setToRotation(new Vector3(1, 0, 0), 90);
 
-
 		// ModelBuilder modelBuilder = new ModelBuilder();
 		// model = modelBuilder.createBox(5f, 5f, 5f, new
 		// Material(ColorAttribute.createDiffuse(Color.GREEN)),
@@ -96,36 +96,28 @@ public class GameClass extends ApplicationAdapter {
 		initModels();
 		doneLoading();
 		initInputHandler();
-//		camController = new CameraInputController(cam);
-//		 Gdx.input.setInputProcessor(camController);
-
-
-
-
+		// camController = new CameraInputController(cam);
+		// Gdx.input.setInputProcessor(camController);
+		cameraController.setTrack(player.getModelInstance());
 	}
-	
-	public void initInputHandler(){
+
+	public void initInputHandler() {
 		inputs = new InputHandler();
 	}
-	
-	public void initEnvironment(){
+
+	public void initEnvironment() {
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));		
+		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 	}
-	
-	public void initCamera(){
-		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(10f, 10f, 10f);
-		cam.lookAt(0, 0, 0);
-		cam.near = 1f;
-		cam.far = 300f;
-		cam.update();
+
+	public void initCamera() {
+		cameraController = new CameraController();
 	}
-	
-	public void initModels(){
+
+	public void initModels() {
 		modelBatch = new ModelBatch();
-		
+
 		assets = new AssetManager();
 
 		loading = true;
@@ -133,23 +125,25 @@ public class GameClass extends ApplicationAdapter {
 		ModelLoader loader = new ObjLoader();
 		model = loader.loadModel(Gdx.files.internal(pathGrounds + "GroundTile5x5.obj"));
 
-		player = loader.loadModel(Gdx.files.internal(pathModels + "Player/player.obj"));
+		playerModel = loader.loadModel(Gdx.files.internal(pathModels + "Player/player.obj"));
 		obstacle = loader.loadModel(Gdx.files.internal(pathModels + "MapParts/Construction/constructionObstacle.obj"));
 
-		assets.load("data/models/ship/ship.obj", Model.class);		
+		assets.load("data/models/ship/ship.obj", Model.class);
 	}
 
 	private void doneLoading() {
+		float test = 0f;
+		int width = 3;
+		int height = 3;
+		
+		float stepx = 10f+test;
+		float maxx = width * (stepx + 2);
 
-		float stepx = 11f;
-		float maxx = 3 * (stepx + 2);
+		float stepz = 10f+test;
+		float maxz = height * (stepz + 2);
 
-		float stepz = 11f;
-		float maxz = 3 * (stepz + 2);
-
-		playerInstance = new ModelInstance(player);
-		playerInstance.transform.setToTranslation(0, 1, 0);
-		instances.add(playerInstance);
+		player = new Player(new ModelInstance(playerModel));
+		instances.add(player.getModelInstance());
 
 		ModelInstance obstacleInstance = new ModelInstance(obstacle);
 		obstacleInstance.transform.setToTranslation(-maxx + 3 * stepx, 0, -maxz + stepz);
@@ -167,7 +161,7 @@ public class GameClass extends ApplicationAdapter {
 
 	@Override
 	public void resize(int width, int height) {
-		
+
 	}
 
 	public int getWidth() {
@@ -195,57 +189,28 @@ public class GameClass extends ApplicationAdapter {
 		modelBatch.dispose();
 	}
 
-	public void move() {
-		float dx = 0;
-		float dz = 0;
-
-		float speed = 0.5f;
-
-		if (inputs.downLeft()) {
-			dz += speed;
-		}
-		if (inputs.upRight()) {
-			dz -= speed;
-		}
-		if (inputs.upLeft()) {
-			dx -= speed;
-		}
-		if (inputs.downRight()) {
-			dx += speed;
-		}
-
-		if (playerInstance != null) {
-			cam.translate(dx, 0, dz);
-			
-			playerInstance.transform.trn(dx, 0, dz);
-			
-			
-			cam.update();
-		}
-	}
-
 	@Override
 	public void render() {
-		// Gdx.gl.glClearColor(1, 1, 1, 1);
-		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		//
 		//
 		// batch.begin();
 		//// batch.draw(img, 0, 0);
 		// font.draw(batch, getWidth()+" x "+getHeight(), 250, getHeight()/2);
 		// batch.end();
-
+		
 		if (loading && assets.update()) {
 			doneLoading();
 		}
 
-		move();
-//		camController.update();
+		inputs.updateInputLogic();
+		cameraController.update();
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		modelBatch.begin(cam);
+		modelBatch.begin(cameraController.getCamera());
 		modelBatch.render(instances, environment);
 		modelBatch.end();
 	}

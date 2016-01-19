@@ -21,7 +21,6 @@ public class InputHandler implements InputProcessor, GestureListener{
 
 	
 	//Rechts: 0	//Oben: -0.5	//Unten: 0.5	//Links:	-1/1
-	public float lookDirection = 0;	//[-1;1] 
 	
 	public InputHandler() {		
 		//GamePad
@@ -35,40 +34,14 @@ public class InputHandler implements InputProcessor, GestureListener{
 		Gdx.input.setInputProcessor(this);	//last
 	}
 	
-	public void setDirection(float lookDir){
-		this.lookDirection = lookDir;
-		
-		
-		ModelInstance player = GameClass.getInstance().playerInstance;
-		
-		Vector3 position = new Vector3();
-		player.transform.getTranslation(position);
-		player.transform.setToRotation(new Vector3(0,1,0), lookDir);
-		player.transform.trn(position);
+	public void updateInputLogic(){
+		controllerHandler.updateInputLogic();
+		keyboardHandler.updateInputLogic();
 	}
-	
-	public boolean downLeft(){
-		return keyboardHandler.downLeft();
-	}
-	
-	public boolean downRight(){
-		return keyboardHandler.downRight();
-	}
-	
-	public boolean upLeft(){
-		return keyboardHandler.upLeft();
-	}
-	
-	public boolean upRight(){
-		return keyboardHandler.upRight();
-	}
-
-	
-	
+			
 	///////////////////////////
 	// Leite Methoden Weiter //
 	///////////////////////////
-	
 	
 	@Override
 	public boolean keyDown(int keycode) {

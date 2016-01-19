@@ -1,17 +1,13 @@
 package com.uos.mortaldestiny.Inputs;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.uos.mortaldestiny.GameClass;
 
 public class ControllerHandler implements ControllerListener {
 
@@ -20,7 +16,41 @@ public class ControllerHandler implements ControllerListener {
 	public ControllerHandler(InputHandler inputHandler) {
 		this.inputHandler = inputHandler;
 	}
+
+	public void updateInputLogic() {
+		updateWalkDir();
+		updateLookDir();
+	}
+
+	private float threshold = 0.5f; // spielraum, ab 20% wird Stick erst
+	// gemessen
+
+	public void updateWalkDir(){
+		for(Controller controller : Controllers.getControllers()){
+			float ldy = controller.getAxis(XBox360Pad.AXIS_LEFT_Y);
+			float ldx = controller.getAxis(XBox360Pad.AXIS_LEFT_X);
+			Vector3 vec = new Vector3(-ldx,0,-ldy);
+			vec.rotate(new Vector3(0,1,0), -45);
+			
+			if (Math.abs(vec.len()) > threshold) {
+				GameClass.getInstance().player.move(Helper.getYawInDegree(vec));
+			}
+		}
+	}
 	
+	public void updateLookDir(){
+		for(Controller controller : Controllers.getControllers()){
+			float rdy = controller.getAxis(XBox360Pad.AXIS_RIGHT_Y);
+			float rdx = controller.getAxis(XBox360Pad.AXIS_RIGHT_X);
+			Vector3 vec = new Vector3(rdx,0,rdy);
+			vec.rotate(new Vector3(0,1,0), 45);
+			
+			if (Math.abs(vec.len()) > threshold) {
+				GameClass.getInstance().player.setDirection(Helper.getYawInDegree(vec));
+			}
+		}
+	}
+
 	@Override
 	public void connected(Controller controller) {
 		// TODO Auto-generated method stub
@@ -47,28 +77,9 @@ public class ControllerHandler implements ControllerListener {
 		return false;
 	}
 
-	private float threshold = 0.5f; // spielraum, ab 20% wird Stick erst
-									// gemessen
-
 	@Override
 	public boolean axisMoved(Controller controller, int axisCode, float value) {
 		// TODO Auto-generated method stub
-		if (Math.abs(value) > threshold) {
-			System.out.println("axis: " + axisCode + " with " + value);
-			if (axisCode == 0) { // Stick Left Y
-				//-1 Up	-	1 Down
-			}
-			if (axisCode == 1) { // Stick Left X
-				//-1 Left	-	1 Right
-			}
-			if (axisCode == 2) { // Stick Right Y
-				//-1 Up	-	1 Down
-			}
-			if (axisCode == 3) { // Stick Right X
-				//-1 Left	-	1 Right
-			}
-
-		}
 		return false;
 	}
 
