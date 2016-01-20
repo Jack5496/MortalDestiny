@@ -19,14 +19,26 @@ public class CameraController {
 
 	private PerspectiveCamera cam;
 
-	private Vector3 distance;
+	private Vector3 distanceVector;
+
+	private float yaw;
+
+	private float yawHeight;
+
+	private float distance;
+	private float minDistance = 10;
+	private float maxDistance = 40;
+
 	private Vector3 lookAt;
 	private ModelInstance track;
 	// public OrthographicCamera cam;
 
 	public CameraController() {
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		distance = new Vector3(10f, 10f, 10f);
+
+		updateCameraAxis(45 - 90, 65, 20);
+		updateDisVector();
+
 		track = null;
 
 		cam.near = 1f;
@@ -36,32 +48,63 @@ public class CameraController {
 
 		update();
 	}
-	
-	public void setTrack(ModelInstance track){
+
+	public void updateCameraAxisOffset(float yaw, float yawHeight, float distance) {
+		this.yaw += yaw;
+		this.yawHeight += yawHeight;
+		this.distance += distance;
+		updateCameraAxis(this.yaw,this.yawHeight,this.distance);
+	}
+
+	public void updateCameraAxis(float yaw, float yawHeight, float distance) {
+		this.yaw = yaw;
+		this.yawHeight = yawHeight;
+
+		if (distance < minDistance) {
+			distance = minDistance;
+		}
+		if (distance > maxDistance) {
+			distance = maxDistance;
+		}
+		this.distance = distance;
+
+		updateDisVector();
+	}
+
+	private void updateDisVector() {
+		distanceVector = calcDisVector(yaw, yawHeight, distance);
+	}
+
+	private Vector3 calcDisVector(float yaw, float yawHeight, float distance) {
+		Vector3 back = new Vector3(1, 0, 0);
+		back.rotate(new Vector3(0, 0, 1), yawHeight);
+		back.rotate(new Vector3(0, 1, 0), yaw);
+		back.scl(distance);
+		return back;
+	}
+
+	public void setTrack(ModelInstance track) {
 		this.track = track;
 	}
 
 	public void update() {
-		
-		if(track==null){
+
+		if (track == null) {
 			Vector3 offsetPos = lookAt.cpy();
-			offsetPos.add(distance);
-			
+			offsetPos.add(distanceVector);
+
 			cam.position.set(offsetPos);
 			cam.lookAt(lookAt);
 		}
 		if (track != null) {
 			track.transform.getTranslation(lookAt);
-			
+
 			Vector3 offsetPos = lookAt.cpy();
-			offsetPos.add(distance);
-			
+			offsetPos.add(distanceVector);
+
 			cam.position.set(offsetPos);
 			cam.lookAt(lookAt);
 		}
-		
-
-		
 
 		cam.update();
 	}

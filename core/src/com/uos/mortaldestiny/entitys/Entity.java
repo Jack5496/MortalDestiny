@@ -4,16 +4,15 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.uos.mortaldestiny.GameClass;
-import com.uos.mortaldestiny.Inputs.Helper;
 
-public class Player{
+public class Entity{
 
 	private ModelInstance model;
 	private float health;
 	private String name;
 	private float speed;
 		
-	public Player(ModelInstance model){
+	public Entity(ModelInstance model){
 		this.model = model;
 		this.model.transform.setToTranslation(0, 1, 0);
 		this.health = 100;
@@ -34,39 +33,18 @@ public class Player{
 	
 		
 	public void setRotation(float lookDir){
-		lookDir=(int)lookDir;
-		if(lookDir<0){
-			lookDir+=360;
-		}
-		
-		Quaternion q = new Quaternion();
-		getModelInstance().transform.getRotation(q);
-		
-		float pitch = q.getPitch();
-		float roll = q.getRoll();
-		
-		q.setEulerAngles(lookDir, pitch, roll);
-		
 		Vector3 position = getVector();
-		getModelInstance().transform.set(q);
+		getModelInstance().transform.setToRotation(new Vector3(0,1,0), lookDir);
 		getModelInstance().transform.trn(position);
 		
-		getRotation();
+		System.out.println("Set: "+lookDir+" | Get: "+getRotation());
 	}
 	
 	public float getRotation(){
-		Quaternion q = new Quaternion();
+		Vector3 position = getVector();
+		Quaternion q = new Quaternion(new Vector3(0,1,0),0);
 		getModelInstance().transform.getRotation(q);
-		
-		float yaw = q.getYaw();
-		
-		if(yaw<0){
-			yaw+=360;
-		}
-		
-		int p = (int)(yaw+0.5f);
-		
-		return p;
+		return q.getAngle();
 	}
 	
 	public void move(float dir) {

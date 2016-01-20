@@ -100,7 +100,7 @@ public class KeyboardHandler implements InputProcessor {
 	}
 
 	public void rotatePlayer(int screenX, int screenY) {
-		p.setDirection(getYawInDegreeOfModelWithMouse(screenX, screenY, p.getModelInstance()));
+		p.setRotation(getYawInDegreeOfModelWithMouse(screenX, screenY, p.getModelInstance()));
 	}
 
 	@Override
@@ -125,6 +125,7 @@ public class KeyboardHandler implements InputProcessor {
 
 	@Override
 	public boolean scrolled(int amount) {
+		GameClass.getInstance().cameraController.updateCameraAxisOffset(0, 0, amount);
 		return true;
 	}
 
