@@ -14,7 +14,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Mortal Destiny";
-		config.useGL30 = true;
+		config.useGL30 = false;
 		config.height = size.height/2;
 		config.width = size.width/2;
 		new LwjglApplication(new GameClass(), config);

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.uos.mortaldestiny.GameClass;
+import com.uos.mortaldestiny.Inputs.Helper;
 
 public class Entity{
 
@@ -33,19 +34,49 @@ public class Entity{
 	
 		
 	public void setRotation(float lookDir){
+		lookDir=(int)lookDir;
+		if(lookDir<0){
+			lookDir+=360;
+		}
+		
+		Quaternion q = new Quaternion();
+		getModelInstance().transform.getRotation(q);
+		
+		float pitch = q.getPitch();
+		float roll = q.getRoll();
+		
+		q.setEulerAngles(lookDir, pitch, roll);
+		
 		Vector3 position = getVector();
-		getModelInstance().transform.setToRotation(new Vector3(0,1,0), lookDir);
+		getModelInstance().transform.set(q);
 		getModelInstance().transform.trn(position);
 		
-		System.out.println("Set: "+lookDir+" | Get: "+getRotation());
+		getRotation();
 	}
 	
+	/**
+	 * Return the Rotation of the ModelInstance of the Entity
+	 * @return Rotation [0;359]
+	 */
 	public float getRotation(){
-		Vector3 position = getVector();
-		Quaternion q = new Quaternion(new Vector3(0,1,0),0);
+		Quaternion q = new Quaternion();
 		getModelInstance().transform.getRotation(q);
-		return q.getAngle();
+		
+		float yaw = q.getYaw();
+		
+		if(yaw<0){
+			yaw+=360;
+		}
+		
+		int p = (int)(yaw+0.5f);
+		
+		return p;
 	}
+	
+	
+//	public voi setSpeed(float speed){
+//		
+//	}
 	
 	public void move(float dir) {
 		Vector3 v = new Vector3(0,0,1);

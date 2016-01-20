@@ -26,6 +26,7 @@ public class CameraController {
 	private float yawHeight;
 
 	private float distance;
+	private float stepDistance = 5;
 	private float minDistance = 10;
 	private float maxDistance = 40;
 
@@ -49,11 +50,23 @@ public class CameraController {
 		update();
 	}
 
+	public void distanceIncrease() {
+		distanceAdd(stepDistance);
+	}
+
+	public void distanceDecrease() {
+		distanceAdd(-stepDistance);
+	}
+
+	public void distanceAdd(float distance) {
+		updateCameraAxisOffset(0, 0, distance);
+	}
+
 	public void updateCameraAxisOffset(float yaw, float yawHeight, float distance) {
 		this.yaw += yaw;
 		this.yawHeight += yawHeight;
 		this.distance += distance;
-		updateCameraAxis(this.yaw,this.yawHeight,this.distance);
+		updateCameraAxis(this.yaw, this.yawHeight, this.distance);
 	}
 
 	public void updateCameraAxis(float yaw, float yawHeight, float distance) {
