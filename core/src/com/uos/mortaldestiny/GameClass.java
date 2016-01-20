@@ -99,7 +99,14 @@ public class GameClass extends ApplicationAdapter {
 		// camController = new CameraInputController(cam);
 		// Gdx.input.setInputProcessor(camController);
 		cameraController.setTrack(player.getModelInstance());
+		
+		batch = new SpriteBatch();    
+        font = new BitmapFont();
+        font.setColor(Color.RED);
 	}
+	
+	private SpriteBatch batch;
+    private BitmapFont font;
 
 	public void initInputHandler() {
 		inputs = new InputHandler();
@@ -127,23 +134,9 @@ public class GameClass extends ApplicationAdapter {
 
 		playerModel = loader.loadModel(Gdx.files.internal(pathModels + "Player/player.obj"));
 		obstacle = loader.loadModel(Gdx.files.internal(pathModels + "MapParts/Construction/constructionObstacle.obj"));
-
-		
-		assets.load("player.g3db", Model.class);
-//		assets.load("data/models/ship/ship.obj", Model.class);		
-		assets.update();
-		
-		System.out.println("Look AssetNames");
-		for(String name : assets.getAssetNames()){
-			System.out.println(name);
-		}
 	}
 
 	private void doneLoading() {
-		assets.load("player.g3db", Model.class);
-		assets.finishLoading();
-//		System.out.println("loaded: "+assets.isLoaded("player.g3db"));
-//		playerModel = assets.get(pathModels + "Player/player.g3db", Model.class);
 		
 		float test = 0f;
 		int width = 3;
@@ -226,5 +219,9 @@ public class GameClass extends ApplicationAdapter {
 		modelBatch.begin(cameraController.getCamera());
 		modelBatch.render(instances, environment);
 		modelBatch.end();
+		
+		batch.begin();
+        font.draw(batch, "FPS: "+Gdx.graphics.getFramesPerSecond(), 5, getHeight()-5);
+        batch.end();
 	}
 }
