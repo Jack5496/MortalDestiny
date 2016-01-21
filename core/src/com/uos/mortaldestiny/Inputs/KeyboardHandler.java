@@ -51,6 +51,15 @@ public class KeyboardHandler implements InputProcessor {
 			dir.add(new Vector3(0, 0, -1));	//rechts unten
 			dir.add(new Vector3(1, 0, 0));	//links unten
 		}
+		if (keys[Keys.T]) {
+			GameClass.getInstance().cameraController.ortho = false;
+			GameClass.getInstance().cameraController.switchPerspective();
+		}
+		if (keys[Keys.Z]) {
+			GameClass.getInstance().cameraController.ortho = true;
+			GameClass.getInstance().cameraController.switchPerspective();
+		}
+		
 
 		if (dir.len() > 0) {	//Problem: if degree is 0° --> sin(0) will result a direction
 			p.move(Helper.getYawInDegree(dir));
@@ -126,7 +135,7 @@ public class KeyboardHandler implements InputProcessor {
 
 	@Override
 	public boolean scrolled(int amount) {
-		GameClass.getInstance().cameraController.updateCameraAxisOffset(0, 0, amount);
+		GameClass.getInstance().cameraController.distanceAdd(amount);
 		return true;
 	}
 

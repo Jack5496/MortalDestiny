@@ -8,8 +8,10 @@ import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.uos.mortaldestiny.GameClass;
 import com.uos.mortaldestiny.Inputs.Helper;
@@ -17,7 +19,8 @@ import com.uos.mortaldestiny.Inputs.InputHandler;
 
 public class CameraController {
 
-	private PerspectiveCamera cam;
+	private PerspectiveCamera camPers;
+	private OrthographicCamera camOrtho;
 
 	private Vector3 distanceVector;
 
@@ -31,46 +34,106 @@ public class CameraController {
 	private float maxDistance = 400;
 
 	private Vector3 lookAt;
-	private ModelInstance track;
-	// public OrthographicCamera cam;
+	private ModelInstance track = null;
 
+	public boolean ortho = false;
+
+	/**
+	 * CameraController which creates a Camera, with , which can be getted
+	 */
 	public CameraController() {
 
-		// cam = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() /
-		// (float)Gdx.graphics.getWidth()));
+		// float pers = 10;
+		// float pers = 23;
+		// float pers = 60;
+//		float pers = 20;
+
+		// float far = 13;
+		// float far = 70;
+		// float far = 183;
+//		float far = getOrthoDis(pers);
+
+		initCamera();
+	}
+	
+	public void switchPerspective(){
+		initCamera();
+	}
+	
+	public void initCamera(){
 		// cam.position.set(10, 15, 10);
-		// cam.direction.set(-1, -1, -1);
-		// cam.near = 1;
-		// cam.far = 100;
-		// matrix.setToRotation(new Vector3(1, 0, 0), 90);
+				// cam.direction.set(-1, -1, -1);
+				// cam.near = 1;
+				// cam.far = 100;
+				// matrix.setToRotation(new Vector3(1, 0, 0), 90);
 
-		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+				float far = getOrthoDis(distance);
+				camOrtho = new OrthographicCamera(far, far * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
+				camPers = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		updateCameraAxis(45 - 90, 65, 20);
-		updateDisVector();
+				// cam = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() /
+				// (float) Gdx.graphics.getWidth()));
 
-		track = null;
+				updateCameraAxis(45 - 90, 65, distance);
+				updateDisVector();
 
-		cam.near = 1f;
-		cam.far = 300f;
+				camOrtho.near = 1f;
+				camOrtho.far = 300f;
 
-		lookAt = new Vector3(0, 0, 0);
+				camPers.near = 1f;
+				camPers.far = 300f;
 
-		update();
+				lookAt = new Vector3(0, 0, 0);
+
+				update();
 	}
 
+	// public float getOrthoDist(float dis){
+	// return (float) (7.47329f*Math.pow(Math.E, 1.07332f*dis));
+	// }
+	//
+	// public float getOrthoDistFloat(float dis){
+	// return (float) ((Math.log(dis/3.65078f))/0.932511f);
+	// }
+
+	public float getOrthoDis(float persDis) {
+		return (float) (1.68347f * Math.pow(persDis, 1.151f));
+	}
+
+	/**
+	 * Increases the distance by defined offset
+	 */
 	public void distanceIncrease() {
 		distanceAdd(stepDistance);
 	}
 
+	/**
+	 * Decreases the distance by defined offset
+	 */
 	public void distanceDecrease() {
 		distanceAdd(-stepDistance);
 	}
 
+	/**
+	 * Set Distance to given Parameter offset
+	 * 
+	 * @param distance
+	 *            Distance offset to add
+	 */
 	public void distanceAdd(float distance) {
 		updateCameraAxisOffset(0, 0, distance);
 	}
 
+	/**
+	 * Set CameraAxis to given Parameter as Offset
+	 * 
+	 * @param yaw
+	 *            Yaw Offset in Degree [0;359]
+	 * @param yawHeight
+	 *            YawHeight Offset in Degree [0;359]
+	 * @param distance
+	 *            Distance Offset to lookAt point
+	 */
 	public void updateCameraAxisOffset(float yaw, float yawHeight, float distance) {
 		this.yaw += yaw;
 		this.yawHeight += yawHeight;
@@ -78,6 +141,16 @@ public class CameraController {
 		updateCameraAxis(this.yaw, this.yawHeight, this.distance);
 	}
 
+	/**
+	 * Set CameraAxis to given Parameter
+	 * 
+	 * @param yaw
+	 *            Yaw in Degree [0;359]
+	 * @param yawHeight
+	 *            YawHeight in Degree [0;359]
+	 * @param distance
+	 *            Distance to lookAt point
+	 */
 	public void updateCameraAxis(float yaw, float yawHeight, float distance) {
 		this.yaw = yaw;
 		this.yawHeight = yawHeight;
@@ -94,7 +167,8 @@ public class CameraController {
 	}
 
 	/**
-	 * Updated the Distance Vector with the Class Variable (yaw, yawHeight, distance)
+	 * Updated the Distance Vector with the Class Variable (yaw, yawHeight,
+	 * distance)
 	 */
 	private void updateDisVector() {
 		distanceVector = calcDisVector(yaw, yawHeight, distance);
@@ -102,9 +176,13 @@ public class CameraController {
 
 	/**
 	 * Get a DistanceVector from given Parameter
-	 * @param yaw Yaw in Degree [0;359]
-	 * @param yawHeight	YawHeight in Degree [0;359]
-	 * @param distance Distance as length
+	 * 
+	 * @param yaw
+	 *            Yaw in Degree [0;359]
+	 * @param yawHeight
+	 *            YawHeight in Degree [0;359]
+	 * @param distance
+	 *            Distance as length
 	 * @return Vector3 Distance Vector
 	 */
 	private Vector3 calcDisVector(float yaw, float yawHeight, float distance) {
@@ -117,6 +195,7 @@ public class CameraController {
 
 	/**
 	 * Set a ModelInstance to be tracked, Set null if untrack
+	 * 
 	 * @param track
 	 */
 	public void setTrack(ModelInstance track) {
@@ -132,8 +211,11 @@ public class CameraController {
 			Vector3 offsetPos = lookAt.cpy();
 			offsetPos.add(distanceVector);
 
-			cam.position.set(offsetPos);
-			cam.lookAt(lookAt);
+			camOrtho.position.set(offsetPos);
+			camOrtho.lookAt(lookAt);
+
+			camPers.position.set(offsetPos);
+			camPers.lookAt(lookAt);
 		}
 		if (track != null) {
 			track.transform.getTranslation(lookAt);
@@ -141,19 +223,28 @@ public class CameraController {
 			Vector3 offsetPos = lookAt.cpy();
 			offsetPos.add(distanceVector);
 
-			cam.position.set(offsetPos);
-			cam.lookAt(lookAt);
+			camOrtho.position.set(offsetPos);
+			camOrtho.lookAt(lookAt);
+
+			camPers.position.set(offsetPos);
+			camPers.lookAt(lookAt);
 		}
 
-		cam.update();
+		camOrtho.update();
+		camPers.update();
 	}
 
 	/**
 	 * get the Camera
+	 * 
 	 * @return Camera
 	 */
 	public Camera getCamera() {
-		return cam;
+		if (ortho) {
+			return camOrtho;
+		} else {
+			return camPers;
+		}
 	}
 
 }
