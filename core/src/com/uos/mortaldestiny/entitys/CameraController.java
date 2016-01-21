@@ -35,6 +35,15 @@ public class CameraController {
 	// public OrthographicCamera cam;
 
 	public CameraController() {
+
+		// cam = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() /
+		// (float)Gdx.graphics.getWidth()));
+		// cam.position.set(10, 15, 10);
+		// cam.direction.set(-1, -1, -1);
+		// cam.near = 1;
+		// cam.far = 100;
+		// matrix.setToRotation(new Vector3(1, 0, 0), 90);
+
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		updateCameraAxis(45 - 90, 65, 20);

@@ -121,44 +121,24 @@ public class ResourceManager {
 	}
 
 	private Model anim; 
-	private ModelBatch animBatch;
 	private ModelInstance animInstance;
 	public AnimationController controller;
 	
-	public void loadAnimation() {
-		animBatch = new ModelBatch();
-
-		// Model loader needs a binary json reader to decode
-		UBJsonReader jsonReader = new UBJsonReader();
-		// Create a model loader passing in our json reader
-		G3dModelLoader modelLoader = new G3dModelLoader(jsonReader);
-		// Now load the model by name
-		// Note, the model (g3db file ) and textures need to be added to the
-		// assets folder of the Android proj
-		anim = modelLoader.loadModel(Gdx.files.getFileHandle("data/blob.g3db", FileType.Internal));
-		// Now create an instance. Instance holds the positioning data, etc of
-		// an instance of your model
-		animInstance = new ModelInstance(anim);
-
-		// fbx-conv is supposed to perform this rotation for you... it doesnt
-		// seem to
-		
-		animInstance.transform.rotate(0, 0, 0, 0);
-		// move the model down a bit on the screen ( in a z-up world, down is -z
-		// ).
-		animInstance.transform.setToTranslation(0, 1, 0);
-		animInstance.transform.scl(0.01f);
-		animInstance.transform.trn(0, 0, 5);
-//		animInstance.transform.translate(0, 30, 0);
-
-		controller = new AnimationController(animInstance);
-		// Pick the current animation by name
-		
-		instances.add(animInstance);
+	UBJsonReader jsonReader = new UBJsonReader();
+	G3dModelLoader modelLoader = new G3dModelLoader(jsonReader);
+	
+	public Model getG3DBModel(String path){
+		return modelLoader.loadModel(Gdx.files.getFileHandle(path, FileType.Internal));
 	}
 	
-	public void walk(){
-		controller.setAnimation("Armature|walk", 0, 3.25f, 10, 4, null);
+	public void loadAnimation() {
+		anim = getG3DBModel("data/models/Player/player.g3db");
+		animInstance = new ModelInstance(anim);
+		animInstance.transform.scl(0.01f);
+		animInstance.transform.trn(0, 0, 5);
+		controller = new AnimationController(animInstance);
+		
+		instances.add(animInstance);
 	}
 
 	public void doneLoading() {
@@ -171,18 +151,30 @@ public class ResourceManager {
 
 		float stepz = 10f + test;
 		float maxz = height * (stepz + 2);
+		
+//		loadAnimation();
 
-		ModelInstance modelInstance = new ModelInstance(playerModel);
+//		ModelInstance modelInstance = new ModelInstance(playerModel);
 
-		// fbx-conv is supposed to perform this rotation for you... it doesnt
-		// seem to
-		modelInstance.transform.rotate(1, 0, 0, -90);
-		// move the model down a bit on the screen ( in a z-up world, down is -z
-		// ).
-		modelInstance.transform.translate(0, 0, -2);
-
-		GameClass.getInstance().player = new Player(new ModelInstance(modelInstance));
-		GameClass.getInstance().cameraController.setTrack(GameClass.getInstance().player.getModelInstance());
+//		GameClass.getInstance().player = new Player(new ModelInstance(modelInstance));
+		
+		anim = getG3DBModel("data/models/Player/player.g3db");
+		animInstance = new ModelInstance(anim);
+		animInstance.transform.scl(0.01f);
+		animInstance.transform.trn(0, 0, 5);
+//		controller = new AnimationController(animInstance);
+		
+		
+		
+		GameClass.getInstance().player = new Player(animInstance);
+		
+		
+		
+//		GameClass.getInstance().cameraController.setTrack(GameClass.getInstance().player.getModelInstance());
+		GameClass.getInstance().cameraController.setTrack(animInstance);
+		
+		instances.add(animInstance);
+		
 		instances.add(GameClass.getInstance().player.getModelInstance());
 
 		ModelInstance obstacleInstance = new ModelInstance(obstacle);
@@ -198,6 +190,6 @@ public class ResourceManager {
 		}
 		loaded = true;
 		
-		loadAnimation();
+		
 	}
 }

@@ -18,9 +18,6 @@ public class InputHandler implements InputProcessor, GestureListener{
 	public ControllerHandler controllerHandler;
 	public KeyboardHandler keyboardHandler;
 	public GestureHandler gestureHandler;
-
-	
-	//Rechts: 0	//Oben: -0.5	//Unten: 0.5	//Links:	-1/1
 	
 	public InputHandler() {		
 		//GamePad

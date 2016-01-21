@@ -1,24 +1,58 @@
 package com.uos.mortaldestiny.entitys;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector3;
-import com.uos.mortaldestiny.GameClass;
-import com.uos.mortaldestiny.Inputs.Helper;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationDesc;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener;
 
-public class Player extends Entity{
-		
-	AnimationController controller;
-	
-	public Player(ModelInstance model){
+public class Player extends Entity {
+
+	public AnimationController controller;
+
+	public Player(ModelInstance model) {
 		super(model);
 		controller = new AnimationController(model);
-	    
 	}
-	
-	public void animate(){
-		controller.setAnimation("walk");
+
+	public void move(float dir) {
+		super.move(dir);
+		walk();
 	}
+
+	public boolean ended = false;
 	
+	public void stop(){
+		controller.setAnimation(null);
+		ended = false;
+	}
+
+	public void walk() {
+		if (ended) {
+			controller.setAnimation(null);
+			ended = false;
+		} else {
+			controller.setAnimation("Armature|walk", 0, 3.25f, 1, 4, new AnimationListener() {
+
+				@Override
+				public void onEnd(AnimationDesc animation) {
+					// this will be called when the current animation is done.
+					// queue up another animation called "balloon".
+					// Passing a negative to loop count loops forever. 1f for
+					// speed is normal speed.
+					// controller.setAnimation(null);
+					ended = true;
+				}
+
+				@Override
+				public void onLoop(AnimationDesc animation) {
+					// TODO Auto-generated method stub
+
+				}
+
+			});
+		}
+
+	}
+
 }

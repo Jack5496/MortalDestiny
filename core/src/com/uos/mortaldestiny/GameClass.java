@@ -67,33 +67,12 @@ public class GameClass extends ApplicationAdapter {
 	@Override
 	public void create() {
 		application = this;
-		// batch = new SpriteBatch();
-		// font = new BitmapFont();
-		// font.setColor(Color.RED);
-		// img = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		grafics = Gdx.app.getGraphics();
-
-		// cam = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() /
-		// (float)Gdx.graphics.getWidth()));
-		// cam.position.set(10, 15, 10);
-		// cam.direction.set(-1, -1, -1);
-		// cam.near = 1;
-		// cam.far = 100;
-		// matrix.setToRotation(new Vector3(1, 0, 0), 90);
-
-		// ModelBuilder modelBuilder = new ModelBuilder();
-		// model = modelBuilder.createBox(5f, 5f, 5f, new
-		// Material(ColorAttribute.createDiffuse(Color.GREEN)),
-		// Usage.Position | Usage.Normal);
-		// instance = new ModelInstance(model);
 
 		initEnvironment();
 		initCamera();
 		initResourceManager();
 		initInputHandler();
-		// camController = new CameraInputController(cam);
-		// Gdx.input.setInputProcessor(camController);
-//		cameraController.setTrack(player.getModelInstance());
 		
 		batch = new SpriteBatch();    
         font = new BitmapFont();
@@ -170,7 +149,7 @@ public class GameClass extends ApplicationAdapter {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
-		resourceManager.controller.update(Gdx.graphics.getDeltaTime());
+		player.controller.update(Gdx.graphics.getDeltaTime());
 
 		resourceManager.modelBatch.begin(cameraController.getCamera());
 		resourceManager.modelBatch.render(resourceManager.instances, environment);

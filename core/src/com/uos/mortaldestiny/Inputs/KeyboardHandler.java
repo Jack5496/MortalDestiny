@@ -51,15 +51,14 @@ public class KeyboardHandler implements InputProcessor {
 			dir.add(new Vector3(0, 0, -1));	//rechts unten
 			dir.add(new Vector3(1, 0, 0));	//links unten
 		}
-		if(keys[Keys.T]){
-			GameClass.getInstance().resourceManager.walk();
-		}
 
 		if (dir.len() > 0) {	//Problem: if degree is 0° --> sin(0) will result a direction
 			p.move(Helper.getYawInDegree(dir));
+			System.out.println("Down");
 		}
-
-		 
+		else{
+			p.stop();
+		}
 	}
 
 	@Override
