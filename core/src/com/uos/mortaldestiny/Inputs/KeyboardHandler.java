@@ -52,7 +52,7 @@ public class KeyboardHandler implements InputProcessor {
 			dir.add(new Vector3(1, 0, 0));	//links unten
 		}
 		if(keys[Keys.T]){
-			p.animate();
+			GameClass.getInstance().resourceManager.walk();
 		}
 
 		if (dir.len() > 0) {	//Problem: if degree is 0° --> sin(0) will result a direction

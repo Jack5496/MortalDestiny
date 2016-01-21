@@ -28,7 +28,7 @@ public class CameraController {
 	private float distance;
 	private float stepDistance = 5;
 	private float minDistance = 10;
-	private float maxDistance = 40;
+	private float maxDistance = 400;
 
 	private Vector3 lookAt;
 	private ModelInstance track;
