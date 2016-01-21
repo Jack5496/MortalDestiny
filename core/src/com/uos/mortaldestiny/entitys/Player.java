@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener
 public class Player extends Entity {
 
 	public AnimationController controller;
+	
+	public static final String WALK = "Armature|walk";
 
 	public Player(ModelInstance model) {
 		super(model);
@@ -17,7 +19,13 @@ public class Player extends Entity {
 
 	public void move(float dir) {
 		super.move(dir);
-		walk();
+	
+		if(super.collide(super.obstacle)){
+			super.move(-dir);
+		}
+		else{
+			walk();
+		}
 	}
 
 	public boolean ended = false;
@@ -26,13 +34,13 @@ public class Player extends Entity {
 		controller.setAnimation(null);
 		ended = false;
 	}
-
+	
 	public void walk() {
 		if (ended) {
 			controller.setAnimation(null);
 			ended = false;
 		} else {
-			controller.setAnimation("Armature|walk", 0, 3.25f, 1, 4, new AnimationListener() {
+			controller.setAnimation(WALK, 0, 3.25f, 1, 10*super.getSpeed(), new AnimationListener() {
 
 				@Override
 				public void onEnd(AnimationDesc animation) {

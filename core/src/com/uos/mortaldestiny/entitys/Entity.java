@@ -3,6 +3,9 @@ package com.uos.mortaldestiny.entitys;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.uos.mortaldestiny.GameClass;
 import com.uos.mortaldestiny.Inputs.Helper;
 
@@ -19,8 +22,15 @@ public class Entity {
 	private ModelInstance model;
 	private float health;
 	private String name;
+	private float speedReset;
 	private float speed;
-
+	
+	/*
+	 * Variables
+	 */
+	private boolean solid;
+	private btCollisionObject collider;
+	
 	/**
 	 * Create a new Entity
 	 * 
@@ -29,11 +39,27 @@ public class Entity {
 	 */
 	public Entity(ModelInstance model) {
 		this.model = model;
-		moveTo(new Vector3(0, 1, 0));
+		
+		translateTo(new Vector3(0, 1, 0));
 		this.health = 100;
 		this.name = "Entity";
-		this.speed = 0.5f;
+		this.setResetSpeed(0.5f);
+		this.setSpeed(getResetSpeed());
+		setSolid(true);
+		collider = new btCollisionObject();
+		collider.setCollisionShape(new btBoxShape(model));
 	}
+	
+	public Entity obstacle;
+		
+	public void setSolid(boolean solid){
+		this.solid = solid;
+	}
+	
+	public boolean getSolid(){
+		return this.solid;
+	}
+	
 
 	/**
 	 * @return the ModelInstance of the Entity
@@ -115,7 +141,7 @@ public class Entity {
 	 * Set ModelInstance Position to 
 	 * @param pos Vector3 Position be set
 	 */
-	public void moveTo(Vector3 pos) {
+	public void translateTo(Vector3 pos) {
 		Vector3 scale = new Vector3();
 		model.transform.getScale(scale);
 		model.transform.setToTranslationAndScaling(pos, scale);
@@ -129,9 +155,25 @@ public class Entity {
 		Vector3 v = new Vector3(0, 0, 1);
 		v = v.rotate(new Vector3(0, 1, 0), degree); // not exactly calc somehow
 		v.clamp(0, 1); // normalize Direction
-		v.scl(speed);
+		v.scl(getSpeed());
 
 		getModelInstance().transform.trn(v.x, 0, v.z);
+	}
+
+	public float getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(float speed) {
+		this.speed = speed;
+	}
+	
+	public void setResetSpeed(float speed){
+		this.speedReset = speed;
+	}
+	
+	public float getResetSpeed(){
+		return this.speedReset;
 	}
 
 }

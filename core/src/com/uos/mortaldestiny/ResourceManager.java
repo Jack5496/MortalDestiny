@@ -34,6 +34,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.uos.mortaldestiny.Inputs.InputHandler;
 import com.uos.mortaldestiny.entitys.CameraController;
+import com.uos.mortaldestiny.entitys.Entity;
 import com.uos.mortaldestiny.entitys.Player;
 
 public class ResourceManager {
@@ -149,12 +150,6 @@ public class ResourceManager {
 		float stepz = 10f + test;
 		float maxz = height * (stepz + 2);
 		
-//		loadAnimation();
-
-//		ModelInstance modelInstance = new ModelInstance(playerModel);
-
-//		GameClass.getInstance().player = new Player(new ModelInstance(modelInstance));
-		
 		anim = getG3DBModel("data/models/Player/player.g3db");
 		animInstance = new ModelInstance(anim);
 		animInstance.transform.scl(0.01f);
@@ -166,12 +161,12 @@ public class ResourceManager {
 		
 		instances.add(GameClass.getInstance().player.getModelInstance());
 
-		instances.add(GameClass.getInstance().player.getModelInstance());
-
-		ModelInstance obstacleInstance = new ModelInstance(obstacle);
-		obstacleInstance.transform.setToTranslation(-maxx + 3 * stepx, 0, -maxz + stepz);
-		 instances.add(obstacleInstance);
-
+		Entity obb = new Entity(new ModelInstance(obstacle));
+		obb.translateTo(new Vector3(-maxx + 3 * stepx, 0, -maxz + stepz));
+		instances.add(obb.getModelInstance());
+		
+		GameClass.getInstance().player.obstacle = obb;
+		
 		for (float x = -maxx; x <= maxx; x += stepx) {
 			for (float z = -maxz; z <= maxz; z += stepz) {
 				ModelInstance shipInstance = new ModelInstance(model);
