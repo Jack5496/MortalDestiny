@@ -71,9 +71,7 @@ public class ResourceManager {
 		modelBatch.dispose();
 	}
 
-	 String pp = "data/models/Player/player.obj";
-	// pp = "data/models/Player/player.dae";
-//	String pp = "data/models/Player/player.g3db";
+	 String pp = "data/models/Player/player.g3db";
 
 	public void load() {
 
@@ -113,8 +111,6 @@ public class ResourceManager {
 		 playerModel = loader.loadModel(Gdx.files.internal(pathModels +
 		 "Player/player.obj"));
 
-		
-
 		obstacle = loader.loadModel(Gdx.files.internal(pathModels + "MapParts/Construction/constructionObstacle.obj"));
 
 		init = true;
@@ -124,15 +120,16 @@ public class ResourceManager {
 	private ModelInstance animInstance;
 	public AnimationController controller;
 	
-	UBJsonReader jsonReader = new UBJsonReader();
-	G3dModelLoader modelLoader = new G3dModelLoader(jsonReader);
+//	UBJsonReader jsonReader = new UBJsonReader();
+//	G3dModelLoader modelLoader = new G3dModelLoader(jsonReader);
 	
 	public Model getG3DBModel(String path){
-		return modelLoader.loadModel(Gdx.files.getFileHandle(path, FileType.Internal));
+//		return modelLoader.loadModel(Gdx.files.getFileHandle(path, FileType.Internal));
+		return assets.get(path);
 	}
 	
 	public void loadAnimation() {
-		anim = getG3DBModel("data/models/Player/player.g3db");
+		anim = getG3DBModel(pp);
 		animInstance = new ModelInstance(anim);
 		animInstance.transform.scl(0.01f);
 		animInstance.transform.trn(0, 0, 5);
@@ -162,19 +159,13 @@ public class ResourceManager {
 		animInstance = new ModelInstance(anim);
 		animInstance.transform.scl(0.01f);
 		animInstance.transform.trn(0, 0, 5);
-//		controller = new AnimationController(animInstance);
-		
-		
 		
 		GameClass.getInstance().player = new Player(animInstance);
 		
+		GameClass.getInstance().cameraController.setTrack(GameClass.getInstance().player.getModelInstance());
 		
-		
-//		GameClass.getInstance().cameraController.setTrack(GameClass.getInstance().player.getModelInstance());
-		GameClass.getInstance().cameraController.setTrack(animInstance);
-		
-		instances.add(animInstance);
-		
+		instances.add(GameClass.getInstance().player.getModelInstance());
+
 		instances.add(GameClass.getInstance().player.getModelInstance());
 
 		ModelInstance obstacleInstance = new ModelInstance(obstacle);
@@ -189,7 +180,5 @@ public class ResourceManager {
 			}
 		}
 		loaded = true;
-		
-		
 	}
 }

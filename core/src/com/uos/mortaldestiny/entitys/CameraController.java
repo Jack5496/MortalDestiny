@@ -93,10 +93,20 @@ public class CameraController {
 		updateDisVector();
 	}
 
+	/**
+	 * Updated the Distance Vector with the Class Variable (yaw, yawHeight, distance)
+	 */
 	private void updateDisVector() {
 		distanceVector = calcDisVector(yaw, yawHeight, distance);
 	}
 
+	/**
+	 * Get a DistanceVector from given Parameter
+	 * @param yaw Yaw in Degree [0;359]
+	 * @param yawHeight	YawHeight in Degree [0;359]
+	 * @param distance Distance as length
+	 * @return Vector3 Distance Vector
+	 */
 	private Vector3 calcDisVector(float yaw, float yawHeight, float distance) {
 		Vector3 back = new Vector3(1, 0, 0);
 		back.rotate(new Vector3(0, 0, 1), yawHeight);
@@ -105,10 +115,17 @@ public class CameraController {
 		return back;
 	}
 
+	/**
+	 * Set a ModelInstance to be tracked, Set null if untrack
+	 * @param track
+	 */
 	public void setTrack(ModelInstance track) {
 		this.track = track;
 	}
 
+	/**
+	 * Updates the Position of the Camera to the Class Variables
+	 */
 	public void update() {
 
 		if (track == null) {
@@ -131,6 +148,10 @@ public class CameraController {
 		cam.update();
 	}
 
+	/**
+	 * get the Camera
+	 * @return Camera
+	 */
 	public Camera getCamera() {
 		return cam;
 	}

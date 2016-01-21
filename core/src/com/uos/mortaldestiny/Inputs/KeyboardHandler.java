@@ -54,7 +54,6 @@ public class KeyboardHandler implements InputProcessor {
 
 		if (dir.len() > 0) {	//Problem: if degree is 0° --> sin(0) will result a direction
 			p.move(Helper.getYawInDegree(dir));
-			System.out.println("Down");
 		}
 		else{
 			p.stop();
