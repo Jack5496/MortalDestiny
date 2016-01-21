@@ -24,6 +24,7 @@ public class InputHandler implements InputProcessor, GestureListener{
 		controllerHandler = new ControllerHandler(this);
 		Controllers.addListener(controllerHandler);	//Activate as extra Input
 		
+		//Keyboard + Mouse
 		keyboardHandler = new KeyboardHandler(this);	//Keyboard class
 		gestureHandler = new GestureHandler(this);		//Touch class
 		

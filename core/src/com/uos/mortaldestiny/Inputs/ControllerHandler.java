@@ -29,7 +29,6 @@ public class ControllerHandler implements ControllerListener {
 		for(Controller controller : Controllers.getControllers()){
 			float ldy = controller.getAxis(XBox360Pad.AXIS_LEFT_Y);
 			float ldx = controller.getAxis(XBox360Pad.AXIS_LEFT_X);
-			
 
 			Vector3 vec = new Vector3(-ldx,0,-ldy);
 			vec.rotate(new Vector3(0,1,0), -45);

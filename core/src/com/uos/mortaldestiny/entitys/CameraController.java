@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.uos.mortaldestiny.GameClass;
 import com.uos.mortaldestiny.Inputs.Helper;
@@ -19,85 +20,40 @@ import com.uos.mortaldestiny.Inputs.InputHandler;
 
 public class CameraController {
 
-	private PerspectiveCamera camPers;
-	private OrthographicCamera camOrtho;
+	private PerspectiveCamera camera;
 
+	// Distance Vector which camera will use
 	private Vector3 distanceVector;
 
+	// Parameters for calculating distanceVector
 	private float yaw;
-
 	private float yawHeight;
-
 	private float distance;
+
+	// Parameters for distance changing
 	private float stepDistance = 5;
 	private float minDistance = 10;
 	private float maxDistance = 400;
 
-	private Vector3 lookAt;
-	private ModelInstance track = null;
-
-	public boolean ortho = false;
+	// Variables for Camera look direction
+	private Vector3 lookAt; // Vector to look at if no track ModelInstance
+	private ModelInstance track = null; // track ModelInstance
 
 	/**
 	 * CameraController which creates a Camera, with , which can be getted
 	 */
 	public CameraController() {
+		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		// float pers = 10;
-		// float pers = 23;
-		// float pers = 60;
-//		float pers = 20;
+		updateCameraAxis(45 - 90, 65, distance);
+		updateDisVector();
 
-		// float far = 13;
-		// float far = 70;
-		// float far = 183;
-//		float far = getOrthoDis(pers);
+		camera.near = 1f;
+		camera.far = 300f;
 
-		initCamera();
-	}
-	
-	public void switchPerspective(){
-		initCamera();
-	}
-	
-	public void initCamera(){
-		// cam.position.set(10, 15, 10);
-				// cam.direction.set(-1, -1, -1);
-				// cam.near = 1;
-				// cam.far = 100;
-				// matrix.setToRotation(new Vector3(1, 0, 0), 90);
+		lookAt = new Vector3(0, 0, 0);
 
-				float far = getOrthoDis(distance);
-				camOrtho = new OrthographicCamera(far, far * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
-				camPers = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-				// cam = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() /
-				// (float) Gdx.graphics.getWidth()));
-
-				updateCameraAxis(45 - 90, 65, distance);
-				updateDisVector();
-
-				camOrtho.near = 1f;
-				camOrtho.far = 300f;
-
-				camPers.near = 1f;
-				camPers.far = 300f;
-
-				lookAt = new Vector3(0, 0, 0);
-
-				update();
-	}
-
-	// public float getOrthoDist(float dis){
-	// return (float) (7.47329f*Math.pow(Math.E, 1.07332f*dis));
-	// }
-	//
-	// public float getOrthoDistFloat(float dis){
-	// return (float) ((Math.log(dis/3.65078f))/0.932511f);
-	// }
-
-	public float getOrthoDis(float persDis) {
-		return (float) (1.68347f * Math.pow(persDis, 1.151f));
+		update();
 	}
 
 	/**
@@ -206,32 +162,17 @@ public class CameraController {
 	 * Updates the Position of the Camera to the Class Variables
 	 */
 	public void update() {
-
-		if (track == null) {
-			Vector3 offsetPos = lookAt.cpy();
-			offsetPos.add(distanceVector);
-
-			camOrtho.position.set(offsetPos);
-			camOrtho.lookAt(lookAt);
-
-			camPers.position.set(offsetPos);
-			camPers.lookAt(lookAt);
-		}
 		if (track != null) {
 			track.transform.getTranslation(lookAt);
-
-			Vector3 offsetPos = lookAt.cpy();
-			offsetPos.add(distanceVector);
-
-			camOrtho.position.set(offsetPos);
-			camOrtho.lookAt(lookAt);
-
-			camPers.position.set(offsetPos);
-			camPers.lookAt(lookAt);
 		}
 
-		camOrtho.update();
-		camPers.update();
+		Vector3 offsetPos = lookAt.cpy();
+		offsetPos.add(distanceVector);
+
+		camera.position.set(offsetPos);
+		camera.lookAt(lookAt);
+
+		camera.update();
 	}
 
 	/**
@@ -240,11 +181,7 @@ public class CameraController {
 	 * @return Camera
 	 */
 	public Camera getCamera() {
-		if (ortho) {
-			return camOrtho;
-		} else {
-			return camPers;
-		}
+		return camera;
 	}
 
 }
