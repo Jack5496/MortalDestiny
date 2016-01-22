@@ -72,7 +72,7 @@ public class ResourceManager {
 		modelBatch.dispose();
 	}
 
-	 String pp = "data/models/Player/player.g3db";
+	String pp = "data/models/Player/player.g3db";
 
 	public void load() {
 
@@ -109,33 +109,33 @@ public class ResourceManager {
 		// model = loader.loadModel(Gdx.files.internal(pathGrounds +
 		// "GroundTile5x5.obj"));
 
-		 playerModel = loader.loadModel(Gdx.files.internal(pathModels +
-		 "Player/player.obj"));
+		playerModel = loader.loadModel(Gdx.files.internal(pathModels + "Player/player.obj"));
 
 		obstacle = loader.loadModel(Gdx.files.internal(pathModels + "MapParts/Construction/constructionObstacle.obj"));
 
 		init = true;
 	}
 
-	private Model anim; 
+	private Model anim;
 	private ModelInstance animInstance;
 	public AnimationController controller;
-	
-//	UBJsonReader jsonReader = new UBJsonReader();
-//	G3dModelLoader modelLoader = new G3dModelLoader(jsonReader);
-	
-	public Model getG3DBModel(String path){
-//		return modelLoader.loadModel(Gdx.files.getFileHandle(path, FileType.Internal));
+
+	// UBJsonReader jsonReader = new UBJsonReader();
+	// G3dModelLoader modelLoader = new G3dModelLoader(jsonReader);
+
+	public Model getG3DBModel(String path) {
+		// return modelLoader.loadModel(Gdx.files.getFileHandle(path,
+		// FileType.Internal));
 		return assets.get(path);
 	}
-	
+
 	public void loadAnimation() {
 		anim = getG3DBModel(pp);
 		animInstance = new ModelInstance(anim);
 		animInstance.transform.scl(0.01f);
 		animInstance.transform.trn(0, 0, 5);
 		controller = new AnimationController(animInstance);
-		
+
 		instances.add(animInstance);
 	}
 
@@ -149,27 +149,27 @@ public class ResourceManager {
 
 		float stepz = 10f + test;
 		float maxz = height * (stepz + 2);
-		
+
 		anim = getG3DBModel("data/models/Player/player.g3db");
 		animInstance = new ModelInstance(anim);
 		animInstance.transform.scl(0.01f);
 		animInstance.transform.trn(0, 10, 0);
-		
+
 		GameClass.getInstance().player = new Player(animInstance);
-		
+
 		GameClass.getInstance().cameraController.setTrack(GameClass.getInstance().player.getModelInstance());
-		
+
 		instances.add(GameClass.getInstance().player.getModelInstance());
 
 		Entity obb = new Entity(new ModelInstance(obstacle));
 		obb.translateTo(new Vector3(-maxx + 3 * stepx, 0, -maxz + stepz));
 		instances.add(obb.getModelInstance());
-		
+
 		for (float x = -maxx; x <= maxx; x += stepx) {
 			for (float z = -maxz; z <= maxz; z += stepz) {
 				ModelInstance shipInstance = new ModelInstance(model);
 				shipInstance.transform.setToTranslation(x, 0, z);
-				 instances.add(shipInstance);
+				instances.add(shipInstance);
 			}
 		}
 		loaded = true;
