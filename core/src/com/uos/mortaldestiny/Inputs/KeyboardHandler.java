@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.uos.mortaldestiny.GameClass;
-import com.uos.mortaldestiny.entitys.Player;
+import com.uos.mortaldestiny.objects.Player;
 
 public class KeyboardHandler implements InputProcessor {
 

@@ -29,9 +29,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.utils.Array;
 import com.uos.mortaldestiny.Inputs.InputHandler;
-import com.uos.mortaldestiny.entitys.CameraController;
-import com.uos.mortaldestiny.entitys.MyContactListener;
-import com.uos.mortaldestiny.entitys.Player;
+import com.uos.mortaldestiny.objects.CameraController;
+import com.uos.mortaldestiny.objects.Player;
 
 public class GameClass2 extends ApplicationAdapter {
 

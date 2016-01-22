@@ -36,6 +36,7 @@ import com.badlogic.gdx.physics.bullet.collision.btDispatcher;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
+import com.uos.mortaldestiny.objects.GameObject;
 
 public class Working implements ApplicationListener {
 

@@ -1,4 +1,4 @@
-package com.uos.mortaldestiny.entitys;
+package com.uos.mortaldestiny.objects;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Animation;

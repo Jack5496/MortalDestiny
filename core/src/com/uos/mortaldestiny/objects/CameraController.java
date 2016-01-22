@@ -1,4 +1,4 @@
-package com.uos.mortaldestiny.entitys;
+package com.uos.mortaldestiny.objects;
 
 import java.util.HashMap;
 

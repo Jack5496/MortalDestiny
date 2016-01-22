@@ -33,9 +33,10 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.uos.mortaldestiny.Inputs.InputHandler;
-import com.uos.mortaldestiny.entitys.CameraController;
-import com.uos.mortaldestiny.entitys.Entity;
-import com.uos.mortaldestiny.entitys.Player;
+import com.uos.mortaldestiny.objects.CameraController;
+import com.uos.mortaldestiny.objects.Entity;
+import com.uos.mortaldestiny.objects.GameObject;
+import com.uos.mortaldestiny.objects.Player;
 
 public class ResourceManager {
 
@@ -45,8 +46,6 @@ public class ResourceManager {
 
 	public String pathModels = "data/models/";
 	public String pathGrounds = pathModels + "MapParts/Ground/";
-
-	public Array<ModelInstance> instances = new Array<ModelInstance>();
 
 	public Model model;
 	public Model playerModel;
@@ -136,7 +135,7 @@ public class ResourceManager {
 		animInstance.transform.trn(0, 0, 5);
 		controller = new AnimationController(animInstance);
 
-		instances.add(animInstance);
+//		instances.add(animInstance);
 	}
 
 	public void doneLoading() {
@@ -155,23 +154,23 @@ public class ResourceManager {
 		animInstance.transform.scl(0.01f);
 		animInstance.transform.trn(0, 10, 0);
 
-		GameClass.getInstance().player = new Player(animInstance);
-
-		GameClass.getInstance().cameraController.setTrack(GameClass.getInstance().player.getModelInstance());
-
-		instances.add(GameClass.getInstance().player.getModelInstance());
-
-		Entity obb = new Entity(new ModelInstance(obstacle));
-		obb.translateTo(new Vector3(-maxx + 3 * stepx, 0, -maxz + stepz));
-		instances.add(obb.getModelInstance());
-
-		for (float x = -maxx; x <= maxx; x += stepx) {
-			for (float z = -maxz; z <= maxz; z += stepz) {
-				ModelInstance shipInstance = new ModelInstance(model);
-				shipInstance.transform.setToTranslation(x, 0, z);
-				instances.add(shipInstance);
-			}
-		}
+//		GameClass.getInstance().player = new Player(animInstance);
+//
+//		GameClass.getInstance().cameraController.setTrack(GameClass.getInstance().player.getModelInstance());
+//
+//		GameClass.getInstance().add(GameClass.getInstance().player.getModelInstance());
+//
+//		Entity obb = new Entity(new ModelInstance(obstacle));
+//		obb.translateTo(new Vector3(-maxx + 3 * stepx, 0, -maxz + stepz));
+//		GameClass.getInstances().add(obb.getModelInstance());
+//
+//		for (float x = -maxx; x <= maxx; x += stepx) {
+//			for (float z = -maxz; z <= maxz; z += stepz) {
+//				ModelInstance shipInstance = new ModelInstance(model);
+//				shipInstance.transform.setToTranslation(x, 0, z);
+//				instances.add(shipInstance);
+//			}
+//		}
 		loaded = true;
 	}
 }
