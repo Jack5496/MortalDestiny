@@ -1,13 +1,13 @@
 package com.uos.mortaldestiny.entitys;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
-import com.uos.mortaldestiny.GameClass;
-import com.uos.mortaldestiny.Inputs.Helper;
+import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.physics.bullet.linearmath.btMotionState;
 
 public class Entity {
 
@@ -28,8 +28,8 @@ public class Entity {
 	/*
 	 * Variables
 	 */
-	private boolean solid;
-	private btCollisionObject collider;
+	btRigidBody body;
+	MyMotionState motionState;
 	
 	/**
 	 * Create a new Entity
@@ -45,22 +45,28 @@ public class Entity {
 		this.name = "Entity";
 		this.setResetSpeed(0.5f);
 		this.setSpeed(getResetSpeed());
-		setSolid(true);
-		collider = new btCollisionObject();
-		collider.setCollisionShape(new btBoxShape(model));
-	}
-	
-	public Entity obstacle;
 		
-	public void setSolid(boolean solid){
-		this.solid = solid;
+		motionState = new MyMotionState();
+		motionState.transform = this.model.transform;
+//		body = new btRigidBody();
+//		body.setMotionState(motionState);
+//		body.setCollisionFlags(MyContactListener.PLAYER_FLAG);
+		
+		btCollisionShape shape = Bullet.obtainStaticNodeShape(model.nodes);
 	}
 	
-	public boolean getSolid(){
-		return this.solid;
+	static class MyMotionState extends btMotionState {
+	    Matrix4 transform;
+	    @Override
+	    public void getWorldTransform (Matrix4 worldTrans) {
+	        worldTrans.set(transform);
+	    }
+	    @Override
+	    public void setWorldTransform (Matrix4 worldTrans) {
+	        transform.set(worldTrans);
+	    }
 	}
 	
-
 	/**
 	 * @return the ModelInstance of the Entity
 	 */

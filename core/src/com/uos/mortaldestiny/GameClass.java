@@ -1,6 +1,7 @@
 package com.uos.mortaldestiny;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input.Keys;
@@ -24,133 +25,240 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.collision.ContactListener;
+import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
+import com.badlogic.gdx.physics.bullet.collision.btBroadphaseInterface;
+import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.badlogic.gdx.physics.bullet.collision.btConeShape;
+import com.badlogic.gdx.physics.bullet.collision.btCylinderShape;
+import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
+import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.collision.btDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.Disposable;
 import com.uos.mortaldestiny.Inputs.InputHandler;
 import com.uos.mortaldestiny.entitys.CameraController;
+import com.uos.mortaldestiny.entitys.MyContactListener;
 import com.uos.mortaldestiny.entitys.Player;
 
-public class GameClass extends ApplicationAdapter {
+public class GameClass implements ApplicationListener {
+	final static short GROUND_FLAG = 1 << 8;
+	final static short OBJECT_FLAG = 1 << 9;
+	final static short ALL_FLAG = -1;
 
-	public static boolean debug = true;
-
-	// private SpriteBatch batch;
-	// private BitmapFont font;
-	// private Texture img;
-	private Graphics grafics;
-
-	public static GameClass application;
-
-	final Matrix4 matrix = new Matrix4();
-
-	public Model model;
-	public Model playerModel;
-	public Model obstacle;
-	public ModelBatch modelBatch;
-	public Player player;
-
-	public Environment environment;
-	public boolean loading;
-	
-	public ResourceManager resourceManager;
-
-//	public CameraInputController camController;
-
-	public InputHandler inputs;
-	public CameraController cameraController;
-
-	public static GameClass getInstance() {
-		return application;
+	class MyContactListener extends ContactListener {
+		@Override
+		public boolean onContactAdded (int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
+			instances.get(userValue0).moving = false;
+			instances.get(userValue1).moving = false;
+			return true;
+		}
 	}
+
+	static class GameObject extends ModelInstance implements Disposable {
+		public final btRigidBody body;
+		public boolean moving;
+
+		public GameObject (Model model, String node, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
+			super(model, node);
+			body = new btRigidBody(constructionInfo);
+		}
+
+		@Override
+		public void dispose () {
+			body.dispose();
+		}
+
+		static class Constructor implements Disposable {
+			public final Model model;
+			public final String node;
+			public final btCollisionShape shape;
+			public final btRigidBody.btRigidBodyConstructionInfo constructionInfo;
+			private static Vector3 localInertia = new Vector3();
+
+			public Constructor (Model model, String node, btCollisionShape shape, float mass) {
+				this.model = model;
+				this.node = node;
+				this.shape = shape;
+				if (mass > 0f)
+					shape.calculateLocalInertia(mass, localInertia);
+				else
+					localInertia.set(0, 0, 0);
+				this.constructionInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, shape, localInertia);
+			}
+
+			public GameObject construct () {
+				return new GameObject(model, node, constructionInfo);
+			}
+
+			@Override
+			public void dispose () {
+				shape.dispose();
+				constructionInfo.dispose();
+			}
+		}
+	}
+
+	PerspectiveCamera cam;
+	CameraInputController camController;
+	ModelBatch modelBatch;
+	Environment environment;
+	Model model;
+	Array<GameObject> instances;
+	ArrayMap<String, GameObject.Constructor> constructors;
+	float spawnTimer;
+
+	btCollisionConfiguration collisionConfig;
+	btDispatcher dispatcher;
+	MyContactListener contactListener;
+	btBroadphaseInterface broadphase;
+	btCollisionWorld collisionWorld;
 
 	@Override
-	public void create() {
-		application = this;
-		grafics = Gdx.app.getGraphics();
+	public void create () {
+		Bullet.init();
 
-		initEnvironment();
-		initCamera();
-		initResourceManager();
-		initInputHandler();
-		
-		batch = new SpriteBatch();    
-        font = new BitmapFont();
-        font.setColor(Color.RED);
-	}
-	
-	private SpriteBatch batch;
-    private BitmapFont font;
-    
-    public void initResourceManager(){
-    	resourceManager = new ResourceManager();
-    }
-
-	public void initInputHandler() {
-		inputs = new InputHandler();
-	}
-
-	public void initEnvironment() {
+		modelBatch = new ModelBatch();
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+
+		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam.position.set(3f, 7f, 10f);
+		cam.lookAt(0, 4f, 0);
+		cam.near = 1f;
+		cam.far = 300f;
+		cam.update();
+
+		camController = new CameraInputController(cam);
+		Gdx.input.setInputProcessor(camController);
+
+		ModelBuilder mb = new ModelBuilder();
+		mb.begin();
+		mb.node().id = "ground";
+		mb.part("ground", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal, new Material(ColorAttribute.createDiffuse(Color.RED)))
+			.box(5f, 1f, 5f);
+		mb.node().id = "sphere";
+		mb.part("sphere", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal, new Material(ColorAttribute.createDiffuse(Color.GREEN)))
+			.sphere(1f, 1f, 1f, 10, 10);
+		mb.node().id = "box";
+		mb.part("box", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal, new Material(ColorAttribute.createDiffuse(Color.BLUE)))
+			.box(1f, 1f, 1f);
+		mb.node().id = "cone";
+		mb.part("cone", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal, new Material(ColorAttribute.createDiffuse(Color.YELLOW)))
+			.cone(1f, 2f, 1f, 10);
+		mb.node().id = "capsule";
+		mb.part("capsule", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal, new Material(ColorAttribute.createDiffuse(Color.CYAN)))
+			.capsule(0.5f, 2f, 10);
+		mb.node().id = "cylinder";
+		mb.part("cylinder", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal,
+			new Material(ColorAttribute.createDiffuse(Color.MAGENTA))).cylinder(1f, 2f, 1f, 10);
+		model = mb.end();
+
+		constructors = new ArrayMap<String, GameObject.Constructor>(String.class, GameObject.Constructor.class);
+		constructors.put("ground", new GameObject.Constructor(model, "ground", new btBoxShape(new Vector3(2.5f, 0.5f, 2.5f)), 0f));
+		constructors.put("sphere", new GameObject.Constructor(model, "sphere", new btSphereShape(0.5f), 1f));
+		constructors.put("box", new GameObject.Constructor(model, "box", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
+		constructors.put("cone", new GameObject.Constructor(model, "cone", new btConeShape(0.5f, 2f), 1f));
+		constructors.put("capsule", new GameObject.Constructor(model, "capsule", new btCapsuleShape(.5f, 1f), 1f));
+		constructors.put("cylinder", new GameObject.Constructor(model, "cylinder", new btCylinderShape(new Vector3(.5f, 1f, .5f)),
+			1f));
+
+		collisionConfig = new btDefaultCollisionConfiguration();
+		dispatcher = new btCollisionDispatcher(collisionConfig);
+		broadphase = new btDbvtBroadphase();
+		collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
+		contactListener = new MyContactListener();
+
+		instances = new Array<GameObject>();
+		GameObject object = constructors.get("ground").construct();
+		instances.add(object);
+		collisionWorld.addCollisionObject(object.body, GROUND_FLAG, ALL_FLAG);
 	}
 
-	public void initCamera() {
-		cameraController = new CameraController();
+	public void spawn () {
+		GameObject obj = constructors.values[1 + MathUtils.random(constructors.size - 2)].construct();
+		obj.moving = true;
+		obj.transform.setFromEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
+		obj.transform.trn(MathUtils.random(-2.5f, 2.5f), 9f, MathUtils.random(-2.5f, 2.5f));
+		obj.body.setWorldTransform(obj.transform);
+		obj.body.setUserValue(instances.size);
+		obj.body.setCollisionFlags(obj.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+		instances.add(obj);
+//		collisionWorld.addCollisionObject(obj.body, OBJECT_FLAG, GROUND_FLAG);
+		collisionWorld.addCollisionObject(obj.body, GROUND_FLAG, ALL_FLAG);
 	}
 
 	@Override
-	public void resize(int width, int height) {
+	public void render () {
+		final float delta = Math.min(1f / 30f, Gdx.graphics.getDeltaTime());
 
-	}
+		for (GameObject obj : instances) {
+			if (obj.moving) {
+				obj.transform.trn(0f, -delta, 0f);
+				obj.body.setWorldTransform(obj.transform);
+			}
+		}
 
-	public int getWidth() {
-		return grafics.getWidth();
-	}
+		collisionWorld.performDiscreteCollisionDetection();
 
-	public int getHeight() {
-		return grafics.getHeight();
-	}
+		if ((spawnTimer -= delta) < 0) {
+			spawn();
+			spawnTimer = 1.5f;
+		}
 
-	@Override
-	public void pause() {
+		camController.update();
 
-	}
-
-	@Override
-	public void resume() {
-	}
-
-	@Override
-	public void dispose() {
-		// batch.dispose();
-		// font.dispose();
-		// model.dispose();
-		resourceManager.modelBatch.dispose();
-	}
-
-	@Override
-	public void render() {
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		resourceManager.update();
-
-		inputs.updateInputLogic();
-		cameraController.update();
-
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClearColor(0.3f, 0.3f, 0.3f, 1.f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		
-		player.controller.update(Gdx.graphics.getDeltaTime());
 
-		resourceManager.modelBatch.begin(cameraController.getCamera());
-		resourceManager.modelBatch.render(resourceManager.instances, environment);
-		resourceManager.modelBatch.end();
-		
-		batch.begin();
-        font.draw(batch, "FPS: "+Gdx.graphics.getFramesPerSecond(), 5, getHeight()-5);
-        batch.end();
+		modelBatch.begin(cam);
+		modelBatch.render(instances, environment);
+		modelBatch.end();
+	}
+
+	@Override
+	public void dispose () {
+		for (GameObject obj : instances)
+			obj.dispose();
+		instances.clear();
+
+		for (GameObject.Constructor ctor : constructors.values())
+			ctor.dispose();
+		constructors.clear();
+
+		collisionWorld.dispose();
+		broadphase.dispose();
+		dispatcher.dispose();
+		collisionConfig.dispose();
+
+		contactListener.dispose();
+
+		modelBatch.dispose();
+		model.dispose();
+	}
+
+	@Override
+	public void pause () {
+	}
+
+	@Override
+	public void resume () {
+	}
+
+	@Override
+	public void resize (int width, int height) {
 	}
 }

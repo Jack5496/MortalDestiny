@@ -153,7 +153,7 @@ public class ResourceManager {
 		anim = getG3DBModel("data/models/Player/player.g3db");
 		animInstance = new ModelInstance(anim);
 		animInstance.transform.scl(0.01f);
-		animInstance.transform.trn(0, 0, 5);
+		animInstance.transform.trn(0, 10, 0);
 		
 		GameClass.getInstance().player = new Player(animInstance);
 		
@@ -164,8 +164,6 @@ public class ResourceManager {
 		Entity obb = new Entity(new ModelInstance(obstacle));
 		obb.translateTo(new Vector3(-maxx + 3 * stepx, 0, -maxz + stepz));
 		instances.add(obb.getModelInstance());
-		
-		GameClass.getInstance().player.obstacle = obb;
 		
 		for (float x = -maxx; x <= maxx; x += stepx) {
 			for (float z = -maxz; z <= maxz; z += stepz) {

@@ -19,13 +19,7 @@ public class Player extends Entity {
 
 	public void move(float dir) {
 		super.move(dir);
-	
-		if(super.collide(super.obstacle)){
-			super.move(-dir);
-		}
-		else{
-			walk();
-		}
+		walk();
 	}
 
 	public boolean ended = false;
