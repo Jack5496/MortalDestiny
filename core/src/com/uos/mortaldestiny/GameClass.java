@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.uos.mortaldestiny.objects.CameraController;
 import com.uos.mortaldestiny.objects.GameObject;
@@ -26,8 +27,6 @@ public class GameClass implements ApplicationListener {
 	public ResourceManager resourceManager;
 
 	public Player player;
-
-	float spawnTimer;
 
 	Physics physics;
 
@@ -78,23 +77,30 @@ public class GameClass implements ApplicationListener {
 		physics = new Physics();
 	}
 
+	float angle = 90f;
+	float speed = 40f;
+	
 	@Override
 	public void render() {
 		final float delta = Math.min(1f / 30f, Gdx.graphics.getDeltaTime());
 
+		angle = (angle + delta * speed) % 360f;
+//		instances.get(0).transform.setTranslation(0, MathUtils.sinDeg(angle) * 2.5f, 0f);
+//		instances.get(0).transform.setTranslation(0,0, MathUtils.sinDeg(angle) * 2.5f);
+
 		physics.dynamicsWorld.stepSimulation(delta, 5, 1f / 60f);
 
-		if ((spawnTimer -= delta) < 0) {
+		if ((physics.spawnTimer -= delta) < 0) {
 			physics.spawn();
-			spawnTimer = 1.5f;
+			physics.spawnTimer = 1.5f;
 		}
 
-		// camController.update();
+		cameraController.camController.update();
 
 		Gdx.gl.glClearColor(0.3f, 0.3f, 0.3f, 1.f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		physics.modelBatch.begin(cameraController.getCamera());
+		physics.modelBatch.begin(cameraController.camera);
 		physics.modelBatch.render(instances, environment);
 		physics.modelBatch.end();
 

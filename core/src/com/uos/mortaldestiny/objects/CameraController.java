@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -20,7 +21,7 @@ import com.uos.mortaldestiny.Inputs.InputHandler;
 
 public class CameraController {
 
-	private PerspectiveCamera camera;
+	public PerspectiveCamera camera;
 
 	// Distance Vector which camera will use
 	private Vector3 distanceVector;
@@ -39,21 +40,35 @@ public class CameraController {
 	private Vector3 lookAt; // Vector to look at if no track ModelInstance
 	private ModelInstance track = null; // track ModelInstance
 
+	public CameraInputController camController;
+	
 	/**
 	 * CameraController which creates a Camera, with , which can be getted
 	 */
 	public CameraController() {
+		
+
+//		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//
+//		updateCameraAxis(45 - 90, 65, distance);
+//		updateDisVector();
+//
+//		camera.near = 1f;
+//		camera.far = 300f;
+//
+//		lookAt = new Vector3(0, 0, 0);
+//
+//		update();
+		
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-		updateCameraAxis(45 - 90, 65, distance);
-		updateDisVector();
-
+		camera.position.set(3f, 7f, 10f);
+		camera.lookAt(0, 4f, 0);
 		camera.near = 1f;
 		camera.far = 300f;
+		camera.update();
 
-		lookAt = new Vector3(0, 0, 0);
-
-		update();
+		camController = new CameraInputController(camera);
+		Gdx.input.setInputProcessor(camController);		
 	}
 
 	/**
