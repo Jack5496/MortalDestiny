@@ -24,12 +24,19 @@ public class ResourceManager {
 	public Model playerModel;
 	public Model obstacle;
 	public ModelBatch modelBatch;
+	
+	private static ResourceManager instance;
 
 	public ResourceManager() {
+		instance = this;
 		loaded = false;
 		assets = new AssetManager();
 		load();
 		update();
+	}
+	
+	public static ResourceManager getInstance(){
+		return instance;
 	}
 
 	public void update() {
@@ -46,7 +53,7 @@ public class ResourceManager {
 
 	public void load() {
 
-		loadAssets();
+		enqueAssets();
 
 		float progress = 0;
 		System.out.println("Loaded: " + assets.getProgress() * 100 + "%");
@@ -59,36 +66,16 @@ public class ResourceManager {
 		}
 		progress = assets.getProgress();
 		System.out.println("Loaded: " + assets.getProgress() * 100 + "%");
-
-		initModels();
 	}
 
-	public void loadAssets() {
+	public void enqueAssets() {
+		assets.load(pathModels + "1x1.g3db", Model.class);
 		assets.load(pathGrounds + "GroundTile5x5.obj", Model.class);
+		assets.load(pathGrounds + "spielfeld.g3db", Model.class);
 		assets.load(pp, Model.class);
-	}
-
-	public void initModels() {
-		init = false;
-
-		modelBatch = new ModelBatch();
-
-		ModelLoader loader = new ObjLoader();
-
-		model = assets.get(pathGrounds + "GroundTile5x5.obj", Model.class);
-		// model = loader.loadModel(Gdx.files.internal(pathGrounds +
-		// "GroundTile5x5.obj"));
-
-//		playerModel = loader.loadModel(Gdx.files.internal(pathModels + "Player/player.obj"));
-
-		obstacle = loader.loadModel(Gdx.files.internal(pathModels + "MapParts/Construction/constructionObstacle.obj"));
-
-		init = true;
 	}
 	
 	public Model getG3DBModel(String path) {
-		// return modelLoader.loadModel(Gdx.files.getFileHandle(path,
-		// FileType.Internal));
 		return assets.get(path);
 	}
 	

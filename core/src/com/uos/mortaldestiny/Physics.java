@@ -53,7 +53,7 @@ public class Physics implements Disposable {
 
 	float spawnTimer;
 	
-	float size = 2;
+	float size = 10;
 
 	public Physics() {
 		Bullet.init();
@@ -64,7 +64,7 @@ public class Physics implements Disposable {
 		mb.begin();
 		mb.node().id = "ground";
 		mb.part("ground", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal,
-				new Material(ColorAttribute.createDiffuse(Color.RED))).box(size*5f, 1f, size*5f);
+				new Material(ColorAttribute.createDiffuse(Color.RED))).box(10f, 1f, 10f);
 		mb.node().id = "sphere";
 		mb.part("sphere", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal,
 				new Material(ColorAttribute.createDiffuse(Color.GREEN))).sphere(1f, 1f, 1f, 10, 10);
@@ -80,20 +80,29 @@ public class Physics implements Disposable {
 		mb.node().id = "cylinder";
 		mb.part("cylinder", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal,
 				new Material(ColorAttribute.createDiffuse(Color.MAGENTA))).cylinder(1f, 2f, 1f, 10);
-		
+
 		Model anim = GameClass.getInstance().resourceManager.getPlayer();
-		
+		Model field = ResourceManager.getInstance()
+				.getG3DBModel(ResourceManager.getInstance().pathGrounds + "spielfeld.g3db");
+		Model box = ResourceManager.getInstance()
+				.getG3DBModel(ResourceManager.getInstance().pathModels + "1x1.g3db");
+
 		model = mb.end();
 
 		constructors = new ArrayMap<String, GameObject.Constructor>(String.class, GameObject.Constructor.class);
-		constructors.put("ground",
-				new GameObject.Constructor(model, "ground", new btBoxShape(new Vector3(size*2.5f, 0.5f, size*2.5f)), 0f));
+		constructors.put("ground", new GameObject.Constructor(model, "ground",
+				new btBoxShape(new Vector3(5f, 0.5f, 5f)), 0f));
+		constructors.put("field", new GameObject.Constructor(field, new btBoxShape(new Vector3(size*6, size*1, size*3)), 0f));
 		constructors.put("player", new GameObject.Constructor(anim, new btCylinderShape(new Vector3(2f, 4f, 2f)), 1f));
 
-		
 		constructors.put("sphere", new GameObject.Constructor(model, "sphere", new btSphereShape(0.5f), 1f));
+		
+//		constructors.put("box",
+//				new GameObject.Constructor(model, "box", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
 		constructors.put("box",
-				new GameObject.Constructor(model, "box", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
+				new GameObject.Constructor(box, new btBoxShape(new Vector3(1, 1, 1)), 1f));
+		
+		
 		constructors.put("cone", new GameObject.Constructor(model, "cone", new btConeShape(0.5f, 2f), 1f));
 		constructors.put("capsule", new GameObject.Constructor(model, "capsule", new btCapsuleShape(.5f, 1f), 1f));
 		constructors.put("cylinder",
@@ -108,31 +117,42 @@ public class Physics implements Disposable {
 		contactListener = new MyContactListener();
 
 		GameClass.instances = new Array<ModelInstance>();
-		GameObject object = constructors.get("ground").construct();
-		object.body.setCollisionFlags(
-				object.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
-		GameClass.instances.add(object);
-		dynamicsWorld.addRigidBody(object.body);
-		object.body.setContactCallbackFlag(MyContactListener.GROUND_FLAG);
-		object.body.setContactCallbackFilter(0);
-		object.body.setActivationState(Collision.DISABLE_DEACTIVATION);
+		
+		
+//		GameObject object = constructors.get("ground").construct();
+//		object.body.setCollisionFlags(
+//				object.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
+//		GameClass.instances.add(object);
+//		dynamicsWorld.addRigidBody(object.body);
+//		object.body.setContactCallbackFlag(MyContactListener.GROUND_FLAG);
+//		object.body.setContactCallbackFilter(0);
+//		object.body.setActivationState(Collision.DISABLE_DEACTIVATION);
+		
+		GameObject fo = constructors.get("field").construct();
+		fo.mySetScale(size*1f);
+		fo.calculateTransforms();
+		fo.body.setCollisionFlags(
+				fo.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
+		GameClass.instances.add(fo);
+		dynamicsWorld.addRigidBody(fo.body);
+		fo.body.setContactCallbackFlag(MyContactListener.GROUND_FLAG);
+		fo.body.setContactCallbackFilter(0);
+		fo.body.setActivationState(Collision.DISABLE_DEACTIVATION);
+//		fo.body.setActivationState(Collision.WANTS_DEACTIVATION);
 	}
 
 	public Model playerModel;
 
 	boolean done = true;
-	
-	public GameObject spawnPlayer(){
-		GameObject obj = constructors.get("player").construct();
-		
+
+	public GameObject spawnPlayer() {
+		GameObject obj = constructors.get("box").construct();
+
 		obj.transform.trn(MathUtils.random(-2.5f, 2.5f), 9f, MathUtils.random(-2.5f, 2.5f));
-		obj.body.proceedToTransform(obj.transform);	
-		
-		for(Node n : obj.nodes){
-			n.scale.set(1f,1f,1f);
-		}
+		obj.body.proceedToTransform(obj.transform);
+		obj.mySetScale(1f);
 		obj.calculateTransforms();
-		
+
 		obj.body.setUserValue(GameClass.instances.size);
 		obj.body.setCollisionFlags(
 				obj.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
@@ -140,7 +160,7 @@ public class Physics implements Disposable {
 		dynamicsWorld.addRigidBody(obj.body);
 		obj.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
 		obj.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
-		
+
 		return obj;
 	}
 

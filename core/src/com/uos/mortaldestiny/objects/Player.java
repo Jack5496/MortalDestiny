@@ -51,7 +51,6 @@ public class Player {
 			if (!running) {
 				running = true;
 				String ani = obj.animations.get(0).id;
-				System.out.println("Ok lets start: " + ani);
 				controller.setAnimation(ani, 0, 3.25f, 1, 10 * 0.5f, new AnimationListener() {
 
 					@Override
@@ -63,7 +62,6 @@ public class Player {
 						// for
 						// speed is normal speed.
 						// controller.setAnimation(null);
-						System.out.println("Finished");
 						running = false;
 						ended = true;
 					}
@@ -105,9 +103,15 @@ public class Player {
 
 		// obj.body.translate(dir.scl(0.1f));
 		if (dir.len() > 0) {
-			walk();
+//			walk();
+			obj.body.applyCentralImpulse(dir.scl(0.2f));
+			obj.body.applyCentralForce(dir);
 		}
-		obj.body.applyCentralImpulse(dir.scl(0.2f));
+		else{
+//			obj.body.applyCentralImpulse(new Vector3());
+//			obj.body.applyCentralForce(dir);
+		}
+		
 		
 		Vector3 lookDir = stickRight.cpy();
 		int yaw = (int) (Helper.getYawInDegree(lookDir)+.5f);

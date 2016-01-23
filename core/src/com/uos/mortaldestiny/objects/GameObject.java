@@ -2,6 +2,7 @@ package com.uos.mortaldestiny.objects;
 
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
@@ -41,11 +42,18 @@ public class GameObject extends ModelInstance implements Disposable {
 	public void mySetYaw(float yaw){
 		Quaternion q = new Quaternion();
 		transform.getRotation(q, true); 
-		
+//		
+		//Version 2
 		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(0,1,0), -q.getYaw()));
-		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(0,1,0), yaw));
+		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(0,1,0), yaw));	
 		
 		calculateTransforms();
+	}
+	
+	public void mySetScale(float scale){
+		for (Node n : nodes) {
+			n.scale.set(scale,scale,scale);
+		}
 	}
 	
 	public void mySetPitch(float pitch){

@@ -50,11 +50,9 @@ public class KeyboardHandler {
 			pushed = true;
 		}
 		
-		if(pushed){
 		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
 		p.stickLeftDown = keys[Keys.SHIFT_LEFT];
 		p.stickLeft = dir;
-		}
 	}
 
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
