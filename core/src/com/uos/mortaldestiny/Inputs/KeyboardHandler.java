@@ -1,17 +1,7 @@
 package com.uos.mortaldestiny.Inputs;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
 import com.uos.mortaldestiny.GameClass;
 import com.uos.mortaldestiny.objects.Player;
 
@@ -20,11 +10,9 @@ public class KeyboardHandler {
 	public boolean[] keys = new boolean[256];
 	long[] keysTime = new long[256];
 
-	private InputHandler inputHandler;
 	String inputHandlerName;
 
 	public KeyboardHandler(InputHandler inputHandler) {
-		this.inputHandler = inputHandler;
 		inputHandlerName = "Keyboard";
 	}
 
@@ -39,27 +27,34 @@ public class KeyboardHandler {
 
 	public void updateLeftStick() {
 		Vector3 dir = new Vector3(0, 0, 0);
+		boolean pushed = false;
 
 		if (keys[Keys.A]) {
 			dir.add(new Vector3(-1, 0, 0)); // left
 			dir.add(new Vector3(0, 0, 1)); // down
+			pushed = true;
 		}
 		if (keys[Keys.D]) {
 			dir.add(new Vector3(1, 0, 0)); // right
 			dir.add(new Vector3(0, 0, -1)); // up
+			pushed = true;
 		}
 		if (keys[Keys.W]) {
 			dir.add(new Vector3(0, 0, -1)); // up
 			dir.add(new Vector3(-1, 0, 0)); // left
+			pushed = true;
 		}
 		if (keys[Keys.S]) {
 			dir.add(new Vector3(0, 0, 1)); // down
 			dir.add(new Vector3(1, 0, 0)); // right
+			pushed = true;
 		}
 		
+		if(pushed){
 		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
 		p.stickLeftDown = keys[Keys.SHIFT_LEFT];
 		p.stickLeft = dir;
+		}
 	}
 
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
@@ -114,7 +109,6 @@ public class KeyboardHandler {
 	}
 
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
 		return false;
 	}
 

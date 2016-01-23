@@ -2,7 +2,6 @@ package com.uos.mortaldestiny.Inputs;
 
 import java.util.HashMap;
 
-import com.badlogic.gdx.utils.ArrayMap;
 import com.uos.mortaldestiny.objects.Player;
 
 public class PlayerHandler {

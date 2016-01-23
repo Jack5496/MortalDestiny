@@ -1,43 +1,14 @@
 package com.uos.mortaldestiny;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.UBJsonReader;
-import com.uos.mortaldestiny.Inputs.InputHandler;
-import com.uos.mortaldestiny.objects.CameraController;
-import com.uos.mortaldestiny.objects.Entity;
-import com.uos.mortaldestiny.objects.GameObject;
-import com.uos.mortaldestiny.objects.Player;
 
 public class ResourceManager {
 
@@ -47,6 +18,7 @@ public class ResourceManager {
 
 	public String pathModels = "data/models/";
 	public String pathGrounds = pathModels + "MapParts/Ground/";
+	String pp = pathModels+"Player/player.g3db";
 
 	public Model model;
 	public Model playerModel;
@@ -71,8 +43,6 @@ public class ResourceManager {
 	public void dispose() {
 		modelBatch.dispose();
 	}
-
-	String pp = "data/models/Player/player.g3db";
 
 	public void load() {
 
@@ -109,20 +79,13 @@ public class ResourceManager {
 		// model = loader.loadModel(Gdx.files.internal(pathGrounds +
 		// "GroundTile5x5.obj"));
 
-		playerModel = loader.loadModel(Gdx.files.internal(pathModels + "Player/player.obj"));
+//		playerModel = loader.loadModel(Gdx.files.internal(pathModels + "Player/player.obj"));
 
 		obstacle = loader.loadModel(Gdx.files.internal(pathModels + "MapParts/Construction/constructionObstacle.obj"));
 
 		init = true;
 	}
-
-	private Model anim;
-	private ModelInstance animInstance;
-	public AnimationController controller;
-
-	// UBJsonReader jsonReader = new UBJsonReader();
-	// G3dModelLoader modelLoader = new G3dModelLoader(jsonReader);
-
+	
 	public Model getG3DBModel(String path) {
 		// return modelLoader.loadModel(Gdx.files.getFileHandle(path,
 		// FileType.Internal));
@@ -130,30 +93,13 @@ public class ResourceManager {
 	}
 	
 	public Model getPlayer() {
-		anim = getG3DBModel(pp);
+		Model anim = getG3DBModel(pp);
 		
 		for(Node n : anim.nodes){
 			n.scale.set(0.5f,0.5f,0.5f);
 		}
 		anim.calculateTransforms();
-		
 		return anim;
-//		animInstance = new ModelInstance(anim);
-//		animInstance.transform.scl(0.01f);
-//		animInstance.transform.trn(0, 0, 5);
-//		controller = new AnimationController(animInstance);
-
-//		instances.add(animInstance);
-	}
-
-	public void loadAnimation() {
-		anim = getG3DBModel(pp);
-		animInstance = new ModelInstance(anim);
-		animInstance.transform.scl(0.01f);
-		animInstance.transform.trn(0, 0, 5);
-		controller = new AnimationController(animInstance);
-
-//		instances.add(animInstance);
 	}
 
 	public void doneLoading() {
@@ -166,11 +112,6 @@ public class ResourceManager {
 
 		float stepz = 10f + test;
 		float maxz = height * (stepz + 2);
-
-		anim = getG3DBModel("data/models/Player/player.g3db");
-		animInstance = new ModelInstance(anim);
-		animInstance.transform.scl(0.01f);
-		animInstance.transform.trn(0, 10, 0);
 
 //		GameClass.getInstance().player = new Player(animInstance);
 //

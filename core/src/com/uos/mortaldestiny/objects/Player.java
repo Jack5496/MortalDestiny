@@ -1,12 +1,14 @@
 package com.uos.mortaldestiny.objects;
 
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationDesc;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.uos.mortaldestiny.GameClass;
+import com.uos.mortaldestiny.Inputs.Helper;
 
 public class Player {
 
@@ -22,10 +24,12 @@ public class Player {
 	public Vector3 stickRight;
 
 	public float boostValue;
+	float rotation;
 
 	public AnimationController controller;
 
 	public Player(String name) {
+		rotation = 0;
 		this.name = name;
 		obj = GameClass.getInstance().physics.spawnPlayer();
 		controller = new AnimationController(obj);
@@ -89,6 +93,8 @@ public class Player {
 
 		boostValue = 0;
 	}
+	
+	boolean done = false;
 
 	public void updateMyGameObjects() {
 
@@ -102,6 +108,13 @@ public class Player {
 			walk();
 		}
 		obj.body.applyCentralImpulse(dir.scl(0.2f));
+		
+		Vector3 lookDir = stickRight.cpy();
+		int yaw = (int) (Helper.getYawInDegree(lookDir)+.5f);
+		
+		obj.mySetYaw(yaw);
+//		obj.body.setLinearFactor(new Vector3(1,0,1));
+		obj.body.setAngularFactor(new Vector3(0,1,0));
 	}
 	
 	public void updateAnimation(float delta){

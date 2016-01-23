@@ -1,17 +1,10 @@
 package com.uos.mortaldestiny.Inputs;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.uos.mortaldestiny.GameClass;
 
 public class InputHandler implements InputProcessor, GestureListener {
 

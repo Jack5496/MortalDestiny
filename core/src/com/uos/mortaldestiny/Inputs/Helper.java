@@ -24,7 +24,7 @@ public class Helper{
 	public static Vector3 getMousePointAt(float screenX, float screenY){
 		Vector3 tmpVector = new Vector3();
 		
-		Ray ray = GameClass.getInstance().cameraController.getCamera().getPickRay(screenX, screenY);
+		Ray ray = GameClass.getInstance().cameraController.camera.getPickRay(screenX, screenY);
 	    final float distance = -ray.origin.y / ray.direction.y;
 	    tmpVector.set(ray.direction).scl(distance).add(ray.origin);
 

@@ -3,10 +3,6 @@ package com.uos.mortaldestiny.Inputs;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 
@@ -14,11 +10,7 @@ public class GestureHandler implements GestureListener {
 
 	private Map<Integer, TouchInfo> touches = new HashMap<Integer, TouchInfo>();
 
-	private InputHandler inputHandler;
-
 	public GestureHandler(InputHandler inputHandler) {
-		this.inputHandler = inputHandler;
-
 		for (int i = 0; i < 5; i++) {
 			touches.put(i, new TouchInfo());
 		}

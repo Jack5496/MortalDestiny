@@ -4,21 +4,17 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.uos.mortaldestiny.Inputs.InputHandler;
 import com.uos.mortaldestiny.Inputs.PlayerHandler;
 import com.uos.mortaldestiny.objects.CameraController;
 import com.uos.mortaldestiny.objects.GameObject;
-import com.uos.mortaldestiny.objects.Player;
 
 public class GameClass implements ApplicationListener {
 
@@ -101,9 +97,7 @@ public class GameClass implements ApplicationListener {
 		inputs.updateInputLogic();
 		playerHandler.updatePlayers(delta);
 		
-		
-
-		angle = (angle + delta * speed) % 360f;
+//		angle = (angle + delta * speed) % 360f;
 //		instances.get(0).transform.setTranslation(0, MathUtils.sinDeg(angle) * 2.5f, 0f);
 //		instances.get(0).transform.setTranslation(0,0, MathUtils.sinDeg(angle) * 2.5f);
 
@@ -125,7 +119,7 @@ public class GameClass implements ApplicationListener {
 
 		batch.begin();
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 5, getHeight() - 5);
-		font.draw(batch, "Objects: " + this.instances.size, 5, getHeight() - 20);
+		font.draw(batch, "Objects: " + instances.size, 5, getHeight() - 20);
 		batch.end();
 	}
 

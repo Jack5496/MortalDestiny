@@ -2,15 +2,10 @@ package com.uos.mortaldestiny.objects;
 
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.model.Animation;
-import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
-import com.badlogic.gdx.graphics.g3d.model.NodeKeyframe;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.uos.mortaldestiny.MyMotionState;
 
@@ -41,6 +36,36 @@ public class GameObject extends ModelInstance implements Disposable {
 	public void dispose() {
 		body.dispose();
 		motionState.dispose();
+	}
+	
+	public void mySetYaw(float yaw){
+		Quaternion q = new Quaternion();
+		transform.getRotation(q, true); 
+		
+		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(0,1,0), -q.getYaw()));
+		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(0,1,0), yaw));
+		
+		calculateTransforms();
+	}
+	
+	public void mySetPitch(float pitch){
+		Quaternion q = new Quaternion();
+		transform.getRotation(q, true); 
+		
+		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(1,0,0), -q.getYaw()));
+		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(1,0,0), pitch));
+		
+		calculateTransforms();
+	}
+	
+	public void mySetRoll(float roll){
+		Quaternion q = new Quaternion();
+		transform.getRotation(q, true); 
+		
+		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(0,0,1), -q.getYaw()));
+		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(0,0,1), roll));
+		
+		calculateTransforms();
 	}
 
 	public static class Constructor implements Disposable {

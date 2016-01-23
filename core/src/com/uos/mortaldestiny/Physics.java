@@ -1,6 +1,5 @@
 package com.uos.mortaldestiny;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -9,7 +8,6 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
@@ -22,8 +20,6 @@ import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.physics.bullet.collision.btConeShape;
 import com.badlogic.gdx.physics.bullet.collision.btCylinderShape;
 import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
@@ -87,14 +83,11 @@ public class Physics implements Disposable {
 		
 		Model anim = GameClass.getInstance().resourceManager.getPlayer();
 		
-//		mb.node("player", anim);
-		
 		model = mb.end();
 
 		constructors = new ArrayMap<String, GameObject.Constructor>(String.class, GameObject.Constructor.class);
 		constructors.put("ground",
 				new GameObject.Constructor(model, "ground", new btBoxShape(new Vector3(size*2.5f, 0.5f, size*2.5f)), 0f));
-//		constructors.put("player", new GameObject.Constructor(model, "player", new btCylinderShape(new Vector3(2f, 4f, 2f)), 1f));
 		constructors.put("player", new GameObject.Constructor(anim, new btCylinderShape(new Vector3(2f, 4f, 2f)), 1f));
 
 		
@@ -105,8 +98,6 @@ public class Physics implements Disposable {
 		constructors.put("capsule", new GameObject.Constructor(model, "capsule", new btCapsuleShape(.5f, 1f), 1f));
 		constructors.put("cylinder",
 				new GameObject.Constructor(model, "cylinder", new btCylinderShape(new Vector3(.5f, 1f, .5f)), 1f));
-		
-
 
 		collisionConfig = new btDefaultCollisionConfiguration();
 		dispatcher = new btCollisionDispatcher(collisionConfig);
@@ -132,11 +123,8 @@ public class Physics implements Disposable {
 	boolean done = true;
 	
 	public GameObject spawnPlayer(){
-//		GameObject obj = constructors.get("cylinder").construct();
 		GameObject obj = constructors.get("player").construct();
 		
-
-//		obj.transform.setFromEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
 		obj.transform.trn(MathUtils.random(-2.5f, 2.5f), 9f, MathUtils.random(-2.5f, 2.5f));
 		obj.body.proceedToTransform(obj.transform);	
 		
