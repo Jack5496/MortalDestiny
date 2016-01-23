@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
@@ -32,7 +33,8 @@ public class GameClass implements ApplicationListener {
 
 	public Physics physics;
 
-	public static Array<GameObject> instances;
+//	public static Array<GameObject> instances;
+	public static Array<ModelInstance> instances;
 
 	private static GameClass application;
 
@@ -59,7 +61,7 @@ public class GameClass implements ApplicationListener {
 		font.setColor(Color.RED);
 	}
 
-	public static Array<GameObject> getInstances() {
+	public static Array<ModelInstance> getInstances() {
 		return instances;
 	}
 
@@ -93,11 +95,13 @@ public class GameClass implements ApplicationListener {
 	float speed = 40f;
 	
 	@Override
-	public void render() {
-		inputs.updateInputLogic();
-		playerHandler.updatePlayers();
-		
+	public void render() {		
 		final float delta = Math.min(1f / 30f, Gdx.graphics.getDeltaTime());
+		
+		inputs.updateInputLogic();
+		playerHandler.updatePlayers(delta);
+		
+		
 
 		angle = (angle + delta * speed) % 360f;
 //		instances.get(0).transform.setTranslation(0, MathUtils.sinDeg(angle) * 2.5f, 0f);
@@ -135,8 +139,9 @@ public class GameClass implements ApplicationListener {
 
 	@Override
 	public void dispose() {
-		for (GameObject obj : instances)
-			obj.dispose();
+		for (ModelInstance obj : instances)
+			if(obj instanceof GameObject)
+			((GameObject) obj).dispose();
 		instances.clear();
 
 		physics.dispose();

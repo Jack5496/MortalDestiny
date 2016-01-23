@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -130,6 +131,12 @@ public class ResourceManager {
 	
 	public Model getPlayer() {
 		anim = getG3DBModel(pp);
+		
+		for(Node n : anim.nodes){
+			n.scale.set(0.5f,0.5f,0.5f);
+		}
+		anim.calculateTransforms();
+		
 		return anim;
 //		animInstance = new ModelInstance(anim);
 //		animInstance.transform.scl(0.01f);

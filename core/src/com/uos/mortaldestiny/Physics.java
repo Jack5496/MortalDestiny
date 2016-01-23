@@ -7,7 +7,10 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.model.Animation;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
@@ -83,12 +86,18 @@ public class Physics implements Disposable {
 				new Material(ColorAttribute.createDiffuse(Color.MAGENTA))).cylinder(1f, 2f, 1f, 10);
 		
 		Model anim = GameClass.getInstance().resourceManager.getPlayer();
-		mb.node("player", anim);
+		
+//		mb.node("player", anim);
+		
 		model = mb.end();
 
 		constructors = new ArrayMap<String, GameObject.Constructor>(String.class, GameObject.Constructor.class);
 		constructors.put("ground",
 				new GameObject.Constructor(model, "ground", new btBoxShape(new Vector3(size*2.5f, 0.5f, size*2.5f)), 0f));
+//		constructors.put("player", new GameObject.Constructor(model, "player", new btCylinderShape(new Vector3(2f, 4f, 2f)), 1f));
+		constructors.put("player", new GameObject.Constructor(anim, new btCylinderShape(new Vector3(2f, 4f, 2f)), 1f));
+
+		
 		constructors.put("sphere", new GameObject.Constructor(model, "sphere", new btSphereShape(0.5f), 1f));
 		constructors.put("box",
 				new GameObject.Constructor(model, "box", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
@@ -98,8 +107,7 @@ public class Physics implements Disposable {
 				new GameObject.Constructor(model, "cylinder", new btCylinderShape(new Vector3(.5f, 1f, .5f)), 1f));
 		
 
-		constructors.put("player", new GameObject.Constructor(model, "player", new btCylinderShape(new Vector3(.5f, 1f, .5f)), 1f));
-		
+
 		collisionConfig = new btDefaultCollisionConfiguration();
 		dispatcher = new btCollisionDispatcher(collisionConfig);
 		broadphase = new btDbvtBroadphase();
@@ -108,7 +116,7 @@ public class Physics implements Disposable {
 		dynamicsWorld.setGravity(new Vector3(0, -10f, 0));
 		contactListener = new MyContactListener();
 
-		GameClass.instances = new Array<GameObject>();
+		GameClass.instances = new Array<ModelInstance>();
 		GameObject object = constructors.get("ground").construct();
 		object.body.setCollisionFlags(
 				object.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
@@ -124,11 +132,19 @@ public class Physics implements Disposable {
 	boolean done = true;
 	
 	public GameObject spawnPlayer(){
-		GameObject obj = constructors.get("cylinder").construct();
-//		GameObject obj = constructors.get("player").construct();
+//		GameObject obj = constructors.get("cylinder").construct();
+		GameObject obj = constructors.get("player").construct();
+		
+
 //		obj.transform.setFromEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
 		obj.transform.trn(MathUtils.random(-2.5f, 2.5f), 9f, MathUtils.random(-2.5f, 2.5f));
-		obj.body.proceedToTransform(obj.transform);
+		obj.body.proceedToTransform(obj.transform);	
+		
+		for(Node n : obj.nodes){
+			n.scale.set(1f,1f,1f);
+		}
+		obj.calculateTransforms();
+		
 		obj.body.setUserValue(GameClass.instances.size);
 		obj.body.setCollisionFlags(
 				obj.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
@@ -141,7 +157,7 @@ public class Physics implements Disposable {
 	}
 
 	public void spawn() {
-		GameObject obj = constructors.values[1 + MathUtils.random(constructors.size - 2)].construct();
+		GameObject obj = constructors.values[2 + MathUtils.random(constructors.size - 3)].construct();
 		obj.transform.setFromEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
 		obj.transform.trn(MathUtils.random(-2.5f, 2.5f), 9f, MathUtils.random(-2.5f, 2.5f));
 		obj.body.proceedToTransform(obj.transform);

@@ -24,9 +24,10 @@ public class PlayerHandler {
 		return localPlayers.get(inputHandlerName);
 	}
 	
-	public void updatePlayers(){
+	public void updatePlayers(float delta){
 		for(Player p : localPlayers.values()){
 			p.updateMyGameObjects();
+			p.updateAnimation(delta);
 		}
 	}
 
