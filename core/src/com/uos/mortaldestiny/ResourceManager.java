@@ -127,6 +127,17 @@ public class ResourceManager {
 		// FileType.Internal));
 		return assets.get(path);
 	}
+	
+	public Model getPlayer() {
+		anim = getG3DBModel(pp);
+		return anim;
+//		animInstance = new ModelInstance(anim);
+//		animInstance.transform.scl(0.01f);
+//		animInstance.transform.trn(0, 0, 5);
+//		controller = new AnimationController(animInstance);
+
+//		instances.add(animInstance);
+	}
 
 	public void loadAnimation() {
 		anim = getG3DBModel(pp);

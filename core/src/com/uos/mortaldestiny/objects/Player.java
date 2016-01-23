@@ -1,60 +1,48 @@
 package com.uos.mortaldestiny.objects;
 
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.model.Animation;
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationDesc;
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener;
+import com.badlogic.gdx.math.Vector3;
+import com.uos.mortaldestiny.GameClass;
 
-public class Player extends Entity {
-
-	public AnimationController controller;
+public class Player{
 	
-	public static final String WALK = "Armature|walk";
-
-	public Player(ModelInstance model) {
-		super(model);
-		controller = new AnimationController(model);
-	}
-
-	public void move(float dir) {
-		super.move(dir);
-		walk();
-	}
-
-	public boolean ended = false;
+	String name;
+	GameObject obj;
 	
-	public void stop(){
-		controller.setAnimation(null);
-		ended = false;
+	/**
+	 * InputVariables
+	 */
+	public Vector3 stickLeft;
+	public boolean stickLeftDown;
+
+	public Vector3 stickRight;
+
+	public float boostValue;
+	
+	public Player(String name){
+		this.name = name;
+		obj = GameClass.getInstance().physics.spawnPlayer();
+		GameClass.getInstance().cameraController.setTrack(obj);
+		resetInputVariables();
+	}	
+	
+	public void resetInputVariables() {
+		stickLeft = new Vector3();
+		stickLeftDown = false;
+		
+		stickRight = new Vector3();
+		
+		boostValue = 0;
 	}
 	
-	public void walk() {
-		if (ended) {
-			controller.setAnimation(null);
-			ended = false;
-		} else {
-			controller.setAnimation(WALK, 0, 3.25f, 1, 10*super.getSpeed(), new AnimationListener() {
-
-				@Override
-				public void onEnd(AnimationDesc animation) {
-					// this will be called when the current animation is done.
-					// queue up another animation called "balloon".
-					// Passing a negative to loop count loops forever. 1f for
-					// speed is normal speed.
-					// controller.setAnimation(null);
-					ended = true;
-				}
-
-				@Override
-				public void onLoop(AnimationDesc animation) {
-					// TODO Auto-generated method stub
-
-				}
-
-			});
+	public void updateMyGameObjects(){
+		
+		Vector3 dir = stickLeft.cpy();
+		if(stickLeftDown){
+			dir.scl(1.7f);
 		}
-
+		
+//		obj.body.translate(dir.scl(0.1f));
+		obj.body.applyCentralImpulse(dir.scl(0.2f));
 	}
 
 }

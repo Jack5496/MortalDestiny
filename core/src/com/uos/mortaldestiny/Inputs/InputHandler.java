@@ -13,34 +13,38 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.uos.mortaldestiny.GameClass;
 
-public class InputHandler implements InputProcessor, GestureListener{
-	
+public class InputHandler implements InputProcessor, GestureListener {
+
 	public ControllerHandler controllerHandler;
 	public KeyboardHandler keyboardHandler;
 	public GestureHandler gestureHandler;
-	
-	public InputHandler() {		
-		//GamePad
+
+	public InputHandler() {
+		// GamePad
 		controllerHandler = new ControllerHandler(this);
-		Controllers.addListener(controllerHandler);	//Activate as extra Input
-		
-		//Keyboard + Mouse
-		keyboardHandler = new KeyboardHandler(this);	//Keyboard class
-		gestureHandler = new GestureHandler(this);		//Touch class
-		
-		//After initilize set Input as this
-		Gdx.input.setInputProcessor(this);	//last
+		Controllers.addListener(controllerHandler); // Activate as extra Input
+
+		// Keyboard + Mouse
+		keyboardHandler = new KeyboardHandler(this); // Keyboard class
+		gestureHandler = new GestureHandler(this); // Touch class
+
+		// After initilize set Input as this
+		Gdx.input.setInputProcessor(this); // last
+	}
+
+	public void updateInputLogic() {
+		updateHandlerInputs();
 	}
 	
-	public void updateInputLogic(){
+	private void updateHandlerInputs(){
 		controllerHandler.updateInputLogic();
 		keyboardHandler.updateInputLogic();
 	}
-			
+
 	///////////////////////////
 	// Leite Methoden Weiter //
 	///////////////////////////
-	
+
 	@Override
 	public boolean keyDown(int keycode) {
 		return keyboardHandler.keyDown(keycode);
@@ -120,8 +124,5 @@ public class InputHandler implements InputProcessor, GestureListener{
 	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
 		return gestureHandler.pinch(initialPointer1, initialPointer2, pointer1, pointer2);
 	}
-
-
-
 
 }

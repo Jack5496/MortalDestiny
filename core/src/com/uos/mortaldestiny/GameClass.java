@@ -13,6 +13,8 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.uos.mortaldestiny.Inputs.InputHandler;
+import com.uos.mortaldestiny.Inputs.PlayerHandler;
 import com.uos.mortaldestiny.objects.CameraController;
 import com.uos.mortaldestiny.objects.GameObject;
 import com.uos.mortaldestiny.objects.Player;
@@ -25,10 +27,10 @@ public class GameClass implements ApplicationListener {
 	public Environment environment;
 	public CameraController cameraController;
 	public ResourceManager resourceManager;
+	public InputHandler inputs;
+	public PlayerHandler playerHandler;
 
-	public Player player;
-
-	Physics physics;
+	public Physics physics;
 
 	public static Array<GameObject> instances;
 
@@ -49,6 +51,8 @@ public class GameClass implements ApplicationListener {
 		initEnvironment();
 		initCamera();
 		initPhysics();
+		initInputHandler();
+		initPlayerHandler();
 
 		batch = new SpriteBatch();
 		font = new BitmapFont();
@@ -76,12 +80,23 @@ public class GameClass implements ApplicationListener {
 	public void initPhysics() {
 		physics = new Physics();
 	}
+	
+	public void initInputHandler() {
+		inputs = new InputHandler();
+	}
+	
+	public void initPlayerHandler() {
+		playerHandler = new PlayerHandler();
+	}
 
 	float angle = 90f;
 	float speed = 40f;
 	
 	@Override
 	public void render() {
+		inputs.updateInputLogic();
+		playerHandler.updatePlayers();
+		
 		final float delta = Math.min(1f / 30f, Gdx.graphics.getDeltaTime());
 
 		angle = (angle + delta * speed) % 360f;
@@ -91,11 +106,11 @@ public class GameClass implements ApplicationListener {
 		physics.dynamicsWorld.stepSimulation(delta, 5, 1f / 60f);
 
 		if ((physics.spawnTimer -= delta) < 0) {
-			physics.spawn();
+//			physics.spawn();
 			physics.spawnTimer = 1.5f;
 		}
 
-		cameraController.camController.update();
+		cameraController.update();
 
 		Gdx.gl.glClearColor(0.3f, 0.3f, 0.3f, 1.f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -106,6 +121,7 @@ public class GameClass implements ApplicationListener {
 
 		batch.begin();
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 5, getHeight() - 5);
+		font.draw(batch, "Objects: " + this.instances.size, 5, getHeight() - 20);
 		batch.end();
 	}
 

@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.linearmath.btMotionState;
 
-public class Entity {
+public class Entity extends GameObject{
 
 	/*
 	 * Testing variables
@@ -19,17 +19,8 @@ public class Entity {
 	/*
 	 * Attributes
 	 */
-	private ModelInstance model;
 	private float health;
 	private String name;
-	private float speedReset;
-	private float speed;
-	
-	/*
-	 * Variables
-	 */
-	btRigidBody body;
-	MyMotionState motionState;
 	
 	/**
 	 * Create a new Entity
@@ -37,52 +28,13 @@ public class Entity {
 	 * @param model
 	 *            ModelInstance for the Entiry
 	 */
-	public Entity(ModelInstance model) {
-		this.model = model;
+	public Entity() {
 		
-		translateTo(new Vector3(0, 1, 0));
-		this.health = 100;
-		this.name = "Entity";
-		this.setResetSpeed(0.5f);
-		this.setSpeed(getResetSpeed());
-		
-		motionState = new MyMotionState();
-		motionState.transform = this.model.transform;
-//		body = new btRigidBody();
-//		body.setMotionState(motionState);
-//		body.setCollisionFlags(MyContactListener.PLAYER_FLAG);
-		
-		btCollisionShape shape = Bullet.obtainStaticNodeShape(model.nodes);
 	}
 	
-	static class MyMotionState extends btMotionState {
-	    Matrix4 transform;
-	    @Override
-	    public void getWorldTransform (Matrix4 worldTrans) {
-	        worldTrans.set(transform);
-	    }
-	    @Override
-	    public void setWorldTransform (Matrix4 worldTrans) {
-	        transform.set(worldTrans);
-	    }
-	}
+
 	
-	/**
-	 * @return the ModelInstance of the Entity
-	 */
-	public ModelInstance getModelInstance() {
-		return this.model;
-	}
-
-	/**
-	 * @return the Position of the ModelInstance as Vector3
-	 */
-	public Vector3 getVector() {
-		Vector3 vec = new Vector3();
-		getModelInstance().transform.getTranslation(vec);
-		return vec;
-	}
-
+	
 	/**
 	 * Set Rotation of ModelInstance
 	 * 

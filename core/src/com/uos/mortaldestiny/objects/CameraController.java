@@ -37,38 +37,41 @@ public class CameraController {
 	private float maxDistance = 400;
 
 	// Variables for Camera look direction
-	private Vector3 lookAt; // Vector to look at if no track ModelInstance
+	public Vector3 lookAt; // Vector to look at if no track ModelInstance
 	private ModelInstance track = null; // track ModelInstance
-
-	public CameraInputController camController;
+//
+//	public CameraInputController camController;
 	
 	/**
 	 * CameraController which creates a Camera, with , which can be getted
 	 */
+	
+	float normalYaw = 270;
+	
 	public CameraController() {
 		
 
-//		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//
-//		updateCameraAxis(45 - 90, 65, distance);
-//		updateDisVector();
-//
-//		camera.near = 1f;
-//		camera.far = 300f;
-//
-//		lookAt = new Vector3(0, 0, 0);
-//
-//		update();
-		
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(3f, 7f, 10f);
-		camera.lookAt(0, 4f, 0);
+
+		updateCameraAxis(normalYaw+45, 65, distance);
+		updateDisVector();
+
 		camera.near = 1f;
 		camera.far = 300f;
-		camera.update();
 
-		camController = new CameraInputController(camera);
-		Gdx.input.setInputProcessor(camController);		
+		lookAt = new Vector3(0, 0, 0);
+
+		update();
+		
+//		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//		camera.position.set(3f, 7f, 10f);
+//		camera.lookAt(0, 4f, 0);
+//		camera.near = 1f;
+//		camera.far = 300f;
+//		camera.update();
+//
+//		camController = new CameraInputController(camera);
+//		Gdx.input.setInputProcessor(camController);		
 	}
 
 	/**
@@ -188,6 +191,14 @@ public class CameraController {
 		camera.lookAt(lookAt);
 
 		camera.update();
+	}
+	
+	public void translateTo(Vector3 pos){
+		this.lookAt = pos;
+	}
+	
+	public void translateAdd(Vector3 offset){
+		this.lookAt.add(offset);
 	}
 
 	/**

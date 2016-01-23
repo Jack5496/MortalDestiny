@@ -34,7 +34,7 @@ public class ControllerHandler implements ControllerListener {
 			vec.rotate(new Vector3(0,1,0), -45);
 			
 			if (Math.abs(vec.len()) > threshold) {
-				GameClass.getInstance().player.move(Helper.getYawInDegree(vec));
+//				GameClass.getInstance().player.move(Helper.getYawInDegree(vec));
 			}
 		}
 	}
@@ -48,7 +48,7 @@ public class ControllerHandler implements ControllerListener {
 			vec.rotate(new Vector3(0,1,0), 45);
 			
 			if (Math.abs(vec.len()) > threshold) {
-				GameClass.getInstance().player.setRotation(Helper.getYawInDegree(vec));
+//				GameClass.getInstance().player.setRotation(Helper.getYawInDegree(vec));
 			}
 		}
 	}

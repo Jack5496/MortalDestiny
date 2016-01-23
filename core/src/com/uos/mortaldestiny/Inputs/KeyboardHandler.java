@@ -15,54 +15,53 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.uos.mortaldestiny.GameClass;
 import com.uos.mortaldestiny.objects.Player;
 
-public class KeyboardHandler implements InputProcessor {
+public class KeyboardHandler {
 
 	public boolean[] keys = new boolean[256];
 	long[] keysTime = new long[256];
-	Player p;
 
 	private InputHandler inputHandler;
+	String inputHandlerName;
 
 	public KeyboardHandler(InputHandler inputHandler) {
 		this.inputHandler = inputHandler;
-		this.p = GameClass.getInstance().player;
+		inputHandlerName = "Keyboard";
 	}
 
 	public void updateInputLogic() {
-		updateWalkDir();
+		updateLeftStick();
 	}
 
-	public void updateWalkDir() {
+	// Vector3(-1, 0, 0)); //left
+	// Vector3(1, 0, 0)); //right
+	// Vector3(0, 0, -1)); //up
+	// Vector3(0, 0, 1)); //down
+
+	public void updateLeftStick() {
 		Vector3 dir = new Vector3(0, 0, 0);
 
 		if (keys[Keys.A]) {
-			dir.add(new Vector3(1, 0, 0));	//links unten
-			dir.add(new Vector3(0, 0, 1));	//links oben
+			dir.add(new Vector3(-1, 0, 0)); // left
+			dir.add(new Vector3(0, 0, 1)); // down
 		}
 		if (keys[Keys.D]) {
-			dir.add(new Vector3(-1, 0, 0));	//rechts oben
-			dir.add(new Vector3(0, 0, -1));	//rechts unten
+			dir.add(new Vector3(1, 0, 0)); // right
+			dir.add(new Vector3(0, 0, -1)); // up
 		}
 		if (keys[Keys.W]) {
-			dir.add(new Vector3(0, 0, 1));	//links oben
-			dir.add(new Vector3(-1, 0, 0));	//rechts oben
+			dir.add(new Vector3(0, 0, -1)); // up
+			dir.add(new Vector3(-1, 0, 0)); // left
 		}
 		if (keys[Keys.S]) {
-			dir.add(new Vector3(0, 0, -1));	//rechts unten
-			dir.add(new Vector3(1, 0, 0));	//links unten
+			dir.add(new Vector3(0, 0, 1)); // down
+			dir.add(new Vector3(1, 0, 0)); // right
 		}
 		
-		
-
-		if (dir.len() > 0) {	//Problem: if degree is 0° --> sin(0) will result a direction
-			p.move(Helper.getYawInDegree(dir));
-		}
-		else{
-			p.stop();
-		}
+		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
+		p.stickLeftDown = keys[Keys.SHIFT_LEFT];
+		p.stickLeft = dir;
 	}
 
-	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		return false;
 	}
@@ -70,14 +69,12 @@ public class KeyboardHandler implements InputProcessor {
 	/**
 	 * Updates every Key Input
 	 */
-	@Override
 	public boolean keyDown(int keycode) {
 		keys[keycode] = true;
 		keysTime[keycode] = System.currentTimeMillis();
 		return true;
 	}
 
-	@Override
 	public boolean keyUp(int keycode) {
 		keys[keycode] = false;
 
@@ -91,42 +88,47 @@ public class KeyboardHandler implements InputProcessor {
 		return false;
 	}
 
-	@Override
 	public boolean keyTyped(char character) {
 		return false;
 	}
 
-	public float getYawInDegreeOfModelWithMouse(int screenX, int screenY, ModelInstance model) {
+	public float getYawInDegreeOfModelWithMouse(int screenX, int screenY, Vector3 track) {
 		Vector3 mv = Helper.getMousePointAt(screenX, screenY);
-		Vector3 miv = Helper.getVectorFromModelInstance(model);
-		return Helper.getYawInDegree(mv, miv);
+		return Helper.getYawInDegree(mv, track);
 	}
 
-	public void rotatePlayer(int screenX, int screenY) {
-		p.setRotation(getYawInDegreeOfModelWithMouse(screenX, screenY, p.getModelInstance()));
-	}
+	// public void updateRightStick(int screenX, int screenY) {
+	// p.setRotation(getYawInDegreeOfModelWithMouse(screenX, screenY,
+	// p.getModelInstance()));
+	// }
 
-	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		rotatePlayer(screenX, screenY);
+		Vector3 dir = new Vector3(1, 0, 0);
+		float yaw = getYawInDegreeOfModelWithMouse(screenX, screenY, GameClass.getInstance().cameraController.lookAt);
+		dir = dir.rotate(yaw, 0, 1, 0);
+		
+		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
+		p.stickRight = dir;
 
 		return true;
 	}
 
-	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
 		return false;
 	}
 
-	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		rotatePlayer(screenX, screenY);
+		Vector3 dir = new Vector3(1, 0, 0);
+		float yaw = getYawInDegreeOfModelWithMouse(screenX, screenY, GameClass.getInstance().cameraController.lookAt);
+		dir = dir.rotate(yaw, 0, 1, 0);
+		
+		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
+		p.stickRight = dir;
 
 		return false;
 	}
 
-	@Override
 	public boolean scrolled(int amount) {
 		GameClass.getInstance().cameraController.distanceAdd(amount);
 		return true;
