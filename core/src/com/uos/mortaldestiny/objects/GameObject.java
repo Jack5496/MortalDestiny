@@ -14,6 +14,8 @@ public class GameObject extends ModelInstance implements Disposable {
 	public final btRigidBody body;
 	public final MyMotionState motionState;
 	public btRigidBody.btRigidBodyConstructionInfo constructionInfo;
+	
+
 
 	public GameObject(Model model, String node, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
 		super(model, node);

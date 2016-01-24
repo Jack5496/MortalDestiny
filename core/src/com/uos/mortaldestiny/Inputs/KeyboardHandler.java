@@ -19,6 +19,13 @@ public class KeyboardHandler {
 	public void updateInputLogic() {
 		updateLeftStick();
 	}
+	
+	public void updateABXY(){
+		if(keys[Keys.SPACE]){
+			Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
+			p.jump = true;
+		}
+	}
 
 	// Vector3(-1, 0, 0)); //left
 	// Vector3(1, 0, 0)); //right
@@ -70,14 +77,6 @@ public class KeyboardHandler {
 
 	public boolean keyUp(int keycode) {
 		keys[keycode] = false;
-
-		if (keycode == Keys.SHIFT_LEFT) {
-			System.out.println("Shift");
-		}
-		if (keycode == Keys.SPACE) {
-			System.out.println("Space");
-		}
-
 		return false;
 	}
 

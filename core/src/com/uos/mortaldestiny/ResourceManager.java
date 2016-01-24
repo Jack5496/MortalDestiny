@@ -50,22 +50,29 @@ public class ResourceManager {
 	public void dispose() {
 		modelBatch.dispose();
 	}
+	
+	boolean showLog = true;
+	
+	private void log(String log){
+		if(showLog) System.out.println(log);
+	}
 
 	public void load() {
 
+		log("List Assets");
 		enqueAssets();
 
 		float progress = 0;
-		System.out.println("Loaded: " + assets.getProgress() * 100 + "%");
+		log("Loaded: " + assets.getProgress() * 100 + "%");
 
 		while (!assets.update()) {
 			if (progress != assets.getProgress()) {
 				progress = assets.getProgress();
-				System.out.println("Loaded: " + assets.getProgress() * 100 + "%");
+				log("Loaded: " + assets.getProgress() * 100 + "%");
 			}
 		}
 		progress = assets.getProgress();
-		System.out.println("Loaded: " + assets.getProgress() * 100 + "%");
+		log("Loaded: " + assets.getProgress() * 100 + "%");
 	}
 
 	public void enqueAssets() {

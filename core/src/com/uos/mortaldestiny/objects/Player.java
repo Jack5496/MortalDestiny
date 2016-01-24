@@ -24,15 +24,15 @@ public class Player {
 	public Vector3 stickRight;
 
 	public float boostValue;
-	float rotation;
+	
+	public boolean jump;
 
-	public AnimationController controller;
+	public AnimationController animationController;
 
 	public Player(String name) {
-		rotation = 0;
 		this.name = name;
 		obj = GameClass.getInstance().physics.spawnPlayer();
-		controller = new AnimationController(obj);
+		animationController = new AnimationController(obj);
 
 		GameClass.getInstance().cameraController.setTrack(obj);
 		resetInputVariables();
@@ -45,13 +45,13 @@ public class Player {
 
 	public void walk() {
 		if (ended) {
-			controller.setAnimation(null);
+			animationController.setAnimation(null);
 			ended = false;
 		} else {
 			if (!running) {
 				running = true;
 				String ani = obj.animations.get(0).id;
-				controller.setAnimation(ani, 0, 3.25f, 1, 10 * 0.5f, new AnimationListener() {
+				animationController.setAnimation(ani, 0, 3.25f, 1, 10 * 0.5f, new AnimationListener() {
 
 					@Override
 					public void onEnd(AnimationDesc animation) {
@@ -79,7 +79,7 @@ public class Player {
 	}
 
 	public void stop() {
-		controller.setAnimation(null);
+		animationController.setAnimation(null);
 		ended = false;
 	}
 
@@ -132,7 +132,7 @@ public class Player {
 	
 	
 	public void updateAnimation(float delta){
-		controller.update(delta);
+		animationController.update(delta);
 	}
 
 }

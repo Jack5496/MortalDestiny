@@ -130,6 +130,7 @@ public class Physics implements Disposable {
 		
 		GameObject fo = constructors.get("field").construct();
 		fo.mySetScale(size*1f);
+		fo.transform.trn(new Vector3(0,-1,0));
 		fo.calculateTransforms();
 		fo.body.setCollisionFlags(
 				fo.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
@@ -155,7 +156,6 @@ public class Physics implements Disposable {
 		obj.body.proceedToTransform(obj.transform);
 		obj.mySetScale(1f);
 		obj.calculateTransforms();
-
 		obj.body.setUserValue(GameClass.instances.size);
 		obj.body.setCollisionFlags(
 				obj.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
@@ -164,6 +164,7 @@ public class Physics implements Disposable {
 		obj.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
 //		obj.body.setContactCallbackFilter(0);
 		obj.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
+		System.out.println("Obj: "+obj.toString());
 
 		return obj;
 	}

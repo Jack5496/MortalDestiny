@@ -17,6 +17,16 @@ public class ControllerHandler implements ControllerListener {
 	public void updateInputLogic() {
 		updateWalkDir();
 		updateLookDir();
+		updateABXY();
+	}
+
+	public void updateABXY() {
+		for (Controller controller : Controllers.getControllers()) {
+			Player p = GameClass.getInstance().playerHandler
+					.getPlayerByInput("controller:" + controller.hashCode());
+			
+			p.jump = controller.getButton(XBox360Pad.BUTTON_A);
+		}
 	}
 
 	private float threshold = 0.4f; // spielraum, ab 20% wird Stick erst
@@ -30,14 +40,17 @@ public class ControllerHandler implements ControllerListener {
 			Vector3 vec = new Vector3(ldx, 0, ldy);
 			vec.rotate(new Vector3(0, 1, 0), 45);
 			vec.clamp(0, 1);
+			
+			Player p = GameClass.getInstance().playerHandler
+					.getPlayerByInput("controller:" + controller.hashCode());
 
 			if (Math.abs(vec.len()) > threshold) {
-//				System.out.println("ID: "+controller.hashCode()+"L: "+Math.abs(vec.len()));
-				Player p = GameClass.getInstance().playerHandler.getPlayerByInput("controller:"+controller.hashCode());
+				// System.out.println("ID: "+controller.hashCode()+"L:
+				// "+Math.abs(vec.len()));
+				
 				p.stickLeft = vec.cpy();
-			}
-			else{
-				Player p = GameClass.getInstance().playerHandler.getPlayerByInput("controller:"+controller.hashCode());
+			} else {
+				
 				p.stickLeft = new Vector3();
 			}
 		}
@@ -51,15 +64,17 @@ public class ControllerHandler implements ControllerListener {
 			Vector3 vec = new Vector3(rdx, 0, rdy);
 			vec.rotate(new Vector3(0, 1, 0), 45);
 			vec.clamp(0, 1);
+			
+			Player p = GameClass.getInstance().playerHandler
+					.getPlayerByInput("controller:" + controller.hashCode());
 
 			if (Math.abs(vec.len()) > threshold) {
-//				System.out.println("ID: "+controller.hashCode()+"L: "+Math.abs(vec.len()));
-				Player p = GameClass.getInstance().playerHandler.getPlayerByInput("controller:"+controller.hashCode());
+				// System.out.println("ID: "+controller.hashCode()+"L:
+				// "+Math.abs(vec.len()));
+				
 				p.stickRight = vec.cpy();
-			}
-			else{
-				Player p = GameClass.getInstance().playerHandler.getPlayerByInput("controller:"+controller.hashCode());
-//				p.stickRight = new Vector3();
+			} else {
+				// p.stickRight = new Vector3();
 			}
 		}
 	}
