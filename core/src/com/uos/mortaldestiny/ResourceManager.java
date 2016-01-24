@@ -2,13 +2,9 @@ package com.uos.mortaldestiny;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 
 public class ResourceManager {
 
@@ -97,15 +93,15 @@ public class ResourceManager {
 	}
 
 	public void doneLoading() {
-		float test = 0f;
-		int width = 3;
-		int height = 3;
+//		float test = 0f;
+//		int width = 3;
+//		int height = 3;
 
-		float stepx = 10f + test;
-		float maxx = width * (stepx + 2);
+//		float stepx = 10f + test;
+//		float maxx = width * (stepx + 2);
 
-		float stepz = 10f + test;
-		float maxz = height * (stepz + 2);
+//		float stepz = 10f + test;
+//		float maxz = height * (stepz + 2);
 
 //		GameClass.getInstance().player = new Player(animInstance);
 //

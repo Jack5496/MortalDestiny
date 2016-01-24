@@ -34,27 +34,22 @@ public class KeyboardHandler {
 
 	public void updateLeftStick() {
 		Vector3 dir = new Vector3(0, 0, 0);
-		boolean pushed = false;
 
 		if (keys[Keys.A]) {
 			dir.add(new Vector3(-1, 0, 0)); // left
 			dir.add(new Vector3(0, 0, 1)); // down
-			pushed = true;
 		}
 		if (keys[Keys.D]) {
 			dir.add(new Vector3(1, 0, 0)); // right
 			dir.add(new Vector3(0, 0, -1)); // up
-			pushed = true;
 		}
 		if (keys[Keys.W]) {
 			dir.add(new Vector3(0, 0, -1)); // up
 			dir.add(new Vector3(-1, 0, 0)); // left
-			pushed = true;
 		}
 		if (keys[Keys.S]) {
 			dir.add(new Vector3(0, 0, 1)); // down
 			dir.add(new Vector3(1, 0, 0)); // right
-			pushed = true;
 		}
 		
 		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
