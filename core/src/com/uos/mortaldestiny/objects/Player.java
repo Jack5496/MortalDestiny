@@ -123,10 +123,10 @@ public class Player {
 		
 		Vector3 lookDir = stickRight.cpy();
 		int yaw = (int) (Helper.getYawInDegree(lookDir)+.5f);
-		
 		obj.mySetYaw(yaw);
-//		obj.body.setLinearFactor(new Vector3(1,0,1));
-		obj.body.setAngularFactor(new Vector3(0,1,0));
+		
+//		obj.body.setLinearFactor(new Vector3(1,0,1));	//hold object in XZ-Layer
+		obj.body.setAngularFactor(new Vector3(0,1,0));	//wont let object rotate around given axe
 	}
 	
 	

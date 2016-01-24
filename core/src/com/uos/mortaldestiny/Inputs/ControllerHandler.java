@@ -15,34 +15,29 @@ public class ControllerHandler implements ControllerListener {
 	}
 
 	public void updateInputLogic() {
-		updateWalkDir();
-		updateLookDir();
-		updateABXY();
+		
+		for (Controller controller : Controllers.getControllers()) {
+			Player p = GameClass.getInstance().playerHandler.getPlayerByInput("controller:" + controller.hashCode());
+			updateWalkDir(p,controller);
+			updateLookDir(p,controller);
+			updateABXY(p,controller);
+		}
 	}
 
-	public void updateABXY() {
-		for (Controller controller : Controllers.getControllers()) {
-			Player p = GameClass.getInstance().playerHandler
-					.getPlayerByInput("controller:" + controller.hashCode());
-			
+	public void updateABXY(Player p, Controller controller) {
 			p.jump = controller.getButton(XBox360Pad.BUTTON_A);
-		}
 	}
 
 	private float threshold = 0.4f; // spielraum, ab 20% wird Stick erst
 	// gemessen
 
-	public void updateWalkDir() {
-		for (Controller controller : Controllers.getControllers()) {
+	public void updateWalkDir(Player p, Controller controller) {
 			float ldy = controller.getAxis(XBox360Pad.AXIS_LEFT_Y);
 			float ldx = controller.getAxis(XBox360Pad.AXIS_LEFT_X);
 
 			Vector3 vec = new Vector3(ldx, 0, ldy);
 			vec.rotate(new Vector3(0, 1, 0), 45);
 			vec.clamp(0, 1);
-			
-			Player p = GameClass.getInstance().playerHandler
-					.getPlayerByInput("controller:" + controller.hashCode());
 
 			if (Math.abs(vec.len()) > threshold) {
 				// System.out.println("ID: "+controller.hashCode()+"L:
@@ -50,14 +45,14 @@ public class ControllerHandler implements ControllerListener {
 				
 				p.stickLeft = vec.cpy();
 			} else {
-				
+
 				p.stickLeft = new Vector3();
 			}
-		}
+			p.stickLeftDown = controller.getButton(XBox360Pad.BUTTON_L3);
 	}
 
-	public void updateLookDir() {
-		for (Controller controller : Controllers.getControllers()) {
+	public void updateLookDir(Player p, Controller controller) {
+
 			float rdy = controller.getAxis(XBox360Pad.AXIS_RIGHT_Y);
 			float rdx = controller.getAxis(XBox360Pad.AXIS_RIGHT_X);
 
@@ -65,18 +60,14 @@ public class ControllerHandler implements ControllerListener {
 			vec.rotate(new Vector3(0, 1, 0), 45);
 			vec.clamp(0, 1);
 			
-			Player p = GameClass.getInstance().playerHandler
-					.getPlayerByInput("controller:" + controller.hashCode());
-
 			if (Math.abs(vec.len()) > threshold) {
 				// System.out.println("ID: "+controller.hashCode()+"L:
 				// "+Math.abs(vec.len()));
-				
+
 				p.stickRight = vec.cpy();
 			} else {
 				// p.stickRight = new Vector3();
 			}
-		}
 	}
 
 	@Override

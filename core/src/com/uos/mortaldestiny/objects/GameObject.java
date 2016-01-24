@@ -3,6 +3,7 @@ package com.uos.mortaldestiny.objects;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
@@ -41,22 +42,44 @@ public class GameObject extends ModelInstance implements Disposable {
 		motionState.dispose();
 	}
 	
-	public void mySetYaw(float yaw){
-		Quaternion q = new Quaternion();
-		transform.getRotation(q, true); 
-//		
-		//Version 2
-		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(0,1,0), -q.getYaw()));
-		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(0,1,0), yaw));	
-		
-		calculateTransforms();
+	public void mySetYawPitchRoll(float yaw, float pitch, float roll){
+		Matrix4 tr = body.getCenterOfMassTransform();	//Get Transform (Rotation and Translation)
+		Vector3 trans = new Vector3();	//Create Vector to save Translation
+		tr.getTranslation(trans);	//Get Translation
+		tr.setFromEulerAngles(yaw, pitch, roll);	//Override Angle (with Translation as sideeffect)
+		tr.setTranslation(trans);	//Set Translation back from helper Vector
+		body.setCenterOfMassTransform(tr);	//Apply Transform
 	}
 	
-//	public void mySetYaw (float orientation) {
-//		transform.setToRotationRad(0, 1, 0, orientation);
-//		body.setWorldTransform(transform);
-//		calculateTransforms();
-//	}
+	public void mySetYaw(float yaw){
+		mySetYawPitchRoll(yaw, myGetPitch(), myGetRoll());	//set Yaw and Save other Axes
+	}
+	
+	public void mySetPitch(float pitch){
+		mySetYawPitchRoll(myGetYaw(), pitch, myGetRoll());	//set Pitch and Save other Axes
+	}
+	
+	public void mySetRoll(float roll){
+		mySetYawPitchRoll(myGetYaw(), myGetPitch(), roll);	//set Roll and Save other Axes
+	}
+	
+	private Quaternion myGetQuaternion(){
+		Quaternion q = new Quaternion();	//Create Quaternion
+		body.getCenterOfMassTransform().getRotation(q, true); 	//Set Rotation by normalized Vectors 
+		return q;
+	}
+	
+	public float myGetYaw(){
+		return myGetQuaternion().getYaw(); //Get Yaw from Quaternion
+	}
+	
+	public float myGetPitch(){
+		return myGetQuaternion().getPitch(); //Get Pitch from Quaternion
+	}
+	
+	public float myGetRoll(){
+		return myGetQuaternion().getRoll(); //Get Roll from Quaternion
+	}
 	
 	public void mySetScale(float scale){
 		for (Node n : nodes) {
@@ -64,26 +87,6 @@ public class GameObject extends ModelInstance implements Disposable {
 		}
 	}
 	
-	public void mySetPitch(float pitch){
-		Quaternion q = new Quaternion();
-		transform.getRotation(q, true); 
-		
-		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(1,0,0), -q.getYaw()));
-		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(1,0,0), pitch));
-		
-		calculateTransforms();
-	}
-	
-	public void mySetRoll(float roll){
-		Quaternion q = new Quaternion();
-		transform.getRotation(q, true); 
-		
-		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(0,0,1), -q.getYaw()));
-		body.setWorldTransform(body.getWorldTransform().rotate(new Vector3(0,0,1), roll));
-		
-		calculateTransforms();
-	}
-
 	public static class Constructor implements Disposable {
 		public final Model model;
 		public final String node;
