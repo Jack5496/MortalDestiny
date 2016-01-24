@@ -139,6 +139,9 @@ public class Physics implements Disposable {
 		fo.body.setContactCallbackFilter(0);
 		fo.body.setActivationState(Collision.DISABLE_DEACTIVATION);
 //		fo.body.setActivationState(Collision.WANTS_DEACTIVATION);
+		
+		
+		spawnBall();
 	}
 
 	public Model playerModel;
@@ -148,7 +151,7 @@ public class Physics implements Disposable {
 	public GameObject spawnPlayer() {
 		GameObject obj = constructors.get("box").construct();
 
-		obj.transform.trn(MathUtils.random(-2.5f, 2.5f), 9f, MathUtils.random(-2.5f, 2.5f));
+		obj.transform.trn(MathUtils.random(size*-2.5f, size*2.5f), 15f, MathUtils.random(size*-2.5f, size*2.5f));
 		obj.body.proceedToTransform(obj.transform);
 		obj.mySetScale(1f);
 		obj.calculateTransforms();
@@ -159,15 +162,32 @@ public class Physics implements Disposable {
 		GameClass.instances.add(obj);
 		dynamicsWorld.addRigidBody(obj.body);
 		obj.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
+//		obj.body.setContactCallbackFilter(0);
 		obj.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
 
 		return obj;
 	}
+	
+//	size*6, size*1, size*3
 
 	public void spawn() {
 		GameObject obj = constructors.values[2 + MathUtils.random(constructors.size - 3)].construct();
 		obj.transform.setFromEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
-		obj.transform.trn(MathUtils.random(-2.5f, 2.5f), 9f, MathUtils.random(-2.5f, 2.5f));
+		obj.transform.trn(MathUtils.random(-2.5f,2.5f), 15f, MathUtils.random(-2.5f, 2.5f));
+		obj.body.proceedToTransform(obj.transform);
+		obj.body.setUserValue(GameClass.instances.size);
+		obj.body.setCollisionFlags(
+				obj.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+		GameClass.instances.add(obj);
+		dynamicsWorld.addRigidBody(obj.body);
+		obj.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
+		obj.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
+	}
+	
+	public void spawnBall(){
+		GameObject obj = constructors.get("sphere").construct();
+		obj.transform.setFromEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
+		obj.transform.trn(MathUtils.random(-2.5f,2.5f), 15f, MathUtils.random(-2.5f, 2.5f));
 		obj.body.proceedToTransform(obj.transform);
 		obj.body.setUserValue(GameClass.instances.size);
 		obj.body.setCollisionFlags(

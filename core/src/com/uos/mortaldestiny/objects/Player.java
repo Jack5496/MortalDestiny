@@ -97,20 +97,28 @@ public class Player {
 	public void updateMyGameObjects() {
 
 		Vector3 dir = stickLeft.cpy();
+		
+
+		// obj.body.translate(dir.scl(0.1f));
+//		if (dir.len() > 0) {
+//			walk();
+//			obj.body.applyCentralImpulse(dir.scl(0.2f));
+//			obj.body.applyCentralForce(dir);
+//		}
+//		else{
+//			obj.body.applyCentralImpulse(new Vector3());
+//			obj.body.applyCentralForce(dir);
+//		}
+		dir.scl(4);
+		
 		if (stickLeftDown) {
 			dir.scl(1.7f);
 		}
-
-		// obj.body.translate(dir.scl(0.1f));
-		if (dir.len() > 0) {
-//			walk();
-			obj.body.applyCentralImpulse(dir.scl(0.2f));
-			obj.body.applyCentralForce(dir);
-		}
-		else{
-//			obj.body.applyCentralImpulse(new Vector3());
-//			obj.body.applyCentralForce(dir);
-		}
+		
+		Vector3 linV = obj.body.getLinearVelocity();
+		dir.y = linV.y;
+		
+		obj.body.setLinearVelocity(dir);
 		
 		
 		Vector3 lookDir = stickRight.cpy();
@@ -120,6 +128,8 @@ public class Player {
 //		obj.body.setLinearFactor(new Vector3(1,0,1));
 		obj.body.setAngularFactor(new Vector3(0,1,0));
 	}
+	
+	
 	
 	public void updateAnimation(float delta){
 		controller.update(delta);

@@ -50,6 +50,12 @@ public class GameObject extends ModelInstance implements Disposable {
 		calculateTransforms();
 	}
 	
+//	public void mySetYaw (float orientation) {
+//		transform.setToRotationRad(0, 1, 0, orientation);
+//		body.setWorldTransform(transform);
+//		calculateTransforms();
+//	}
+	
 	public void mySetScale(float scale){
 		for (Node n : nodes) {
 			n.scale.set(scale,scale,scale);
