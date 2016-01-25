@@ -126,8 +126,6 @@ public class Player {
 		obj.body.setAngularFactor(new Vector3(0,1,0));	//wont let object rotate around given axe
 	}
 	
-	
-	
 	public void updateAnimation(float delta){
 		animationController.update(delta);
 	}

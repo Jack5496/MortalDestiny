@@ -15,8 +15,6 @@ public class GameObject extends ModelInstance implements Disposable {
 	public final btRigidBody body;
 	public final MyMotionState motionState;
 	public btRigidBody.btRigidBodyConstructionInfo constructionInfo;
-	
-
 
 	public GameObject(Model model, String node, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
 		super(model, node);
@@ -42,6 +40,12 @@ public class GameObject extends ModelInstance implements Disposable {
 		motionState.dispose();
 	}
 	
+	/**
+	 * Set the Yaw Pitch and Roll for a GameObject, without overriting its Translation
+	 * @param yaw Yaw in Degree
+	 * @param pitch Pitch in Degree
+	 * @param roll Roll in Degree
+	 */
 	public void mySetYawPitchRoll(float yaw, float pitch, float roll){
 		Matrix4 tr = body.getCenterOfMassTransform();	//Get Transform (Rotation and Translation)
 		Vector3 trans = new Vector3();	//Create Vector to save Translation
@@ -51,36 +55,69 @@ public class GameObject extends ModelInstance implements Disposable {
 		body.setCenterOfMassTransform(tr);	//Apply Transform
 	}
 	
+	/**
+	 * Set the Yaw for a GameObject, without overriting its Translation
+	 * @param yaw Yaw in Degree
+	 */
 	public void mySetYaw(float yaw){
 		mySetYawPitchRoll(yaw, myGetPitch(), myGetRoll());	//set Yaw and Save other Axes
 	}
 	
+	/**
+	 * Set the Pitch for a GameObject, without overriting its Translation
+	 * @param pitch Pitch in Degree
+	 */
 	public void mySetPitch(float pitch){
 		mySetYawPitchRoll(myGetYaw(), pitch, myGetRoll());	//set Pitch and Save other Axes
 	}
 	
+	/**
+	 * Set the Roll for a GameObject, without overriting its Translation
+	 * @param roll Roll in Degree
+	 */
 	public void mySetRoll(float roll){
 		mySetYawPitchRoll(myGetYaw(), myGetPitch(), roll);	//set Roll and Save other Axes
 	}
 	
-	private Quaternion myGetQuaternion(){
+	/**
+	 * Get the Quaternion of a GameObject
+	 * @return
+	 */
+	public Quaternion myGetQuaternion(){
 		Quaternion q = new Quaternion();	//Create Quaternion
 		body.getCenterOfMassTransform().getRotation(q, true); 	//Set Rotation by normalized Vectors 
 		return q;
 	}
 	
+	/**
+	 * Get the Yaw of a GameObject by its Quaternion
+	 * @return Yaw as float in Degree
+	 */
 	public float myGetYaw(){
 		return myGetQuaternion().getYaw(); //Get Yaw from Quaternion
 	}
 	
+	/**
+	 * Get the Pitch of a GameObject by its Quaternion
+	 * @return Pitch as float in Degree
+	 */
 	public float myGetPitch(){
 		return myGetQuaternion().getPitch(); //Get Pitch from Quaternion
 	}
 	
+	/**
+	 * Get the Roll of a GameObject by its Quaternion
+	 * @return Roll as float in Degree
+	 */
 	public float myGetRoll(){
 		return myGetQuaternion().getRoll(); //Get Roll from Quaternion
 	}
 	
+	/**
+	 * Set the Scale of the GameObjct
+	 * !The CollisionBody is not scaled
+	 * @param scale
+	 */
 	public void mySetScale(float scale){
 		for (Node n : nodes) {
 			n.scale.set(scale,scale,scale);
