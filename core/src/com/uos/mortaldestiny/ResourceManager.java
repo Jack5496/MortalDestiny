@@ -73,6 +73,7 @@ public class ResourceManager {
 
 	public void enqueAssets() {
 		assets.load(Gdx.files.internal(pathModels + "1x1.g3db").path(), Model.class);
+		assets.load(Gdx.files.internal(pathModels + "sack.g3db").path(), Model.class);
 		assets.load(pathGrounds + "GroundTile5x5.obj", Model.class);
 		assets.load(pathGrounds + "spielfeld.g3db", Model.class);
 		assets.load(pp, Model.class);

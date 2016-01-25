@@ -18,13 +18,12 @@ public class KeyboardHandler {
 
 	public void updateInputLogic() {
 		updateLeftStick();
+		updateABXY();
 	}
 	
 	public void updateABXY(){
-		if(keys[Keys.SPACE]){
-			Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
-			p.jump = true;
-		}
+		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
+		p.jump = keys[Keys.SPACE];
 	}
 
 	// Vector3(-1, 0, 0)); //left

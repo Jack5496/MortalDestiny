@@ -29,8 +29,8 @@ public class GameClass implements ApplicationListener {
 
 	public Physics physics;
 
-//	public static Array<GameObject> instances;
-	public static Array<ModelInstance> instances;
+	public static Array<GameObject> instances;
+//	public static Array<ModelInstance> instances;
 
 	private static GameClass application;
 
@@ -57,7 +57,7 @@ public class GameClass implements ApplicationListener {
 		font.setColor(Color.RED);
 	}
 
-	public static Array<ModelInstance> getInstances() {
+	public static Array<GameObject> getInstances() {
 		return instances;
 	}
 

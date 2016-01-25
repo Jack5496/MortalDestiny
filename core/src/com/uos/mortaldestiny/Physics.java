@@ -115,7 +115,7 @@ public class Physics implements Disposable {
 		dynamicsWorld.setGravity(new Vector3(0, -10f, 0));
 		contactListener = new MyContactListener();
 
-		GameClass.instances = new Array<ModelInstance>();
+		GameClass.instances = new Array<GameObject>();
 		
 		
 //		GameObject object = constructors.get("ground").construct();

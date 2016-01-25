@@ -8,6 +8,12 @@ public class PlayerHandler {
 
 	HashMap<String, Player> localPlayers;
 
+	public Player getPlayer(int id){
+		Player[] players = new Player[localPlayers.values().size()];
+		localPlayers.values().toArray(players);
+		return players[id];
+	}
+	
 	public PlayerHandler() {
 		localPlayers = new HashMap<String, Player>();
 	}

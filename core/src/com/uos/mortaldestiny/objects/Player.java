@@ -23,12 +23,14 @@ public class Player {
 	public float boostValue;
 	
 	public boolean jump;
+	public boolean ground;
 
 	public AnimationController animationController;
 
 	public Player(String name) {
 		this.name = name;
 		obj = GameClass.getInstance().physics.spawnPlayer();
+		obj.player = this;
 		animationController = new AnimationController(obj);
 
 		GameClass.getInstance().cameraController.setTrack(obj);
@@ -94,8 +96,13 @@ public class Player {
 	public void updateMyGameObjects() {
 
 		Vector3 dir = stickLeft.cpy();
-		
 
+		if(ground && jump){
+			System.out.println("Lets Jump");
+			ground = false;
+			obj.body.applyCentralImpulse(new Vector3(0,10,0));
+		}
+		
 		// obj.body.translate(dir.scl(0.1f));
 //		if (dir.len() > 0) {
 //			walk();
