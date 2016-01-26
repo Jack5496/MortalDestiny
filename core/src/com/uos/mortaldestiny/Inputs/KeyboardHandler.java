@@ -9,6 +9,9 @@ public class KeyboardHandler {
 
 	public boolean[] keys = new boolean[256];
 	long[] keysTime = new long[256];
+	
+	public boolean mouseLeft = false;
+	public boolean mouseRight = false;
 
 	String inputHandlerName;
 
@@ -19,6 +22,12 @@ public class KeyboardHandler {
 	public void updateInputLogic() {
 		updateLeftStick();
 		updateABXY();
+		updateMouseInputs();
+	}
+	
+	public void updateMouseInputs(){
+			Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
+			p.shoot = mouseLeft;
 	}
 	
 	public void updateABXY(){
@@ -57,6 +66,7 @@ public class KeyboardHandler {
 	}
 
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		mouseLeft = false;
 		return false;
 	}
 
@@ -100,6 +110,8 @@ public class KeyboardHandler {
 	}
 
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		System.out.println("mouse Down");
+		mouseLeft = true;
 		return false;
 	}
 

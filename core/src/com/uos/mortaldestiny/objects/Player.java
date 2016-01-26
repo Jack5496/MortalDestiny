@@ -10,7 +10,7 @@ import com.uos.mortaldestiny.Inputs.Helper;
 public class Player {
 
 	String name;
-	GameObject obj;
+	PlayerObject obj;
 
 	/**
 	 * InputVariables
@@ -20,121 +20,49 @@ public class Player {
 
 	public Vector3 stickRight;
 
-	public float boostValue;
-	
+	public float boostValue;	
 	public boolean jump;
-	public boolean ground;
-
-	public AnimationController animationController;
+	public boolean shoot;
+	public int health;
 
 	public Player(String name) {
 		this.name = name;
-		obj = GameClass.getInstance().physics.spawnPlayer();
-		obj.player = this;
-		animationController = new AnimationController(obj);
-
+		obj = GameClass.getInstance().physics.spawnPlayer(this);
+		
 		GameClass.getInstance().cameraController.setTrack(obj);
 		resetInputVariables();
-	}
-
-	boolean ended = false;
-	boolean running = false;
-
-	public static final String WALK = "Armature|walk";
-
-	public void walk() {
-		if (ended) {
-			animationController.setAnimation(null);
-			ended = false;
-		} else {
-			if (!running) {
-				running = true;
-				String ani = obj.animations.get(0).id;
-				animationController.setAnimation(ani, 0, 3.25f, 1, 10 * 0.5f, new AnimationListener() {
-
-					@Override
-					public void onEnd(AnimationDesc animation) {
-						// this will be called when the current animation is
-						// done.
-						// queue up another animation called "balloon".
-						// Passing a negative to loop count loops forever. 1f
-						// for
-						// speed is normal speed.
-						// controller.setAnimation(null);
-						running = false;
-						ended = true;
-					}
-
-					@Override
-					public void onLoop(AnimationDesc animation) {
-						// TODO Auto-generated method stub
-
-					}
-
-				});
-			}
-		}
-
-	}
-
-	public void stop() {
-		animationController.setAnimation(null);
-		ended = false;
 	}
 
 	public void resetInputVariables() {
 		stickLeft = new Vector3();
 		stickLeftDown = false;
+		shoot = false;
 
 		stickRight = new Vector3();
-
+		health = 100;
 		boostValue = 0;
 	}
 	
 	boolean done = false;
 
 	public void updateMyGameObjects() {
-
 		Vector3 dir = stickLeft.cpy();
 
-		if(ground && jump){
-			System.out.println("Lets Jump");
-			ground = false;
-			obj.body.applyCentralImpulse(new Vector3(0,10,0));
+		if(jump){
+			obj.jump();
 		}
-		
-		// obj.body.translate(dir.scl(0.1f));
-//		if (dir.len() > 0) {
-//			walk();
-//			obj.body.applyCentralImpulse(dir.scl(0.2f));
-//			obj.body.applyCentralForce(dir);
-//		}
-//		else{
-//			obj.body.applyCentralImpulse(new Vector3());
-//			obj.body.applyCentralForce(dir);
-//		}
+		if(shoot){
+			obj.shoot();
+		}
+	
 		dir.scl(4);
 		
 		if (stickLeftDown) {
 			dir.scl(1.7f);
 		}
 		
-		Vector3 linV = obj.body.getLinearVelocity();
-		dir.y = linV.y;
-		
-		obj.body.setLinearVelocity(dir);
-		
-		
-		Vector3 lookDir = stickRight.cpy();
-		int yaw = (int) (Helper.getYawInDegree(lookDir)+.5f);
-		obj.mySetYaw(yaw);
-		
-//		obj.body.setLinearFactor(new Vector3(1,0,1));	//hold object in XZ-Layer
-		obj.body.setAngularFactor(new Vector3(0,1,0));	//wont let object rotate around given axe
-	}
-	
-	public void updateAnimation(float delta){
-		animationController.update(delta);
+		obj.moveHorizontal(dir);		
+		obj.mySetYaw(stickRight);
 	}
 
 }

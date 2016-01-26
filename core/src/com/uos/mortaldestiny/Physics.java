@@ -28,11 +28,15 @@ import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btConstraintSolver;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Disposable;
+import com.uos.mortaldestiny.objects.BulletObject;
 import com.uos.mortaldestiny.objects.GameObject;
+import com.uos.mortaldestiny.objects.Player;
+import com.uos.mortaldestiny.objects.PlayerObject;
 
 public class Physics implements Disposable {
 
@@ -85,6 +89,8 @@ public class Physics implements Disposable {
 				.getG3DBModel(ResourceManager.getInstance().pathGrounds + "spielfeld.g3db");
 		Model box = ResourceManager.getInstance()
 				.getG3DBModel(ResourceManager.getInstance().pathModels + "1x1.g3db");
+		Model sack = ResourceManager.getInstance()
+				.getG3DBModel(ResourceManager.getInstance().pathModels + "sack.g3db");
 
 		model = mb.end();
 
@@ -93,8 +99,9 @@ public class Physics implements Disposable {
 				new btBoxShape(new Vector3(5f, 0.5f, 5f)), 0f));
 		constructors.put("field", new GameObject.Constructor(field, new btBoxShape(new Vector3(size*6, size*1, size*3)), 0f));
 		constructors.put("player", new GameObject.Constructor(anim, new btCylinderShape(new Vector3(2f, 4f, 2f)), 1f));
+		constructors.put("sack", new GameObject.Constructor(sack, "sack", new btSphereShape(0.5f), 1f));
 
-		constructors.put("sphere", new GameObject.Constructor(model, "sphere", new btSphereShape(0.5f), 1f));
+		constructors.put("sphere", new GameObject.Constructor(model, "sphere", new btSphereShape(.5f), 1f));
 		
 //		constructors.put("box",
 //				new GameObject.Constructor(model, "box", new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f)), 1f));
@@ -141,62 +148,74 @@ public class Physics implements Disposable {
 //		fo.body.setActivationState(Collision.WANTS_DEACTIVATION);
 		
 		
-		spawnBall();
+		spawn("sphere");
 	}
 
 	public Model playerModel;
 
 	boolean done = true;
-
-	public GameObject spawnPlayer() {
-		GameObject obj = constructors.get("box").construct();
-
-		obj.transform.trn(MathUtils.random(size*-2.5f, size*2.5f), 15f, MathUtils.random(size*-2.5f, size*2.5f));
-		obj.body.proceedToTransform(obj.transform);
-		obj.mySetScale(1f);
-		obj.calculateTransforms();
-		obj.body.setUserValue(GameClass.instances.size);
-		obj.body.setCollisionFlags(
-				obj.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+	
+	public void addRigidBodyToDynamicsWorld(GameObject obj){
 		GameClass.instances.add(obj);
 		dynamicsWorld.addRigidBody(obj.body);
-		obj.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
+	}
+	
+	public PlayerObject spawnPlayer(Player p) {
+		GameObject obj = constructors.get("box").construct();
+		PlayerObject player = new PlayerObject(obj,p);
+		player.transform.trn(MathUtils.random(size*-2.5f, size*2.5f), 15f, MathUtils.random(size*-2.5f, size*2.5f));
+		player.body.proceedToTransform(player.transform);
+		player.mySetScale(1f);
+		player.calculateTransforms();
+		player.body.setUserValue(GameClass.instances.size);
+		player.body.setCollisionFlags(
+				player.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+		addRigidBodyToDynamicsWorld(player);
+		player.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
 //		obj.body.setContactCallbackFilter(0);
-		obj.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
-		System.out.println("Obj: "+obj.toString());
+		player.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
+		System.out.println("Obj: "+player.toString());
 
-		return obj;
+		return player;
+	}
+	
+	public BulletObject spawnSack(int damage){
+		GameObject obj = constructors.get("sack").construct();
+		BulletObject bullet = new BulletObject(obj,20);
+		bullet.transform.trn(MathUtils.random(-2.5f,2.5f), 15f, MathUtils.random(-2.5f, 2.5f));
+		bullet.body.proceedToTransform(bullet.transform);
+		bullet.body.setUserValue(GameClass.instances.size);
+		bullet.body.setCollisionFlags(
+				bullet.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+		GameClass.instances.add(bullet);
+		dynamicsWorld.addRigidBody(bullet.body);
+		bullet.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
+		bullet.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
+
+		return bullet;
 	}
 	
 //	size*6, size*1, size*3
+	
+	public GameObject spawn(String key){
+		GameObject obj = constructors.get(key).construct();
+		obj.transform.setFromEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
+		obj.transform.trn(MathUtils.random(-2.5f,2.5f), 15f, MathUtils.random(-2.5f, 2.5f));
+		obj.body.proceedToTransform(obj.transform);
+		obj.body.setUserValue(GameClass.instances.size);
+		obj.body.setCollisionFlags(
+				obj.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+		GameClass.instances.add(obj);
+		dynamicsWorld.addRigidBody(obj.body);
+		obj.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
+		obj.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
+		return obj;
+	}
 
 	public void spawn() {
-		GameObject obj = constructors.values[2 + MathUtils.random(constructors.size - 3)].construct();
-		obj.transform.setFromEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
-		obj.transform.trn(MathUtils.random(-2.5f,2.5f), 15f, MathUtils.random(-2.5f, 2.5f));
-		obj.body.proceedToTransform(obj.transform);
-		obj.body.setUserValue(GameClass.instances.size);
-		obj.body.setCollisionFlags(
-				obj.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
-		GameClass.instances.add(obj);
-		dynamicsWorld.addRigidBody(obj.body);
-		obj.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
-		obj.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
+		spawn(constructors.getKeyAt(2 + MathUtils.random(constructors.size - 3)));
 	}
-	
-	public void spawnBall(){
-		GameObject obj = constructors.get("sphere").construct();
-		obj.transform.setFromEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
-		obj.transform.trn(MathUtils.random(-2.5f,2.5f), 15f, MathUtils.random(-2.5f, 2.5f));
-		obj.body.proceedToTransform(obj.transform);
-		obj.body.setUserValue(GameClass.instances.size);
-		obj.body.setCollisionFlags(
-				obj.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
-		GameClass.instances.add(obj);
-		dynamicsWorld.addRigidBody(obj.body);
-		obj.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
-		obj.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
-	}
+
 
 	@Override
 	public void dispose() {

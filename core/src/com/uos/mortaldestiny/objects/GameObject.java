@@ -3,19 +3,23 @@ package com.uos.mortaldestiny.objects;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.utils.Disposable;
+import com.uos.mortaldestiny.GameClass;
+import com.uos.mortaldestiny.MyContactListener;
 import com.uos.mortaldestiny.MyMotionState;
+import com.uos.mortaldestiny.Inputs.Helper;
 
 public class GameObject extends ModelInstance implements Disposable {
 	public final btRigidBody body;
 	public final MyMotionState motionState;
 	public btRigidBody.btRigidBodyConstructionInfo constructionInfo;
-	public Player player;
 
 	public GameObject(Model model, String node, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
 		super(model, node);
@@ -34,11 +38,28 @@ public class GameObject extends ModelInstance implements Disposable {
 		body = new btRigidBody(constructionInfo);
 		body.setMotionState(motionState);
 	}
+	
+	public void update(float delta){
+		//here animations :P look in PlayerObject
+	}
 
 	@Override
 	public void dispose() {
 		body.dispose();
 		motionState.dispose();
+	}
+	
+	public Vector3 myGetTranslation(){
+		Matrix4 tr = body.getCenterOfMassTransform();	//Get Transform (Rotation and Translation)
+		Vector3 trans = new Vector3();	//Create Vector to save Translation
+		tr.getTranslation(trans);	//Get Translation
+		return trans;
+	}
+	
+	public void mySetTranslation(Vector3 pos){
+		Matrix4 tr = body.getCenterOfMassTransform();
+		tr.setTranslation(pos);	//Set Translation back from helper Vector
+		body.setCenterOfMassTransform(tr);	//Apply Transform
 	}
 	
 	/**
@@ -62,6 +83,11 @@ public class GameObject extends ModelInstance implements Disposable {
 	 */
 	public void mySetYaw(float yaw){
 		mySetYawPitchRoll(yaw, myGetPitch(), myGetRoll());	//set Yaw and Save other Axes
+	}
+	
+	public void mySetYaw(Vector3 lookDir){
+		int yaw = (int) (Helper.getYawInDegree(lookDir)+.5f);
+		mySetYaw(yaw);
 	}
 	
 	/**
@@ -98,6 +124,12 @@ public class GameObject extends ModelInstance implements Disposable {
 		return myGetQuaternion().getYaw(); //Get Yaw from Quaternion
 	}
 	
+	public Vector3 myGetYawVector(){
+		Vector3 dir = new Vector3(1,0,0);
+		dir.rotate(myGetYaw(), 0, 1, 0);
+		return dir;
+	}
+	
 	/**
 	 * Get the Pitch of a GameObject by its Quaternion
 	 * @return Pitch as float in Degree
@@ -123,6 +155,7 @@ public class GameObject extends ModelInstance implements Disposable {
 		for (Node n : nodes) {
 			n.scale.set(scale,scale,scale);
 		}
+		calculateTransforms();
 	}
 	
 	public static class Constructor implements Disposable {
@@ -156,7 +189,6 @@ public class GameObject extends ModelInstance implements Disposable {
 
 		public GameObject construct() {
 			if(node==null) return new GameObject(model,constructionInfo);
-			
 			return new GameObject(model, node, constructionInfo);
 		}
 

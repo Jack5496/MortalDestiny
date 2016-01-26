@@ -21,7 +21,25 @@ public class ControllerHandler implements ControllerListener {
 			updateWalkDir(p,controller);
 			updateLookDir(p,controller);
 			updateABXY(p,controller);
+			updateTrigger(p,controller);
 		}
+	}
+	
+	public void updateTrigger(Player p, Controller controller){
+		float leftTrigger = controller.getAxis(XBox360Pad.AXIS_LEFT_TRIGGER);
+		if(leftTrigger<2E-5){
+			leftTrigger=0;
+		}
+		
+		float rightTrigger = -controller.getAxis(XBox360Pad.AXIS_RIGHT_TRIGGER);
+		if(rightTrigger<2E-5){
+			rightTrigger=0;
+		}
+		
+		float thresholdRightTrigger = 0.7f;
+		p.shoot = (rightTrigger>thresholdRightTrigger);
+		
+//		System.out.println("Left: "+leftTrigger+" | Right: "+rightTrigger);
 	}
 
 	public void updateABXY(Player p, Controller controller) {
@@ -99,6 +117,7 @@ public class ControllerHandler implements ControllerListener {
 	@Override
 	public boolean axisMoved(Controller controller, int axisCode, float value) {
 		// TODO Auto-generated method stub
+//		System.out.println("AxisMoved: "+axisCode+" value: "+value);
 		return false;
 	}
 

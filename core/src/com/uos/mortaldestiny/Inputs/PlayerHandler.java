@@ -9,9 +9,14 @@ public class PlayerHandler {
 	HashMap<String, Player> localPlayers;
 
 	public Player getPlayer(int id){
+		Player[] players = getPlayers();
+		return players[id];
+	}
+	
+	public Player[] getPlayers(){
 		Player[] players = new Player[localPlayers.values().size()];
 		localPlayers.values().toArray(players);
-		return players[id];
+		return players;
 	}
 	
 	public PlayerHandler() {
@@ -29,10 +34,9 @@ public class PlayerHandler {
 		return localPlayers.get(inputHandlerName);
 	}
 	
-	public void updatePlayers(float delta){
+	public void updatePlayers(){
 		for(Player p : localPlayers.values()){
 			p.updateMyGameObjects();
-			p.updateAnimation(delta);
 		}
 	}
 

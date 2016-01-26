@@ -15,6 +15,7 @@ import com.uos.mortaldestiny.Inputs.InputHandler;
 import com.uos.mortaldestiny.Inputs.PlayerHandler;
 import com.uos.mortaldestiny.objects.CameraController;
 import com.uos.mortaldestiny.objects.GameObject;
+import com.uos.mortaldestiny.objects.Player;
 
 public class GameClass implements ApplicationListener {
 
@@ -30,7 +31,7 @@ public class GameClass implements ApplicationListener {
 	public Physics physics;
 
 	public static Array<GameObject> instances;
-//	public static Array<ModelInstance> instances;
+	// public static Array<ModelInstance> instances;
 
 	private static GameClass application;
 
@@ -78,37 +79,25 @@ public class GameClass implements ApplicationListener {
 	public void initPhysics() {
 		physics = new Physics();
 	}
-	
+
 	public void initInputHandler() {
 		inputs = new InputHandler();
 	}
-	
+
 	public void initPlayerHandler() {
 		playerHandler = new PlayerHandler();
 	}
 
 	float angle = 90f;
 	float speed = 40f;
-	
+
+	int amount = 0;
+
 	@Override
-	public void render() {		
-		final float delta = Math.min(1f / 30f, Gdx.graphics.getDeltaTime());
-		
-		inputs.updateInputLogic();
-		playerHandler.updatePlayers(delta);
-		
-//		angle = (angle + delta * speed) % 360f;
-//		instances.get(0).transform.setTranslation(0, MathUtils.sinDeg(angle) * 2.5f, 0f);
-//		instances.get(0).transform.setTranslation(0,0, MathUtils.sinDeg(angle) * 2.5f);
+	public void render() {
+		updateInputsAndGameWorld();
 
-		physics.dynamicsWorld.stepSimulation(delta, 5, 1f / 60f);
-
-		if ((physics.spawnTimer -= delta) < 0) {
-//			physics.spawn();
-			physics.spawnTimer = 1.5f;
-		}
-
-		cameraController.update();
+		cameraController.update(); // Update Camera Position
 
 		Gdx.gl.glClearColor(0.3f, 0.3f, 0.3f, 1.f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -117,10 +106,45 @@ public class GameClass implements ApplicationListener {
 		physics.modelBatch.render(instances, environment);
 		physics.modelBatch.end();
 
+		renderHUD();
+	}
+
+	private void updateInputsAndGameWorld() {
+		final float delta = Math.min(1f / 30f, Gdx.graphics.getDeltaTime());
+
+		inputs.updateInputLogic(); // Update Inputs which effect Players
+		playerHandler.updatePlayers(); // Players set PlayerObjects animations
+		updateGameObjectsAnimations(delta); // PlayerObjects calc animation
+
+		physics.dynamicsWorld.stepSimulation(delta, 5, 1f / 60f); // Calcs
+																	// Physics
+
+		if ((physics.spawnTimer -= delta) < 0 && amount < 10) { // spawn 10
+																// random
+																// GameObjects
+//			physics.spawn();
+			physics.spawnTimer = 1.5f;
+			amount++;
+		}
+	}
+
+	private void renderHUD() {
 		batch.begin();
+		int height = 15;
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 5, getHeight() - 5);
 		font.draw(batch, "Objects: " + instances.size, 5, getHeight() - 20);
+		int i = 0;
+		for(Player p : playerHandler.getPlayers()){
+			font.draw(batch, "Player: "+(i+1)+" Health: "+playerHandler.getPlayer(i).health, 5, getHeight() - (60+i*height));
+			i++;
+		}
 		batch.end();
+	}
+
+	private void updateGameObjectsAnimations(float delta) {
+		for (GameObject o : instances) {
+			o.update(delta);
+		}
 	}
 
 	public int getWidth() {
@@ -134,8 +158,8 @@ public class GameClass implements ApplicationListener {
 	@Override
 	public void dispose() {
 		for (ModelInstance obj : instances)
-			if(obj instanceof GameObject)
-			((GameObject) obj).dispose();
+			if (obj instanceof GameObject)
+				((GameObject) obj).dispose();
 		instances.clear();
 
 		physics.dispose();

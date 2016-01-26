@@ -6,13 +6,16 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.bullet.collision.CollisionJNI;
 import com.badlogic.gdx.physics.bullet.collision.ContactListener;
 import com.uos.mortaldestiny.objects.GameObject;
+import com.uos.mortaldestiny.objects.PlayerObject;
 
 public class MyContactListener extends ContactListener {
 
-	final static short GROUND_FLAG = 1 << 8;
-	final static short OBJECT_FLAG = 1 << 9;
-	final static short ALL_FLAG = -1;
+	public final static short GROUND_FLAG = 1 << 8;
+	public final static short OBJECT_FLAG = 1 << 9;
+	public final static short ALL_FLAG = -1;
 
+	
+	//when body still touches other
 	@Override
 	public boolean onContactAdded(int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
 		// if (userValue0 != 0) {
@@ -30,6 +33,7 @@ public class MyContactListener extends ContactListener {
 		return true;
 	}
 
+	//on first contact
 	@Override
 	public void onContactStarted(int userValue0, int userValue1) {
 		if (userValue0 != 0) {
@@ -42,16 +46,19 @@ public class MyContactListener extends ContactListener {
 					.set(Color.WHITE);
 			// System.out.println("ContactStarted: u1");
 			GameObject o = GameClass.instances.get(userValue1);
-			if (o.player != null) {
-				if (userValue0 == 0) {	//this is the real ground
-					System.out.println("Hit ground");
-					o.player.ground = true;
+			if (userValue0 == 0) { // this is the real ground
+//				System.out.println("Hit ground");
+				if (PlayerObject.isPlayerObject(o)) {
+					PlayerObject p = (PlayerObject) o;
+					p.onGround = true;
 				}
-				else{	//that is an other object
-					o.player.ground = true;
+
+			} else { // that is an other object
+				if (PlayerObject.isPlayerObject(o)) {
+					PlayerObject p = (PlayerObject) o;
+					p.onGround = true;
 				}
 			}
 		}
 	}
-
 }
