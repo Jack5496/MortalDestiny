@@ -33,14 +33,19 @@ public class CameraController {
 	 * CameraController which creates a Camera, with , which can be getted
 	 */
 	
-	float normalYaw = 270;
+	public static float offsetYaw = 45;
+	public static float normalYaw = 90;
+	
+	public static Vector3 relativToCamera(Vector3 v){
+		return v.rotate(new Vector3(0,1,0), normalYaw+offsetYaw+90);
+	}
 	
 	public CameraController() {
 		
 
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		updateCameraAxis(normalYaw+45, 65, distance);
+		updateCameraAxis(normalYaw+offsetYaw, 65, distance);
 		updateDisVector();
 
 		camera.near = 1f;

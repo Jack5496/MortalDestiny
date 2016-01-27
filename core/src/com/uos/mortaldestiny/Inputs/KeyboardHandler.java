@@ -3,6 +3,7 @@ package com.uos.mortaldestiny.Inputs;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector3;
 import com.uos.mortaldestiny.GameClass;
+import com.uos.mortaldestiny.objects.CameraController;
 import com.uos.mortaldestiny.objects.Player;
 
 public class KeyboardHandler {
@@ -45,24 +46,20 @@ public class KeyboardHandler {
 
 		if (keys[Keys.A]) {
 			dir.add(new Vector3(-1, 0, 0)); // left
-			dir.add(new Vector3(0, 0, 1)); // down
 		}
 		if (keys[Keys.D]) {
 			dir.add(new Vector3(1, 0, 0)); // right
-			dir.add(new Vector3(0, 0, -1)); // up
 		}
 		if (keys[Keys.W]) {
 			dir.add(new Vector3(0, 0, -1)); // up
-			dir.add(new Vector3(-1, 0, 0)); // left
 		}
 		if (keys[Keys.S]) {
 			dir.add(new Vector3(0, 0, 1)); // down
-			dir.add(new Vector3(1, 0, 0)); // right
 		}
 		
 		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
 		p.stickLeftDown = keys[Keys.SHIFT_LEFT];
-		p.stickLeft = dir;
+		p.stickLeft = CameraController.relativToCamera(dir);
 	}
 
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
@@ -100,10 +97,12 @@ public class KeyboardHandler {
 
 	public boolean mouseMoved(int screenX, int screenY) {
 		Vector3 dir = new Vector3(1, 0, 0);
-		float yaw = getYawInDegreeOfModelWithMouse(screenX, screenY, GameClass.getInstance().cameraController.lookAt);
+		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
+		
+		float yaw = getYawInDegreeOfModelWithMouse(screenX, screenY, p.getObjPos());
 		dir = dir.rotate(yaw, 0, 1, 0);
 		
-		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
+		
 		p.stickRight = dir;
 
 		return true;
@@ -117,10 +116,12 @@ public class KeyboardHandler {
 
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		Vector3 dir = new Vector3(1, 0, 0);
-		float yaw = getYawInDegreeOfModelWithMouse(screenX, screenY, GameClass.getInstance().cameraController.lookAt);
+		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
+		
+		float yaw = getYawInDegreeOfModelWithMouse(screenX, screenY, p.getObjPos());
 		dir = dir.rotate(yaw, 0, 1, 0);
 		
-		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
+		
 		p.stickRight = dir;
 
 		return false;

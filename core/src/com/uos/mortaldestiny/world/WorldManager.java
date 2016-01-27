@@ -15,14 +15,14 @@ public class WorldManager {
 	}
 	
 	public void initTestWorld(){	
-		initTestWorldGround(10,10);
+		initTestWorldGround(5,5);
 		physics.spawn("sphere");
 	}
 	
 	public void initTestWorldGround(int wide, int depth){
 		int size = 10;
-		for(int x=-wide/2; x<wide; x++){
-			for(int z=-depth/2; z<depth; z++){
+		for(int x=0; x<wide; x++){
+			for(int z=0; z<depth; z++){
 				physics.spawnGroundTile(new Vector3(x*size,-1,z*size));
 			}
 		}

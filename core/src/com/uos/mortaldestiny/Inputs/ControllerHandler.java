@@ -6,6 +6,7 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector3;
 import com.uos.mortaldestiny.GameClass;
+import com.uos.mortaldestiny.objects.CameraController;
 import com.uos.mortaldestiny.objects.Player;
 
 public class ControllerHandler implements ControllerListener {
@@ -54,7 +55,7 @@ public class ControllerHandler implements ControllerListener {
 			float ldx = controller.getAxis(XBox360Pad.AXIS_LEFT_X);
 
 			Vector3 vec = new Vector3(ldx, 0, ldy);
-			vec.rotate(new Vector3(0, 1, 0), 45);
+			vec = CameraController.relativToCamera(vec);
 			vec.clamp(0, 1);
 
 			if (Math.abs(vec.len()) > threshold) {
@@ -75,7 +76,7 @@ public class ControllerHandler implements ControllerListener {
 			float rdx = controller.getAxis(XBox360Pad.AXIS_RIGHT_X);
 
 			Vector3 vec = new Vector3(rdx, 0, rdy);
-			vec.rotate(new Vector3(0, 1, 0), 45);
+			vec = CameraController.relativToCamera(vec);
 			vec.clamp(0, 1);
 			
 			if (Math.abs(vec.len()) > threshold) {
