@@ -10,14 +10,12 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.uos.mortaldestiny.Inputs.InputHandler;
 import com.uos.mortaldestiny.Inputs.PlayerHandler;
 import com.uos.mortaldestiny.objects.CameraController;
 import com.uos.mortaldestiny.objects.GameObject;
 import com.uos.mortaldestiny.objects.Player;
-import com.uos.mortaldestiny.world.WorldManager;
 
 public class GameClass implements ApplicationListener {
 
@@ -29,8 +27,8 @@ public class GameClass implements ApplicationListener {
 	public ResourceManager resourceManager;
 	public InputHandler inputs;
 	public PlayerHandler playerHandler;
+
 	public Physics physics;
-	public WorldManager worldManager;
 
 	public static Array<GameObject> instances;
 	// public static Array<ModelInstance> instances;
@@ -52,7 +50,6 @@ public class GameClass implements ApplicationListener {
 		initEnvironment();
 		initCamera();
 		initPhysics();
-		initWorldManager();
 		initInputHandler();
 		initPlayerHandler();
 
@@ -81,10 +78,6 @@ public class GameClass implements ApplicationListener {
 
 	public void initPhysics() {
 		physics = new Physics();
-	}
-	
-	public void initWorldManager() {
-		worldManager = new WorldManager();
 	}
 
 	public void initInputHandler() {
@@ -129,7 +122,7 @@ public class GameClass implements ApplicationListener {
 		if ((physics.spawnTimer -= delta) < 0 && amount < 10) { // spawn 10
 																// random
 																// GameObjects
-			// physics.spawn();
+//			physics.spawn();
 			physics.spawnTimer = 1.5f;
 			amount++;
 		}
@@ -139,16 +132,10 @@ public class GameClass implements ApplicationListener {
 		batch.begin();
 		int height = 15;
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 5, getHeight() - 5);
-		font.draw(batch, "Objects: " + instances.size, 80, getHeight() - 5);
-		Player p1 = playerHandler.getPlayer(0);
-		if (p1 != null) {
-			Vector3 pos = p1.getObjPos();
-			font.draw(batch, "X: " + (int)pos.x+"    | Y: " + (int)pos.y+"    | Z: " + (int)pos.z, 5, getHeight() - 20);
-		}
+		font.draw(batch, "Objects: " + instances.size, 5, getHeight() - 20);
 		int i = 0;
-		for (Player p : playerHandler.getPlayers()) {
-			font.draw(batch, "Player: " + (i + 1) + " Health: " + playerHandler.getPlayer(i).health, 5,
-					getHeight() - (60 + i * height));
+		for(Player p : playerHandler.getPlayers()){
+			font.draw(batch, "Player: "+(i+1)+" Health: "+playerHandler.getPlayer(i).health, 5, getHeight() - (60+i*height));
 			i++;
 		}
 		batch.end();
