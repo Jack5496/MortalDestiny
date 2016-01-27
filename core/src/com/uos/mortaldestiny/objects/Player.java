@@ -32,6 +32,10 @@ public class Player {
 		GameClass.getInstance().cameraController.setTrack(obj);
 		resetInputVariables();
 	}
+	
+	public Vector3 getObjPos(){
+		return obj.myGetTranslation();
+	}
 
 	public void resetInputVariables() {
 		stickLeft = new Vector3();
