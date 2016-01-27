@@ -40,9 +40,12 @@ public class CameraController {
 		return v.rotate(new Vector3(0,1,0), normalYaw+offsetYaw+90);
 	}
 	
+	public void updateViewPort(int width, int height){
+		camera.viewportHeight = height;
+		camera.viewportWidth = width;
+	}
+	
 	public CameraController() {
-		
-
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		updateCameraAxis(normalYaw+offsetYaw, 65, distance);
@@ -53,17 +56,7 @@ public class CameraController {
 
 		lookAt = new Vector3(0, 0, 0);
 
-		update();
-		
-//		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//		camera.position.set(3f, 7f, 10f);
-//		camera.lookAt(0, 4f, 0);
-//		camera.near = 1f;
-//		camera.far = 300f;
-//		camera.update();
-//
-//		camController = new CameraInputController(camera);
-//		Gdx.input.setInputProcessor(camController);		
+		update();	
 	}
 
 	/**

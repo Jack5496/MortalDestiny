@@ -10,6 +10,7 @@ public class PlayerHandler {
 
 	public Player getPlayer(int id){
 		Player[] players = getPlayers();
+		System.out.println("getPlayer by id: "+id+" from: "+players.length);
 		return players[id];
 	}
 	
@@ -17,6 +18,10 @@ public class PlayerHandler {
 		Player[] players = new Player[localPlayers.values().size()];
 		localPlayers.values().toArray(players);
 		return players;
+	}
+	
+	public int getPlayerAmount(){
+		return getPlayers().length;
 	}
 	
 	public PlayerHandler() {

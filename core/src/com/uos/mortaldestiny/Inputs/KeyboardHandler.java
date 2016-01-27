@@ -14,7 +14,7 @@ public class KeyboardHandler {
 	public boolean mouseLeft = false;
 	public boolean mouseRight = false;
 
-	String inputHandlerName;
+	public static String inputHandlerName;
 
 	public KeyboardHandler(InputHandler inputHandler) {
 		inputHandlerName = "Keyboard";
@@ -98,7 +98,7 @@ public class KeyboardHandler {
 	public boolean mouseMoved(int screenX, int screenY) {
 		Vector3 dir = new Vector3(1, 0, 0);
 		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
-		
+				
 		float yaw = getYawInDegreeOfModelWithMouse(screenX, screenY, p.getObjPos());
 		dir = dir.rotate(yaw, 0, 1, 0);
 		
@@ -128,7 +128,8 @@ public class KeyboardHandler {
 	}
 
 	public boolean scrolled(int amount) {
-		GameClass.getInstance().cameraController.distanceAdd(amount);
+		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
+		p.cameraController.distanceAdd(amount);
 		return true;
 	}
 

@@ -126,12 +126,14 @@ public class ControllerHandler implements ControllerListener {
 	public boolean povMoved(Controller controller, int povCode, PovDirection value) {
 		// TODO Auto-generated method stub
 		System.out.println("pov: " + povCode + " with " + value);
+		
+		Player p = GameClass.getInstance().playerHandler.getPlayerByInput("controller:" + controller.hashCode());
 
 		if (value == XBox360Pad.BUTTON_DPAD_DOWN) {
-			GameClass.getInstance().cameraController.distanceIncrease();
+			p.cameraController.distanceIncrease();
 		}
 		if (value == XBox360Pad.BUTTON_DPAD_UP) {
-			GameClass.getInstance().cameraController.distanceDecrease();
+			p.cameraController.distanceDecrease();
 		}
 
 		return false;

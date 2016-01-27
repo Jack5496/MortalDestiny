@@ -24,21 +24,19 @@ public class GameClass implements ApplicationListener {
 	// PerspectiveCamera cam;
 	// CameraInputController camController;
 
-	public Environment environment;
-	public CameraController cameraController;
 	public ResourceManager resourceManager;
 	public InputHandler inputs;
 	public PlayerHandler playerHandler;
 	public Physics physics;
 	public WorldManager worldManager;
+	public Renderer renderer;
 
 	public static Array<GameObject> instances;
 	// public static Array<ModelInstance> instances;
 
 	private static GameClass application;
 
-	private SpriteBatch batch;
-	private BitmapFont font;
+
 
 	public static GameClass getInstance() {
 		return application;
@@ -49,30 +47,15 @@ public class GameClass implements ApplicationListener {
 		application = this;
 
 		initResourceManager();
-		initEnvironment();
-		initCamera();
 		initPhysics();
 		initWorldManager();
 		initInputHandler();
 		initPlayerHandler();
-
-		batch = new SpriteBatch();
-		font = new BitmapFont();
-		font.setColor(Color.RED);
+		initRenderer();
 	}
 
 	public static Array<GameObject> getInstances() {
 		return instances;
-	}
-
-	public void initEnvironment() {
-		environment = new Environment();
-		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-	}
-
-	public void initCamera() {
-		cameraController = new CameraController();
 	}
 
 	public void initResourceManager() {
@@ -94,6 +77,10 @@ public class GameClass implements ApplicationListener {
 	public void initPlayerHandler() {
 		playerHandler = new PlayerHandler();
 	}
+	
+	public void initRenderer(){
+		renderer = new Renderer();
+	}
 
 	float angle = 90f;
 	float speed = 40f;
@@ -102,18 +89,8 @@ public class GameClass implements ApplicationListener {
 
 	@Override
 	public void render() {
-		updateInputsAndGameWorld();
-
-		cameraController.update(); // Update Camera Position
-
-		Gdx.gl.glClearColor(0.3f, 0.3f, 0.3f, 1.f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
-		physics.modelBatch.begin(cameraController.camera);
-		physics.modelBatch.render(instances, environment);
-		physics.modelBatch.end();
-
-		renderHUD();
+		updateInputsAndGameWorld();		
+		renderer.renderForPlayers();
 	}
 
 	private void updateInputsAndGameWorld() {
@@ -133,25 +110,6 @@ public class GameClass implements ApplicationListener {
 			physics.spawnTimer = 1.5f;
 			amount++;
 		}
-	}
-
-	private void renderHUD() {
-		batch.begin();
-		int height = 15;
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 5, getHeight() - 5);
-		font.draw(batch, "Objects: " + instances.size, 80, getHeight() - 5);
-		Player p1 = playerHandler.getPlayer(0);
-		if (p1 != null) {
-			Vector3 pos = p1.getObjPos();
-			font.draw(batch, "X: " + (int)pos.x+"    | Y: " + (int)pos.y+"    | Z: " + (int)pos.z, 5, getHeight() - 20);
-		}
-		int i = 0;
-		for (Player p : playerHandler.getPlayers()) {
-			font.draw(batch, "Player: " + (i + 1) + " Health: " + playerHandler.getPlayer(i).health, 5,
-					getHeight() - (60 + i * height));
-			i++;
-		}
-		batch.end();
 	}
 
 	private void updateGameObjectsAnimations(float delta) {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.uos.mortaldestiny.GameClass;
+import com.uos.mortaldestiny.objects.Player;
 
 public class Helper{
 		
@@ -24,7 +25,8 @@ public class Helper{
 	public static Vector3 getMousePointAt(float screenX, float screenY){
 		Vector3 tmpVector = new Vector3();
 		
-		Ray ray = GameClass.getInstance().cameraController.camera.getPickRay(screenX, screenY);
+		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(KeyboardHandler.inputHandlerName);
+		Ray ray = p.cameraController.camera.getPickRay(screenX, screenY);
 	    final float distance = -ray.origin.y / ray.direction.y;
 	    tmpVector.set(ray.direction).scl(distance).add(ray.origin);
 

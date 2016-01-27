@@ -24,13 +24,20 @@ public class Player {
 	public boolean jump;
 	public boolean shoot;
 	public int health;
+	
+	public CameraController cameraController;
 
 	public Player(String name) {
 		this.name = name;
 		obj = GameClass.getInstance().physics.spawnPlayer(this);
+		initCamera();
 		
-		GameClass.getInstance().cameraController.setTrack(obj);
+		cameraController.setTrack(obj);
 		resetInputVariables();
+	}
+	
+	public void initCamera() {
+		cameraController = new CameraController();
 	}
 	
 	public Vector3 getObjPos(){
