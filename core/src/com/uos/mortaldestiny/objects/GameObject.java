@@ -148,13 +148,20 @@ public class GameObject extends ModelInstance implements Disposable {
 	
 	/**
 	 * Set the Scale of the GameObjct
-	 * !The CollisionBody is not scaled
+	 * CollisionBody is scaled too
 	 * @param scale
 	 */
 	public void mySetScale(float scale){
 		for (Node n : nodes) {
 			n.scale.set(scale,scale,scale);
 		}
+		
+		//Update 27.01.16	Scaling the Collision shape now too
+		btCollisionShape shape = this.body.getCollisionShape();
+		shape.setLocalScaling(new Vector3(scale,scale,scale));
+		this.body.setCollisionShape(shape);
+		//End Update 27.01.16
+		
 		calculateTransforms();
 	}
 	
