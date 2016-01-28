@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.physics.bullet.collision.ContactListener;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.uos.mortaldestiny.GameClass;
+import com.uos.mortaldestiny.objects.BulletObject;
 import com.uos.mortaldestiny.objects.GameObject;
 import com.uos.mortaldestiny.objects.PlayerObject;
 import com.uos.mortaldestiny.objects.VoidZoneObject;
@@ -52,12 +53,19 @@ public class MyContactListener extends ContactListener {
 			((PlayerObject) obj0).respawn();
 		}
 		
-		if (obj0 instanceof GameObject && obj1 instanceof PlayerObject) {
-			GameClass.log(getClass(), "Test1");
+		if (obj0 instanceof GameObject && !(obj0 instanceof BulletObject) && obj1 instanceof PlayerObject) {
+//			GameClass.log(getClass(), "Player hit ground");
+			PlayerObject p = (PlayerObject) obj1;
+			p.onGround = true;
+		}
+		
+		if (obj0 instanceof BulletObject || obj1 instanceof BulletObject) {
+			GameClass.log(getClass(), "Bullet");
 		}
 
 		if (obj1 instanceof VoidZoneObject && obj0 instanceof GameObject && !(obj0 instanceof PlayerObject)) {
-			GameClass.instances.removeValue(obj0, true);
+			GameClass.instances.removeValue(obj0, false);
+//			GameClass.instances.removeValue(obj0, false); //may have a look on difference
 		}
 		
 		int userValue0 = obj0.body.getUserValue();

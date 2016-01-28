@@ -158,7 +158,6 @@ public class Physics implements Disposable {
 		player.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
 //		obj.body.setContactCallbackFilter(0);
 		player.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
-		GameClass.log(getClass(), "Obj: "+player.toString());
 
 		return player;
 	}
