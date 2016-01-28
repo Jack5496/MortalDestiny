@@ -1,5 +1,6 @@
 package com.uos.mortaldestiny.Inputs;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector3;
 import com.uos.mortaldestiny.CameraController;
@@ -11,7 +12,7 @@ public class KeyboardHandler {
 
 	public boolean[] keys = new boolean[256];
 	long[] keysTime = new long[256];
-	
+
 	public boolean mouseLeft = false;
 	public boolean mouseRight = false;
 
@@ -26,15 +27,23 @@ public class KeyboardHandler {
 		updateABXY();
 		updateMouseInputs();
 	}
-	
-	public void updateMouseInputs(){
-			Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
-			p.shoot = mouseLeft;
+
+	public void updateMouseInputs() {
+		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
+		p.shoot = mouseLeft;
+		p.rightClick = mouseRight;
 	}
-	
-	public void updateABXY(){
+
+	public void updateABXY() {
 		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
 		p.jump = keys[Keys.SPACE];
+		
+		if(keys[Keys.Z]){
+			GameClass.getInstance().aiHandler.createAI("Zombie Nils");
+			GameClass.getInstance().aiHandler.createAI("Zombie Marius");
+			GameClass.getInstance().aiHandler.createAI("Zombie Alex");
+			GameClass.getInstance().aiHandler.createAI("Zombie Eric");
+		}
 	}
 
 	// Vector3(-1, 0, 0)); //left
@@ -57,14 +66,20 @@ public class KeyboardHandler {
 		if (keys[Keys.S]) {
 			dir.add(new Vector3(0, 0, 1)); // down
 		}
-		
+
+		dir.clamp(0, 1);
 		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
 		p.stickLeftDown = keys[Keys.SHIFT_LEFT];
 		p.stickLeft = CameraController.relativToCamera(dir);
 	}
 
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		mouseLeft = false;
+		if (button == Input.Buttons.LEFT) {
+			mouseLeft = false;
+		}
+		if (button == Input.Buttons.RIGHT) {
+			mouseRight = false;
+		}
 		return false;
 	}
 
@@ -83,6 +98,7 @@ public class KeyboardHandler {
 	}
 
 	public boolean keyTyped(char character) {
+		
 		return false;
 	}
 
@@ -99,30 +115,35 @@ public class KeyboardHandler {
 	public boolean mouseMoved(int screenX, int screenY) {
 		Vector3 dir = new Vector3(1, 0, 0);
 		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
-				
+
 		float yaw = getYawInDegreeOfModelWithMouse(screenX, screenY, p.getObjPos());
 		dir = dir.rotate(yaw, 0, 1, 0);
-		
-		
+
 		p.stickRight = dir;
 
 		return true;
 	}
 
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-//		GameClass.log(getClass(), "mouse Down");
-		mouseLeft = true;
+		// GameClass.log(getClass(), "mouse Down");
+		
+		if (button == Input.Buttons.LEFT) {
+			mouseLeft = true;
+		}
+		if (button == Input.Buttons.RIGHT) {
+			mouseRight = true;
+		}
+		
 		return false;
 	}
 
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		Vector3 dir = new Vector3(1, 0, 0);
 		Player p = GameClass.getInstance().playerHandler.getPlayerByInput(inputHandlerName);
-		
+
 		float yaw = getYawInDegreeOfModelWithMouse(screenX, screenY, p.getObjPos());
 		dir = dir.rotate(yaw, 0, 1, 0);
-		
-		
+
 		p.stickRight = dir;
 
 		return false;

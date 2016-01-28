@@ -65,6 +65,7 @@ public class MyContactListener extends ContactListener {
 
 		if (obj1 instanceof VoidZoneObject && obj0 instanceof GameObject && !(obj0 instanceof PlayerObject)) {
 			GameClass.instances.removeValue(obj0, false);
+			GameClass.getInstance().physics.dynamicsWorld.removeCollisionObject(obj0.body);
 //			GameClass.instances.removeValue(obj0, false); //may have a look on difference
 		}
 		

@@ -21,6 +21,7 @@ public class Player {
 	public float boostValue;	
 	public boolean jump;
 	public boolean shoot;
+	public boolean rightClick;
 	public int health;
 	
 	public CameraController cameraController;
@@ -28,14 +29,12 @@ public class Player {
 	public Player(String name) {
 		this.name = name;
 		obj = GameClass.getInstance().physics.spawnPlayer(this);
-		initCamera();
-		
-		cameraController.setTrack(obj);
 		resetInputVariables();
 	}
 	
 	public void initCamera() {
 		cameraController = new CameraController();
+		cameraController.setTrack(obj);
 	}
 	
 	public Vector3 getObjPos(){
@@ -46,6 +45,7 @@ public class Player {
 		stickLeft = new Vector3();
 		stickLeftDown = false;
 		shoot = false;
+		rightClick = false;
 
 		stickRight = new Vector3();
 		health = 100;
@@ -61,7 +61,10 @@ public class Player {
 			obj.jump();
 		}
 		if(shoot){
-			obj.shoot();
+			obj.shootBall();
+		}
+		if(rightClick){
+			obj.spawnBox();
 		}
 	
 		dir.scl(4);

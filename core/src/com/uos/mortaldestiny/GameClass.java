@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.Array;
 import com.uos.mortaldestiny.Inputs.InputHandler;
 import com.uos.mortaldestiny.objects.GameObject;
+import com.uos.mortaldestiny.player.AIHandler;
 import com.uos.mortaldestiny.player.PlayerHandler;
 import com.uos.mortaldestiny.world.Physics;
 import com.uos.mortaldestiny.world.WorldManager;
@@ -15,6 +16,7 @@ public class GameClass implements ApplicationListener {
 	public ResourceManager resourceManager;
 	public InputHandler inputs;
 	public PlayerHandler playerHandler;
+	public AIHandler aiHandler;
 	public Physics physics;
 	public WorldManager worldManager;
 	public Renderer renderer;
@@ -37,6 +39,7 @@ public class GameClass implements ApplicationListener {
 		initWorldManager();
 		initInputHandler();
 		initPlayerHandler();
+		initAIHandler();
 		initRenderer();
 	}
 
@@ -63,6 +66,10 @@ public class GameClass implements ApplicationListener {
 	public void initPlayerHandler() {
 		playerHandler = new PlayerHandler();
 	}
+	
+	public void initAIHandler() {
+		aiHandler = new AIHandler();
+	}
 
 	public void initRenderer() {
 		renderer = new Renderer();
@@ -81,6 +88,7 @@ public class GameClass implements ApplicationListener {
 
 		inputs.updateInputLogic(); // Update Inputs which effect Players
 		playerHandler.updatePlayers(); // Players set PlayerObjects animations
+		aiHandler.updateAIs();
 		updateGameObjectsAnimations(delta); // PlayerObjects calc animation
 
 		physics.dynamicsWorld.stepSimulation(delta, 5, 1f / 60f); // Calcs
@@ -89,7 +97,7 @@ public class GameClass implements ApplicationListener {
 		if ((physics.spawnTimer -= delta) < 0 && amount < 10) { // spawn 10
 																// random
 																// GameObjects
-			// physics.spawn();
+//			 physics.spawn("box");
 			physics.spawnTimer = 1.5f;
 			amount++;
 		}

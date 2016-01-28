@@ -35,27 +35,46 @@ public class PlayerObject extends GameObject implements Disposable {
 	private double shotPerSecond = 5;
 	private double shotWait = (1000/shotPerSecond);
 	
-	public void shoot(){
+	public void shootBall(){
 		double now = System.currentTimeMillis();
 		if(shotLast+shotWait<now){	//if enough time elapsed
 			shotLast = now;
 			GameObject ball = GameClass.getInstance().physics.spawn("sphere");
-//			BulletObject ball = GameClass.getInstance().physics.spawnSack(20);
-//			ball.body.setMassProps(10, new Vector3(1,1,1));
 			Vector3 lookDir = myGetYawVector();
 			Vector3 pos = myGetTranslation();
 			pos.add(lookDir.scl(2f));
 			ball.mySetTranslation(pos);
 			
 			//Add ball same Velocity Horizontally
-//			Vector3 linV = ball.body.getLinearVelocity();
-//			linV.y = body.getLinearVelocity().y;
-//			ball.body.setLinearVelocity(linV);
+			Vector3 linV = ball.body.getLinearVelocity();
+			linV.y = body.getLinearVelocity().y;
+			ball.body.setLinearVelocity(linV);
 			//end
 			
 			ball.mySetScale(1);
 			
 			ball.body.applyCentralImpulse(lookDir.scl(20/ball.body.getInvMass()));
+		}
+	}
+	
+	public void spawnBox(){
+		double now = System.currentTimeMillis();
+		if(shotLast+shotWait<now){	//if enough time elapsed
+			shotLast = now;
+			GameObject box = GameClass.getInstance().physics.spawn("box");
+			Vector3 lookDir = myGetYawVector();
+			Vector3 pos = myGetTranslation();
+			pos.add(lookDir.scl(2f));
+			box.mySetTranslation(pos);
+			box.mySetYawPitchRoll(myGetYaw(), 0, 0);
+			
+			//Add ball same Velocity Horizontally
+			Vector3 linV = box.body.getLinearVelocity();
+			linV.y = body.getLinearVelocity().y;
+			box.body.setLinearVelocity(linV);
+			//end
+			
+			box.mySetScale(1);
 		}
 	}
 	

@@ -32,7 +32,9 @@ public class PlayerHandler {
 
 		if (!found) {
 			GameClass.log(getClass(), "New Player found");
-			localPlayers.put(inputHandlerName, new Player("Bob"));
+			Player p = new Player("Bob");
+			p.initCamera();
+			localPlayers.put(inputHandlerName, p);
 		}
 
 		return localPlayers.get(inputHandlerName);

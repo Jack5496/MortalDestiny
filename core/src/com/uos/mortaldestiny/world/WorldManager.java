@@ -16,6 +16,7 @@ public class WorldManager {
 	public void initTestWorld(){	
 		initTestWorldGround(5,5);
 		physics.spawn("sphere");
+		
 	}
 	
 	public void initTestWorldGround(int wide, int depth){

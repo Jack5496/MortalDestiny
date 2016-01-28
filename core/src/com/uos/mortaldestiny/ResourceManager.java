@@ -14,6 +14,7 @@ public class ResourceManager {
 
 	public String pathModels = "data/models/";
 	public String pathGrounds = pathModels + "MapParts/Ground/";
+	public String pathWalls = pathModels + "MapParts/Wall/";
 	String pp = pathModels+"Player/player.g3db";
 
 	public Model model;
@@ -51,7 +52,7 @@ public class ResourceManager {
 
 		GameClass.log(getClass(), "List Assets");
 		enqueAssets();
-
+		
 		float progress = 0;
 		GameClass.log(getClass(), "Loaded: " + assets.getProgress() * 100 + "%");
 
@@ -69,7 +70,7 @@ public class ResourceManager {
 		assets.load(Gdx.files.internal(pathModels + "1x1.g3db").path(), Model.class);
 		assets.load(Gdx.files.internal(pathModels + "sack.g3db").path(), Model.class);
 		assets.load(pathGrounds + "GroundTile5x5.g3db", Model.class);
-		assets.load(pathGrounds + "spielfeld.g3db", Model.class);
+		assets.load(pathWalls + "Wall5x3x1.g3db", Model.class);
 		assets.load(pp, Model.class);
 	}
 	
