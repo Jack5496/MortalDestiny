@@ -5,9 +5,9 @@ import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector3;
+import com.uos.mortaldestiny.CameraController;
 import com.uos.mortaldestiny.GameClass;
-import com.uos.mortaldestiny.objects.CameraController;
-import com.uos.mortaldestiny.objects.Player;
+import com.uos.mortaldestiny.player.Player;
 
 public class ControllerHandler implements ControllerListener {
 

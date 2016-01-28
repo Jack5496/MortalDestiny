@@ -11,12 +11,16 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
+import com.badlogic.gdx.physics.bullet.collision.btBroadphaseProxy;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.badlogic.gdx.physics.bullet.collision.btStaticPlaneShape;
 import com.badlogic.gdx.utils.Array;
 import com.uos.mortaldestiny.Inputs.InputHandler;
-import com.uos.mortaldestiny.Inputs.PlayerHandler;
-import com.uos.mortaldestiny.objects.CameraController;
 import com.uos.mortaldestiny.objects.GameObject;
-import com.uos.mortaldestiny.objects.Player;
+import com.uos.mortaldestiny.player.Player;
+import com.uos.mortaldestiny.player.PlayerHandler;
+import com.uos.mortaldestiny.world.Physics;
 import com.uos.mortaldestiny.world.WorldManager;
 
 public class GameClass implements ApplicationListener {

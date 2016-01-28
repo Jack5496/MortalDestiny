@@ -1,4 +1,4 @@
-package com.uos.mortaldestiny;
+package com.uos.mortaldestiny.world;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -19,12 +19,14 @@ import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btConeShape;
 import com.badlogic.gdx.physics.bullet.collision.btCylinderShape;
 import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
 import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btDispatcher;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
+import com.badlogic.gdx.physics.bullet.collision.btStaticPlaneShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btConstraintSolver;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
@@ -33,28 +35,30 @@ import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSol
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Disposable;
+import com.uos.mortaldestiny.GameClass;
+import com.uos.mortaldestiny.ResourceManager;
 import com.uos.mortaldestiny.objects.BulletObject;
 import com.uos.mortaldestiny.objects.GameObject;
-import com.uos.mortaldestiny.objects.Player;
 import com.uos.mortaldestiny.objects.PlayerObject;
+import com.uos.mortaldestiny.player.Player;
 
 public class Physics implements Disposable {
 
-	ModelBatch modelBatch;
+	public ModelBatch modelBatch;
 
 	Model model;
 	ModelBuilder mb;
 
 	ArrayMap<String, GameObject.Constructor> constructors;
 
-	btCollisionConfiguration collisionConfig;
-	btDispatcher dispatcher;
-	MyContactListener contactListener;
-	btBroadphaseInterface broadphase;
-	btDynamicsWorld dynamicsWorld;
-	btConstraintSolver constraintSolver;
+	public btCollisionConfiguration collisionConfig;
+	public btDispatcher dispatcher;
+	public MyContactListener contactListener;
+	public btBroadphaseInterface broadphase;
+	public btDynamicsWorld dynamicsWorld;
+	public btConstraintSolver constraintSolver;
 
-	float spawnTimer;
+	public float spawnTimer;
 	
 	float size = 10;
 
@@ -79,6 +83,10 @@ public class Physics implements Disposable {
 				.getG3DBModel(ResourceManager.getInstance().pathGrounds + "GroundTile5x5.g3db");
 		constructors.put("GroundTile5x5", new GameObject.Constructor(GroundTile5x5, new btBoxShape(new Vector3(5, 1, 5)), 0f));
 		
+//		Model ground = ResourceManager.getInstance()
+//				.getG3DBModel(ResourceManager.getInstance().pathGrounds + "GroundTile5x5.g3db");
+//		constructors.put("ground", new GameObject.Constructor(ground, new btBoxShape(new Vector3(Float.POSITIVE_INFINITY, 1, Float.POSITIVE_INFINITY)), 0f));
+		
 		Model box = ResourceManager.getInstance()
 				.getG3DBModel(ResourceManager.getInstance().pathModels + "1x1.g3db");
 		constructors.put("box",	new GameObject.Constructor(box, new btBoxShape(new Vector3(1, 1, 1)), 1f));
@@ -87,6 +95,9 @@ public class Physics implements Disposable {
 				.getG3DBModel(ResourceManager.getInstance().pathModels + "sack.g3db");
 		constructors.put("sack", new GameObject.Constructor(sack, new btSphereShape(0.5f), 1f));
 		
+		Model ground = ResourceManager.getInstance()
+				.getG3DBModel(ResourceManager.getInstance().pathGrounds + "GroundTile5x5.g3db");
+		constructors.put("ground", new GameObject.Constructor(ground, new btStaticPlaneShape(new Vector3(0,1,0),1), 0f));
 		
 		collisionConfig = new btDefaultCollisionConfiguration();
 		dispatcher = new btCollisionDispatcher(collisionConfig);
@@ -97,6 +108,21 @@ public class Physics implements Disposable {
 		contactListener = new MyContactListener();
 
 		GameClass.instances = new Array<GameObject>();
+		spawnGround();
+	}
+	
+	public void spawnGround(){
+		GameObject fo = constructors.get("ground").construct();
+		fo.mySetScale(1f);
+		fo.transform.trn(new Vector3(0,-5,0));
+		fo.calculateTransforms();
+		fo.body.setCollisionFlags(
+				fo.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
+		GameClass.instances.add(fo);
+		dynamicsWorld.addRigidBody(fo.body);
+		fo.body.setContactCallbackFlag(MyContactListener.DEATH_ZONE);
+		fo.body.setContactCallbackFilter(0);
+		fo.body.setActivationState(Collision.DISABLE_DEACTIVATION);		
 	}
 	
 	public void spawnGroundTile(Vector3 pos){

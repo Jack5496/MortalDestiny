@@ -1,4 +1,4 @@
-package com.uos.mortaldestiny.objects;
+package com.uos.mortaldestiny;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;

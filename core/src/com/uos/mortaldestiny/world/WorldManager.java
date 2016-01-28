@@ -2,7 +2,6 @@ package com.uos.mortaldestiny.world;
 
 import com.badlogic.gdx.math.Vector3;
 import com.uos.mortaldestiny.GameClass;
-import com.uos.mortaldestiny.Physics;
 
 public class WorldManager {
 	

@@ -9,7 +9,8 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
-import com.uos.mortaldestiny.objects.Player;
+import com.uos.mortaldestiny.player.Player;
+import com.uos.mortaldestiny.world.Physics;
 
 public class Renderer {
 
@@ -36,7 +37,6 @@ public class Renderer {
 
 	public void renderForPlayers() {
 		int amountPlayers = GameClass.getInstance().playerHandler.getPlayerAmount();
-		System.out.println("Player amount: " + amountPlayers);
 
 		Gdx.gl.glClearColor(0.3f, 0.3f, 0.3f, 1.f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);

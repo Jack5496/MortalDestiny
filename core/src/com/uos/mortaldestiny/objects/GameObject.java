@@ -3,18 +3,14 @@ package com.uos.mortaldestiny.objects;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.utils.Disposable;
-import com.uos.mortaldestiny.GameClass;
-import com.uos.mortaldestiny.MyContactListener;
-import com.uos.mortaldestiny.MyMotionState;
-import com.uos.mortaldestiny.Inputs.Helper;
+import com.uos.mortaldestiny.helper.Helper;
+import com.uos.mortaldestiny.world.MyMotionState;
 
 public class GameObject extends ModelInstance implements Disposable {
 	public final btRigidBody body;

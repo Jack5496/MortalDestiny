@@ -1,8 +1,6 @@
-package com.uos.mortaldestiny.Inputs;
+package com.uos.mortaldestiny.player;
 
 import java.util.HashMap;
-
-import com.uos.mortaldestiny.objects.Player;
 
 public class PlayerHandler {
 
@@ -10,7 +8,6 @@ public class PlayerHandler {
 
 	public Player getPlayer(int id){
 		Player[] players = getPlayers();
-		System.out.println("getPlayer by id: "+id+" from: "+players.length);
 		return players[id];
 	}
 	

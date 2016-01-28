@@ -2,9 +2,10 @@ package com.uos.mortaldestiny.Inputs;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector3;
+import com.uos.mortaldestiny.CameraController;
 import com.uos.mortaldestiny.GameClass;
-import com.uos.mortaldestiny.objects.CameraController;
-import com.uos.mortaldestiny.objects.Player;
+import com.uos.mortaldestiny.helper.Helper;
+import com.uos.mortaldestiny.player.Player;
 
 public class KeyboardHandler {
 

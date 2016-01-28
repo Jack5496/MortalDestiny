@@ -1,10 +1,11 @@
-package com.uos.mortaldestiny.Inputs;
+package com.uos.mortaldestiny.helper;
 
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.uos.mortaldestiny.GameClass;
-import com.uos.mortaldestiny.objects.Player;
+import com.uos.mortaldestiny.Inputs.KeyboardHandler;
+import com.uos.mortaldestiny.player.Player;
 
 public class Helper{
 		
