@@ -92,26 +92,26 @@ public class ControllerHandler implements ControllerListener {
 	@Override
 	public void connected(Controller controller) {
 		// TODO Auto-generated method stub
-		System.out.println("Controller connected");
+		GameClass.log(getClass(), "Controller connected");
 	}
 
 	@Override
 	public void disconnected(Controller controller) {
 		// TODO Auto-generated method stub
-		System.out.println("Controller disconnected");
+		GameClass.log(getClass(), "Controller disconnected");
 	}
 
 	@Override
 	public boolean buttonDown(Controller controller, int buttonCode) {
 		// TODO Auto-generated method stub
-		System.out.println("ButtonDown: " + buttonCode);
+		GameClass.log(getClass(), "ButtonDown: " + buttonCode);
 		return false;
 	}
 
 	@Override
 	public boolean buttonUp(Controller controller, int buttonCode) {
 		// TODO Auto-generated method stub
-		System.out.println("ButtonUp: " + buttonCode);
+		GameClass.log(getClass(), "ButtonUp: " + buttonCode);
 		return false;
 	}
 
@@ -125,7 +125,7 @@ public class ControllerHandler implements ControllerListener {
 	@Override
 	public boolean povMoved(Controller controller, int povCode, PovDirection value) {
 		// TODO Auto-generated method stub
-		System.out.println("pov: " + povCode + " with " + value);
+		GameClass.log(getClass(), "pov: " + povCode + " with " + value);
 		
 		Player p = GameClass.getInstance().playerHandler.getPlayerByInput("controller:" + controller.hashCode());
 
@@ -142,21 +142,21 @@ public class ControllerHandler implements ControllerListener {
 	@Override
 	public boolean xSliderMoved(Controller controller, int sliderCode, boolean value) {
 		// TODO Auto-generated method stub
-		System.out.println("xSlider: " + sliderCode + " with " + value);
+		GameClass.log(getClass(), "xSlider: " + sliderCode + " with " + value);
 		return false;
 	}
 
 	@Override
 	public boolean ySliderMoved(Controller controller, int sliderCode, boolean value) {
 		// TODO Auto-generated method stub
-		System.out.println("ySlider: " + sliderCode + " with " + value);
+		GameClass.log(getClass(), "ySlider: " + sliderCode + " with " + value);
 		return false;
 	}
 
 	@Override
 	public boolean accelerometerMoved(Controller controller, int accelerometerCode, Vector3 value) {
 		// TODO Auto-generated method stub
-		System.out.println("accelerometer: " + accelerometerCode + " with " + value);
+		GameClass.log(getClass(), "accelerometer: " + accelerometerCode + " with " + value);
 		return false;
 	}
 

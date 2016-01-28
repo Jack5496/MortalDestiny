@@ -2,6 +2,8 @@ package com.uos.mortaldestiny.player;
 
 import java.util.HashMap;
 
+import com.uos.mortaldestiny.GameClass;
+
 public class PlayerHandler {
 
 	HashMap<String, Player> localPlayers;
@@ -29,7 +31,7 @@ public class PlayerHandler {
 		boolean found = localPlayers.containsKey(inputHandlerName);
 
 		if (!found) {
-			System.out.println("New Player found");
+			GameClass.log(getClass(), "New Player found");
 			localPlayers.put(inputHandlerName, new Player("Bob"));
 		}
 

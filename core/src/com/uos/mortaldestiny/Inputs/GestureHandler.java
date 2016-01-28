@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
+import com.uos.mortaldestiny.GameClass;
 
 public class GestureHandler implements GestureListener {
 
@@ -22,44 +23,44 @@ public class GestureHandler implements GestureListener {
 
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
-		System.out.println("Tap");
+		GameClass.log(getClass(), "Tap");
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean longPress(float x, float y) {
-		System.out.println("Long Press");
+		GameClass.log(getClass(), "Long Press");
 		return false;
 	}
 
 	@Override
 	public boolean fling(float velocityX, float velocityY, int button) {
-		System.out.println("Fling");
+		GameClass.log(getClass(), "Fling");
 		return false;
 	}
 
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY) {
-		System.out.println("Pan");
+		GameClass.log(getClass(), "Pan");
 		return false;
 	}
 
 	@Override
 	public boolean panStop(float x, float y, int pointer, int button) {
-		System.out.println("PanStop");
+		GameClass.log(getClass(), "PanStop");
 		return false;
 	}
 
 	@Override
 	public boolean zoom(float initialDistance, float distance) {
-		System.out.println("Zoom");
+		GameClass.log(getClass(), "Zoom");
 		return false;
 	}
 
 	@Override
 	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-		System.out.println("Pinch");
+		GameClass.log(getClass(), "Pinch");
 		return false;
 	}
 

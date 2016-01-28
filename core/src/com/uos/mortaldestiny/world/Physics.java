@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
@@ -15,12 +14,9 @@ import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.collision.Collision;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btBroadphaseInterface;
-import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
-import com.badlogic.gdx.physics.bullet.collision.btConeShape;
 import com.badlogic.gdx.physics.bullet.collision.btCylinderShape;
 import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
 import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
@@ -30,7 +26,6 @@ import com.badlogic.gdx.physics.bullet.collision.btStaticPlaneShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btConstraintSolver;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
@@ -40,6 +35,7 @@ import com.uos.mortaldestiny.ResourceManager;
 import com.uos.mortaldestiny.objects.BulletObject;
 import com.uos.mortaldestiny.objects.GameObject;
 import com.uos.mortaldestiny.objects.PlayerObject;
+import com.uos.mortaldestiny.objects.VoidZoneObject;
 import com.uos.mortaldestiny.player.Player;
 
 public class Physics implements Disposable {
@@ -112,9 +108,9 @@ public class Physics implements Disposable {
 	}
 	
 	public void spawnGround(){
-		GameObject fo = constructors.get("ground").construct();
+		VoidZoneObject fo = new VoidZoneObject(constructors.get("ground").construct());
 		fo.mySetScale(1f);
-		fo.transform.trn(new Vector3(0,-5,0));
+		fo.transform.trn(new Vector3(0,-10,0));
 		fo.calculateTransforms();
 		fo.body.setCollisionFlags(
 				fo.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
@@ -156,14 +152,13 @@ public class Physics implements Disposable {
 		player.body.proceedToTransform(player.transform);
 		player.mySetScale(1f);
 		player.calculateTransforms();
-		player.body.setUserValue(GameClass.instances.size);
 		player.body.setCollisionFlags(
 				player.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
 		addRigidBodyToDynamicsWorld(player);
 		player.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
 //		obj.body.setContactCallbackFilter(0);
 		player.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
-		System.out.println("Obj: "+player.toString());
+		GameClass.log(getClass(), "Obj: "+player.toString());
 
 		return player;
 	}
@@ -173,7 +168,6 @@ public class Physics implements Disposable {
 		BulletObject bullet = new BulletObject(obj,20);
 		bullet.transform.trn(MathUtils.random(-2.5f,2.5f), 15f, MathUtils.random(-2.5f, 2.5f));
 		bullet.body.proceedToTransform(bullet.transform);
-		bullet.body.setUserValue(GameClass.instances.size);
 		bullet.body.setCollisionFlags(
 				bullet.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
 		GameClass.instances.add(bullet);
@@ -191,7 +185,6 @@ public class Physics implements Disposable {
 		obj.transform.setFromEulerAngles(MathUtils.random(360f), MathUtils.random(360f), MathUtils.random(360f));
 		obj.transform.trn(MathUtils.random(-2.5f,2.5f), 15f, MathUtils.random(-2.5f, 2.5f));
 		obj.body.proceedToTransform(obj.transform);
-		obj.body.setUserValue(GameClass.instances.size);
 		obj.body.setCollisionFlags(
 				obj.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
 		GameClass.instances.add(obj);

@@ -110,7 +110,7 @@ public class KeyboardHandler {
 	}
 
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		System.out.println("mouse Down");
+		GameClass.log(getClass(), "mouse Down");
 		mouseLeft = true;
 		return false;
 	}

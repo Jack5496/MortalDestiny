@@ -68,10 +68,13 @@ public class PlayerObject extends GameObject implements Disposable {
 
 	public void jump() {
 		if (onGround) {
-			System.out.println("Lets Jump");
 			onGround = false;
 			body.applyCentralImpulse(new Vector3(0, 10, 0));
 		}
+	}
+	
+	public void respawn(){
+		mySetTranslation(new Vector3(0,5,0));
 	}
 
 	public void walkAnimation() {

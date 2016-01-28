@@ -24,6 +24,7 @@ public class GameObject extends ModelInstance implements Disposable {
 		this.constructionInfo = constructionInfo;
 		body = new btRigidBody(constructionInfo);
 		body.setMotionState(motionState);
+		body.userData = this;
 	}
 	
 	public GameObject(Model model, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
@@ -33,6 +34,7 @@ public class GameObject extends ModelInstance implements Disposable {
 		this.constructionInfo = constructionInfo;
 		body = new btRigidBody(constructionInfo);
 		body.setMotionState(motionState);
+		body.userData = this;
 	}
 	
 	public void update(float delta){

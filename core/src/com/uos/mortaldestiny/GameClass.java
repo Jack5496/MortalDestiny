@@ -2,31 +2,15 @@ package com.uos.mortaldestiny;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
-import com.badlogic.gdx.physics.bullet.collision.btBroadphaseProxy;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
-import com.badlogic.gdx.physics.bullet.collision.btStaticPlaneShape;
 import com.badlogic.gdx.utils.Array;
 import com.uos.mortaldestiny.Inputs.InputHandler;
 import com.uos.mortaldestiny.objects.GameObject;
-import com.uos.mortaldestiny.player.Player;
 import com.uos.mortaldestiny.player.PlayerHandler;
 import com.uos.mortaldestiny.world.Physics;
 import com.uos.mortaldestiny.world.WorldManager;
 
 public class GameClass implements ApplicationListener {
-
-	// PerspectiveCamera cam;
-	// CameraInputController camController;
 
 	public ResourceManager resourceManager;
 	public InputHandler inputs;
@@ -39,8 +23,6 @@ public class GameClass implements ApplicationListener {
 	// public static Array<ModelInstance> instances;
 
 	private static GameClass application;
-
-
 
 	public static GameClass getInstance() {
 		return application;
@@ -69,7 +51,7 @@ public class GameClass implements ApplicationListener {
 	public void initPhysics() {
 		physics = new Physics();
 	}
-	
+
 	public void initWorldManager() {
 		worldManager = new WorldManager();
 	}
@@ -81,19 +63,16 @@ public class GameClass implements ApplicationListener {
 	public void initPlayerHandler() {
 		playerHandler = new PlayerHandler();
 	}
-	
-	public void initRenderer(){
+
+	public void initRenderer() {
 		renderer = new Renderer();
 	}
-
-	float angle = 90f;
-	float speed = 40f;
 
 	int amount = 0;
 
 	@Override
 	public void render() {
-		updateInputsAndGameWorld();		
+		updateInputsAndGameWorld();
 		renderer.renderForPlayers();
 	}
 
@@ -138,6 +117,10 @@ public class GameClass implements ApplicationListener {
 		instances.clear();
 
 		physics.dispose();
+	}
+	
+	public static void log(Class c, String msg){
+		System.out.println(c.getSimpleName()+": "+msg);
 	}
 
 	@Override
