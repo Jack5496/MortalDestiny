@@ -45,11 +45,16 @@ public class PlayerHandler {
 		Array<Player> toDie = new Array<Player>();
 		for(Player p : localPlayers.values()){
 			if(p.isStillAlive()){
+				
+			}
+			else{
 				toDie.add(p);
 			}
 		}
 		for(Player p : toDie){
-			localPlayers.remove(p);
+			p.obj.respawn();
+			p.health = 100;
+//			localPlayers.remove(p);
 		}
 	}
 	

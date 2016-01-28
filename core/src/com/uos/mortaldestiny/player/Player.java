@@ -55,11 +55,7 @@ public class Player {
 	boolean done = false;
 	
 	public boolean isStillAlive(){
-		if(health<=0){
-			obj.myDelete();
-			return false;
-		}
-		return true;
+		return (health>0);
 	}
 
 	public void updateMyGameObjects() {

@@ -42,13 +42,18 @@ public class AIHandler {
 	public void updateEntityHealth(){
 		Array<AI> toDie = new Array<AI>();
 		for(AI p : localPlayers.values()){
-			if(!p.isStillAlive()){
+			if(p.isStillAlive()){
+				
+			}
+			else{
 				toDie.add(p);
 			}
 		}
 		for(AI p : toDie){
 //			localPlayers.remove(p);
 			localPlayers.remove(p.name);
+			p.obj.myDelete();
+			createAI(p.name);
 		}
 	}
 	
