@@ -87,8 +87,13 @@ public class GameClass implements ApplicationListener {
 		final float delta = Math.min(1f / 30f, Gdx.graphics.getDeltaTime());
 
 		inputs.updateInputLogic(); // Update Inputs which effect Players
+		
+		playerHandler.updateEntityHealth();
+		aiHandler.updateEntityHealth();
+		
 		playerHandler.updatePlayers(); // Players set PlayerObjects animations
 		aiHandler.updateAIs();
+		
 		updateGameObjectsAnimations(delta); // PlayerObjects calc animation
 
 		physics.dynamicsWorld.stepSimulation(delta, 5, 1f / 60f); // Calcs

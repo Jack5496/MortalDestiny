@@ -39,7 +39,7 @@ public class PlayerObject extends GameObject implements Disposable {
 		double now = System.currentTimeMillis();
 		if(shotLast+shotWait<now){	//if enough time elapsed
 			shotLast = now;
-			GameObject ball = GameClass.getInstance().physics.spawn("sphere");
+			BulletObject ball = new BulletObject(GameClass.getInstance().physics.constructGameObject("sphere"),5);
 			Vector3 lookDir = myGetYawVector();
 			Vector3 pos = myGetTranslation();
 			pos.add(lookDir.scl(2f));

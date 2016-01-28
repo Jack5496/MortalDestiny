@@ -190,6 +190,20 @@ public class Physics implements Disposable {
 		obj.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
 		return obj;
 	}
+	
+	public GameObject constructGameObject(String key){
+		return constructors.get(key).construct();
+	}
+	
+	public void registerGameObject(GameObject obj){
+		obj.body.proceedToTransform(obj.transform);
+		obj.body.setCollisionFlags(
+				obj.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+		GameClass.instances.add(obj);
+		dynamicsWorld.addRigidBody(obj.body);
+		obj.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
+		obj.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
+	}
 
 	public void spawn() {
 		spawn(constructors.getKeyAt(2 + MathUtils.random(constructors.size - 3)));

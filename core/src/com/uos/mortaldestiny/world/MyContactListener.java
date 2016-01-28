@@ -58,15 +58,17 @@ public class MyContactListener extends ContactListener {
 			PlayerObject p = (PlayerObject) obj1;
 			p.onGround = true;
 		}
-		
-		if (obj0 instanceof BulletObject || obj1 instanceof BulletObject) {
-			GameClass.log(getClass(), "Bullet");
+				
+		if (obj0 instanceof PlayerObject && obj1 instanceof BulletObject) {
+			BulletObject bullet = (BulletObject) obj1;
+			PlayerObject p = (PlayerObject) obj0;
+			p.player.health-=bullet.damage;
+			bullet.myDelete();
+			GameClass.getInstance().log(getClass(), p.player.name+" : "+p.player.health);
 		}
 
 		if (obj1 instanceof VoidZoneObject && obj0 instanceof GameObject && !(obj0 instanceof PlayerObject)) {
-			GameClass.instances.removeValue(obj0, false);
-			GameClass.getInstance().physics.dynamicsWorld.removeCollisionObject(obj0.body);
-//			GameClass.instances.removeValue(obj0, false); //may have a look on difference
+			obj0.myDelete();
 		}
 		
 		int userValue0 = obj0.body.getUserValue();

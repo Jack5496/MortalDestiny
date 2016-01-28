@@ -7,7 +7,7 @@ import com.uos.mortaldestiny.objects.PlayerObject;
 
 public class Player {
 
-	String name;
+	public String name;
 	PlayerObject obj;
 
 	/**
@@ -53,6 +53,14 @@ public class Player {
 	}
 	
 	boolean done = false;
+	
+	public boolean isStillAlive(){
+		if(health<=0){
+			obj.myDelete();
+			return false;
+		}
+		return true;
+	}
 
 	public void updateMyGameObjects() {
 		Vector3 dir = stickLeft.cpy();

@@ -2,6 +2,7 @@ package com.uos.mortaldestiny.player;
 
 import java.util.HashMap;
 
+import com.badlogic.gdx.utils.Array;
 import com.uos.mortaldestiny.GameClass;
 
 public class AIHandler {
@@ -35,6 +36,19 @@ public class AIHandler {
 			GameClass.log(getClass(), "New AI: "+name);
 			AI p = new AI(name);
 			localPlayers.put(name, p);
+		}
+	}
+	
+	public void updateEntityHealth(){
+		Array<AI> toDie = new Array<AI>();
+		for(AI p : localPlayers.values()){
+			if(!p.isStillAlive()){
+				toDie.add(p);
+			}
+		}
+		for(AI p : toDie){
+//			localPlayers.remove(p);
+			localPlayers.remove(p.name);
 		}
 	}
 	

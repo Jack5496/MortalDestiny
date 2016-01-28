@@ -2,6 +2,7 @@ package com.uos.mortaldestiny.player;
 
 import java.util.HashMap;
 
+import com.badlogic.gdx.utils.Array;
 import com.uos.mortaldestiny.GameClass;
 
 public class PlayerHandler {
@@ -38,6 +39,18 @@ public class PlayerHandler {
 		}
 
 		return localPlayers.get(inputHandlerName);
+	}
+	
+	public void updateEntityHealth(){
+		Array<Player> toDie = new Array<Player>();
+		for(Player p : localPlayers.values()){
+			if(p.isStillAlive()){
+				toDie.add(p);
+			}
+		}
+		for(Player p : toDie){
+			localPlayers.remove(p);
+		}
 	}
 	
 	public void updatePlayers(){

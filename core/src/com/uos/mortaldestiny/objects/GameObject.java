@@ -9,11 +9,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.utils.Disposable;
+import com.uos.mortaldestiny.GameClass;
 import com.uos.mortaldestiny.helper.Helper;
 import com.uos.mortaldestiny.world.MyMotionState;
 
 public class GameObject extends ModelInstance implements Disposable {
-	public final btRigidBody body;
+	public btRigidBody body;
 	public final MyMotionState motionState;
 	public btRigidBody.btRigidBodyConstructionInfo constructionInfo;
 
@@ -35,6 +36,11 @@ public class GameObject extends ModelInstance implements Disposable {
 		body = new btRigidBody(constructionInfo);
 		body.setMotionState(motionState);
 		body.userData = this;
+	}
+	
+	public void myDelete(){
+		GameClass.instances.removeValue(this, false);
+		GameClass.getInstance().physics.dynamicsWorld.removeCollisionObject(body);
 	}
 	
 	public void update(float delta){
