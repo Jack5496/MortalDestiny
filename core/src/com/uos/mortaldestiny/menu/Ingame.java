@@ -47,6 +47,7 @@ public class Ingame implements Menu{
 
 	@Override
 	public void render() {
+		
 		// TODO Auto-generated method stub
 		physics.modelBatch.begin(menuHandler.p.cameraController.camera);
 		physics.modelBatch.render(GameClass.instances, environment);
