@@ -64,7 +64,6 @@ public class MyContactListener extends ContactListener {
 			PlayerObject p = (PlayerObject) obj0;
 			p.player.health-=bullet.damage;
 			bullet.myDelete();
-			GameClass.getInstance().log(getClass(), p.player.name+" : "+p.player.health);
 		}
 
 		if (obj1 instanceof VoidZoneObject && obj0 instanceof GameObject && !(obj0 instanceof PlayerObject)) {

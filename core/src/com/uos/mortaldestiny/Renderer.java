@@ -10,29 +10,16 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import com.uos.mortaldestiny.player.Player;
-import com.uos.mortaldestiny.world.Physics;
 
 public class Renderer {
 
-	public Environment environment;
-	Physics physics;
-
-	private SpriteBatch batch;
-	private BitmapFont font;
+	public SpriteBatch batch;
+	public BitmapFont font;
 
 	public Renderer() {
-		initEnvironment();
-		physics = GameClass.getInstance().physics;
-
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		font.setColor(Color.RED);
-	}
-
-	public void initEnvironment() {
-		environment = new Environment();
-		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 	}
 
 	public void renderForPlayers() {
@@ -59,17 +46,13 @@ public class Renderer {
 
 	int border = 1;
 
-	private void renderForPlayer(Player p, int x, int y, int width, int height) {
+	private void renderForPlayer(Player p, int x, int y, int width, int height) {		
 		p.cameraController.updateViewPort(width - border, height - border);
 		p.cameraController.update(); // Update Camera Position
 
 		Gdx.gl.glViewport(x, y, width - border, height - border);
 
-		physics.modelBatch.begin(p.cameraController.camera);
-		physics.modelBatch.render(GameClass.instances, environment);
-		physics.modelBatch.end();
-
-		renderHUD(p);
+		p.menuHandler.renderActivMenu();
 	}
 
 	private void renderForOnePlayer() {
@@ -110,19 +93,6 @@ public class Renderer {
 		Player p3 = GameClass.getInstance().playerHandler.getPlayer(3);
 		renderForPlayer(p3, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, Gdx.graphics.getWidth() / 2,
 				Gdx.graphics.getHeight() / 2);
-	}
-
-	private void renderHUD(Player p) {
-		int height = (int) p.cameraController.camera.viewportHeight;
-		// int width = (int) p.cameraController.camera.viewportWidth;
-
-		batch.begin();
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 5, height - 5);
-		font.draw(batch, "Objects: " + GameClass.instances.size, 80, height - 5);
-		Vector3 pos = p.getObjPos();
-		font.draw(batch, "X: " + (int) pos.x + "    | Y: " + (int) pos.y + "    | Z: " + (int) pos.z, 5, height - 20);
-		font.draw(batch, "Player Health: " + p.health, 5, height - 60);
-		batch.end();
 	}
 
 }

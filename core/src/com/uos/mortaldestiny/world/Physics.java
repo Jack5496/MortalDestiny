@@ -4,10 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader.Config;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
@@ -49,6 +51,7 @@ public class Physics implements Disposable {
 
 	Model model;
 	ModelBuilder mb;
+	
 
 	ArrayMap<String, GameObject.Constructor> constructors;
 
@@ -58,13 +61,21 @@ public class Physics implements Disposable {
 	public btBroadphaseInterface broadphase;
 	public btDynamicsWorld dynamicsWorld;
 	public btConstraintSolver constraintSolver;
+	public Environment environment;
 
 	public float spawnTimer;
 
 	float size = 10;
+	
+	public void initEnvironment() {
+		environment = new Environment();
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+	}
 
 	public Physics() {
 		Bullet.init();
+		initEnvironment();
 
 //		String fs = Gdx.files.internal("data/shaders/toon-shader-iii.fs.glsl").readString();
 //		String vs = Gdx.files.internal("data/shaders/toon-shader-iii.vs.glsl").readString();

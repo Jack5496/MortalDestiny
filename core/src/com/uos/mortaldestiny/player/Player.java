@@ -3,6 +3,7 @@ package com.uos.mortaldestiny.player;
 import com.badlogic.gdx.math.Vector3;
 import com.uos.mortaldestiny.CameraController;
 import com.uos.mortaldestiny.GameClass;
+import com.uos.mortaldestiny.menu.MenuHandler;
 import com.uos.mortaldestiny.objects.PlayerObject;
 
 public class Player {
@@ -25,9 +26,11 @@ public class Player {
 	public int health;
 	
 	public CameraController cameraController;
-
+	public MenuHandler menuHandler;
+	
 	public Player(String name) {
 		this.name = name;
+		menuHandler = new MenuHandler(this);
 		obj = GameClass.getInstance().physics.spawnPlayer(this);
 		resetInputVariables();
 	}

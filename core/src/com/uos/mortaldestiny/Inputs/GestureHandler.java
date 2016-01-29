@@ -66,7 +66,7 @@ public class GestureHandler implements GestureListener {
 
 	@Override
 	public boolean touchDown(float x, float y, int pointer, int button) {
-		// TODO Auto-generated method stub
+		GameClass.log(getClass(), "touch");
 		return false;
 	}
 
