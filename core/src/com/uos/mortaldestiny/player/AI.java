@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.uos.mortaldestiny.GameClass;
 import com.uos.mortaldestiny.helper.Helper;
-import com.uos.mortaldestiny.objects.GameObject;
 
 public class AI extends Player{
 

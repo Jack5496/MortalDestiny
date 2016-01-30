@@ -9,7 +9,7 @@ import com.uos.mortaldestiny.objects.PlayerObject;
 public class Player {
 
 	public String name;
-	PlayerObject obj;
+	public PlayerObject obj;
 
 	/**
 	 * InputVariables

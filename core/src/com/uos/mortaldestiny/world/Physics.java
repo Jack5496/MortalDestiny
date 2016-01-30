@@ -10,11 +10,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader.Config;
-import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
@@ -39,7 +35,6 @@ import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Disposable;
 import com.uos.mortaldestiny.GameClass;
 import com.uos.mortaldestiny.ResourceManager;
-import com.uos.mortaldestiny.objects.BulletObject;
 import com.uos.mortaldestiny.objects.GameObject;
 import com.uos.mortaldestiny.objects.PlayerObject;
 import com.uos.mortaldestiny.objects.VoidZoneObject;
@@ -48,11 +43,11 @@ import com.uos.mortaldestiny.player.Player;
 public class Physics implements Disposable {
 
 	public ModelBatch modelBatch;
+	public ModelBatch normalBatch;
 
 	Model model;
 	ModelBuilder mb;
 	
-
 	ArrayMap<String, GameObject.Constructor> constructors;
 
 	public btCollisionConfiguration collisionConfig;
@@ -77,10 +72,11 @@ public class Physics implements Disposable {
 		Bullet.init();
 		initEnvironment();
 
-		String fs = Gdx.files.internal("data/shaders/toon-shader-iii.fs.glsl").readString();
-		String vs = Gdx.files.internal("data/shaders/toon-shader-iii.vs.glsl").readString();
+		String fs = Gdx.files.internal("data/shaders/fs.glsl").readString();
+		String vs = Gdx.files.internal("data/shaders/vs.glsl").readString();
 
-		modelBatch = new ModelBatch();
+		modelBatch = new ModelBatch(vs,fs);
+		normalBatch = new ModelBatch();
 		constructors = new ArrayMap<String, GameObject.Constructor>(String.class, GameObject.Constructor.class);
 
 		ModelBuilder mb = new ModelBuilder();
@@ -235,6 +231,7 @@ public class Physics implements Disposable {
 		contactListener.dispose();
 
 		modelBatch.dispose();
+		normalBatch.dispose();
 		model.dispose();
 	}
 
