@@ -43,43 +43,45 @@ public class MyContactListener extends ContactListener {
 	public void onContactStarted(btCollisionObject bodyObj0, btCollisionObject bodyObj1) {
 		GameObject obj0 = (GameObject) bodyObj0.userData;
 		GameObject obj1 = (GameObject) bodyObj1.userData;
-		onContactStarted(obj0,obj1);
+		onContactStarted(obj0, obj1);
 	}
-	
-	public void onContactStarted(GameObject obj0, GameObject obj1) {	
 
-		//fall off
+	public void onContactStarted(GameObject obj0, GameObject obj1) {
+
+		// fall off
 		if (obj1 instanceof VoidZoneObject && obj0 instanceof PlayerObject) {
 			((PlayerObject) obj0).respawn();
 		}
-		
+
 		if (obj0 instanceof GameObject && !(obj0 instanceof BulletObject) && obj1 instanceof PlayerObject) {
-//			GameClass.log(getClass(), "Player hit ground");
+			// GameClass.log(getClass(), "Player hit ground");
 			PlayerObject p = (PlayerObject) obj1;
 			p.onGround = true;
 		}
-				
+
 		if (obj0 instanceof PlayerObject && obj1 instanceof BulletObject) {
 			BulletObject bullet = (BulletObject) obj1;
 			PlayerObject p = (PlayerObject) obj0;
-			p.player.health-=bullet.damage;
+			p.player.health -= bullet.damage;
+			if (p.player.health <= 0) {
+				bullet.shooter.player.points++;
+			}
 			bullet.myDelete();
 		}
 
 		if (obj1 instanceof VoidZoneObject && obj0 instanceof GameObject && !(obj0 instanceof PlayerObject)) {
 			obj0.myDelete();
 		}
-		
+
 		int userValue0 = obj0.body.getUserValue();
 		int userValue1 = obj1.body.getUserValue();
-		
+
 		if (userValue0 != 0) {
 			((ColorAttribute) GameClass.instances.get(userValue0).materials.get(0).get(ColorAttribute.Diffuse)).color
 					.set(Color.WHITE);
 		}
 		if (userValue1 != 0) {
-			((ColorAttribute) obj1.materials.get(0).get(ColorAttribute.Diffuse)).color
-					.set(Color.WHITE);
+			((ColorAttribute) obj1.materials.get(0).get(ColorAttribute.Diffuse)).color.set(Color.WHITE);
 		}
 	}
 

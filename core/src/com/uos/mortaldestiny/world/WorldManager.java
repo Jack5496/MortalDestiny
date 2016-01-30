@@ -23,26 +23,26 @@ public class WorldManager {
 //	String world = "10x10:" + "1111111111" + "0110111110" + "0110110110" + "0110110110" + "0111110110" + "0110001110"
 //			+ "0111101110" + "0111001110" + "0111111110" + "0000000000";
 	
-	String world = "10x10:" + "1111111111" + "1111111111" + "1111111111" + "1111111111" + "1111111111" + "1111111111"
+	public static String world = "10x10:" + "1111111111" + "1111111111" + "1111111111" + "1111111111" + "1111111111" + "1111111111"
 			+ "1111111111" + "1111111111" + "1111111111" + "1111111111";
 
-	public int getWidth(String parameters) {
+	public static int getWidth(String parameters) {
 		return Integer.parseInt(parameters.split(parameterSizeBreak)[0]);
 	}
 
-	public int getHeight(String parameters) {
+	public static int getHeight(String parameters) {
 		System.out.println(parameters);
 		return Integer.parseInt(parameters.split(parameterSizeBreak)[1]);
 	}
 
-	String parameterSizeBreak = "x";
-	String parameterBreak = ":";
+	static String parameterSizeBreak = "x";
+	static String parameterBreak = ":";
 
-	public String getParameters(String world) {
+	public static String getParameters(String world) {
 		return world.split(parameterBreak)[0];
 	}
 
-	public String getWorld(String world) {
+	public static String getWorld(String world) {
 		return world.split(parameterBreak)[1];
 	}
 

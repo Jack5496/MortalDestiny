@@ -10,9 +10,11 @@ public class AI extends Player{
 
 	public Array<Vector3> walkPoints;
 	public Array<Player> targets;
+	public int fraction;
 	
-	public AI(String name) {
+	public AI(String name, int fraction) {
 		super(name);
+		this.fraction = fraction;
 	}
 	
 	public void initVariables(){
@@ -20,8 +22,16 @@ public class AI extends Player{
 		targets = new Array<Player>();
 	}
 	
-	public void setAllPlayerAsTargets(){
-		targets = new Array<Player>(GameClass.getInstance().playerHandler.getPlayers());
+	public void addAllPlayerAsTargets(){
+		targets.addAll(GameClass.getInstance().playerHandler.getPlayers());
+	}
+	
+	public void addAllOtherFractionsAsEnemy(){
+		for(AI ai : GameClass.getInstance().aiHandler.getPlayers()){
+			if(ai.fraction!=fraction){
+				targets.add(ai);
+			}
+		}
 	}
 	
 	public void updateInputVariables(){
@@ -45,8 +55,8 @@ public class AI extends Player{
 		return trans;
 	}
 	
-//	float shootDis = 4;
-	float shootDis = 40;
+	float shootDis = 4;
+//	float shootDis = 40;
 	
 	private Vector3 findNearestPoint(Array<Vector3> points){
 		Vector3 nearest = null;

@@ -24,6 +24,7 @@ public class Player {
 	public boolean shoot;
 	public boolean rightClick;
 	public int health;
+	public int points;
 	
 	public CameraController cameraController;
 	public MenuHandler menuHandler;
@@ -53,6 +54,7 @@ public class Player {
 		stickRight = new Vector3();
 		health = 100;
 		boostValue = 0;
+		points = 0;
 	}
 	
 	boolean done = false;

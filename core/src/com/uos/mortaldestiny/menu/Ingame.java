@@ -68,6 +68,7 @@ public class Ingame implements Menu{
 		Vector3 pos = p.getObjPos();
 		font.draw(batch, "X: " + (int) pos.x + "    | Y: " + (int) pos.y + "    | Z: " + (int) pos.z, 5, height - 20);
 		font.draw(batch, "Player Health: " + p.health, 5, height - 60);
+		font.draw(batch, "Points: " + p.points, 5, height - 75);
 		batch.end();
 	}
 

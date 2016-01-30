@@ -172,20 +172,20 @@ public class Physics implements Disposable {
 		return player;
 	}
 
-	public BulletObject spawnSack(int damage) {
-		GameObject obj = constructors.get("sack").construct();
-		BulletObject bullet = new BulletObject(obj, 20);
-		bullet.transform.trn(MathUtils.random(-2.5f, 2.5f), 15f, MathUtils.random(-2.5f, 2.5f));
-		bullet.body.proceedToTransform(bullet.transform);
-		bullet.body.setCollisionFlags(
-				bullet.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
-		GameClass.instances.add(bullet);
-		dynamicsWorld.addRigidBody(bullet.body);
-		bullet.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
-		bullet.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
-
-		return bullet;
-	}
+//	public BulletObject spawnSack(int damage) {
+//		GameObject obj = constructors.get("sack").construct();
+//		BulletObject bullet = new BulletObject(obj, 20);
+//		bullet.transform.trn(MathUtils.random(-2.5f, 2.5f), 15f, MathUtils.random(-2.5f, 2.5f));
+//		bullet.body.proceedToTransform(bullet.transform);
+//		bullet.body.setCollisionFlags(
+//				bullet.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+//		GameClass.instances.add(bullet);
+//		dynamicsWorld.addRigidBody(bullet.body);
+//		bullet.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
+//		bullet.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
+//
+//		return bullet;
+//	}
 
 	public GameObject spawn(String key) {
 		GameObject obj = constructors.get(key).construct();
