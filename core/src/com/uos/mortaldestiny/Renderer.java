@@ -98,7 +98,9 @@ public class Renderer {
 
 		Mesh fullScreenQuad = createFullScreenQuad();
 		
-		FrameBuffer src = dest;
+		FrameBuffer src = new FrameBuffer(Format.RGB888, width, height, true);
+		FrameBuffer helper = new FrameBuffer(Format.RGB888, width, height, true);
+		src = dest;
 		src.getColorBufferTexture().bind();
 		{
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
