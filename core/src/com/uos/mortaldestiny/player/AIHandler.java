@@ -29,22 +29,19 @@ public class AIHandler {
 		localPlayers = new HashMap<String, AI>();
 	}
 	
-	public static int total = 0;
+	
 
 	public void createAI(String name) {
 		if(localPlayers.containsKey(name)){
 			
 		}
 		else{
-//			GameClass.log(getClass(), "New AI: "+name);
-			name.concat(""+total);
 			AI p = new AI(name, (int)(Math.random()*5));
+			
 			int width = WorldManager.getWidth(WorldManager.getParameters(WorldManager.world))*10;
 			int height = WorldManager.getHeight(WorldManager.getParameters(WorldManager.world))*10;
-			int x = Integer.parseInt(name);
-			p.obj.mySetTranslation(new Vector3(-7,-6,x*3));
+			p.obj.mySetTranslation(new Vector3(width*((float)Math.random())-5,7,height*((float)Math.random())-5));
 			localPlayers.put(name, p);
-			total++;
 		}
 	}
 	
@@ -61,7 +58,7 @@ public class AIHandler {
 		for(AI p : toDie){
 			String name = p.name;
 			localPlayers.remove(p.name,p);
-			p.obj.dispose();
+			p.dispose();
 			createAI(name);
 		}
 	}

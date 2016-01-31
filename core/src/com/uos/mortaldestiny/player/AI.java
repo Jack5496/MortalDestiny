@@ -54,8 +54,8 @@ public class AI extends Player{
 		return trans;
 	}
 	
-	float shootDis = 4;
-//	float shootDis = 40;
+//	float shootDis = 4;
+	float shootDis = 10;
 	
 	private Vector3 findNearestPoint(Array<Vector3> points){
 		Vector3 nearest = null;
@@ -69,7 +69,7 @@ public class AI extends Player{
 			}
 		}
 		
-//		this.shoot = (distance<shootDis);
+		this.shoot = (distance<shootDis);
 		
 		
 		return nearest;

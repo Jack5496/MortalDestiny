@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.uos.mortaldestiny.GameClass;
 import com.uos.mortaldestiny.player.Player;
 
-public class PlayerObject extends GameObject implements Disposable {
+public class PlayerObject extends GameObject{
 	public Player player;
 	public boolean onGround = true;
 	public boolean ended = false;
@@ -20,7 +20,8 @@ public class PlayerObject extends GameObject implements Disposable {
 
 	public PlayerObject(GameObject obj, Player player) {
 		super(obj.model, obj.constructionInfo);
-		obj.dispose();
+		GameClass.totalObjectsSpawned++;
+		obj.dispose();	//super important !!!
 		init(player);
 	}
 	

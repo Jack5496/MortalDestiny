@@ -21,6 +21,8 @@ public class GameClass implements ApplicationListener {
 	public Physics physics;
 	public WorldManager worldManager;
 	public Renderer renderer;
+	
+	public static int totalObjectsSpawned = 0;
 
 	public static Array<GameObject> instances;
 	// public static Array<ModelInstance> instances;

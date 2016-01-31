@@ -38,13 +38,6 @@ public class GameObject extends ModelInstance implements Disposable {
 		body.userData = this;
 	}
 	
-//	public void myDelete(){
-//		
-//		body.dispose();
-//		motionState.dispose();
-//		
-//	}
-	
 	public void update(float delta){
 		//here animations :P look in PlayerObject
 	}

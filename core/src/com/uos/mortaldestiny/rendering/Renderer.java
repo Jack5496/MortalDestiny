@@ -26,7 +26,7 @@ public class Renderer {
 	public Renderer() {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		font.setColor(1,1,1,1);
+		font.setColor(1, 1, 1, 1);
 		resizeFrameBuffers();
 	}
 
@@ -41,28 +41,38 @@ public class Renderer {
 
 	ShaderProgram outlineShader = loadShader();
 
-	FrameBuffer frameBuffer;
-	FrameBuffer frameBuffer1;
-	FrameBuffer frameBuffer2;
+	public static FrameBuffer frameBuffer;
+	public static FrameBuffer frameBuffer1;
+	public static FrameBuffer frameBuffer2;
 
 	FrontFaceDepthShaderProvider depthshaderprovider = new FrontFaceDepthShaderProvider();
 	ModelBatch depthModelBatch = new ModelBatch(depthshaderprovider);
 
+	public static boolean renderNormal = true;
+	public static boolean renderOutlines = true;
+	public static boolean renderHUD = true;
+
 	public void renderForPlayers() {
 		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 		Gdx.gl.glViewport(0, 0, GameClass.getInstance().getWidth(), GameClass.getInstance().getHeight());
-		renderWithBatch(GameClass.getInstance().physics.modelBatch);
-		renderOutlines();
-		renderFrameBuffer(frameBuffer2);
-		renderHUDForPlayers();
+		if (renderNormal) {
+			renderWithBatch(GameClass.getInstance().physics.modelBatch);
+		}
+		if (renderOutlines) {
+			renderOutlines();
+			renderFrameBuffer(frameBuffer2);
+		}
+		if (renderHUD) {
+			renderHUDForPlayers();
+		}
 	}
-	
+
 	private void renderHUD(Player p) {
 		int height = (int) p.cameraController.camera.viewportHeight;
 		// int width = (int) p.cameraController.camera.viewportWidth;
 		SpriteBatch batch = GameClass.getInstance().renderer.batch;
 		BitmapFont font = GameClass.getInstance().renderer.font;
-		
+
 		Runtime runtime = Runtime.getRuntime();
 
 		batch.enableBlending();
@@ -73,13 +83,19 @@ public class Renderer {
 		font.draw(batch, "X: " + (int) pos.x + "    | Y: " + (int) pos.y + "    | Z: " + (int) pos.z, 5, height - 20);
 		font.draw(batch, "Player Health: " + p.health, 5, height - 60);
 		font.draw(batch, "Points: " + p.points, 5, height - 75);
-		font.draw(batch, "Spawned Object Total: " + AIHandler.total, 5, height - 90);
+
+		String totalObjectsSpawned = "" + GameClass.totalObjectsSpawned;
+		if (GameClass.totalObjectsSpawned > 10000) {
+			totalObjectsSpawned = "" + (GameClass.totalObjectsSpawned / 1000) + " K";
+		}
+
+		font.draw(batch, "Spawned Object Total: " + totalObjectsSpawned, 5, height - 90);
 		batch.end();
 
 	}
-	
-	public void renderHUDForPlayers(){
-		for(Player p : GameClass.getInstance().playerHandler.getPlayers()){
+
+	public void renderHUDForPlayers() {
+		for (Player p : GameClass.getInstance().playerHandler.getPlayers()) {
 			renderHUD(p);
 		}
 	}
@@ -188,7 +204,7 @@ public class Renderer {
 		p.cameraController.updateViewPort(width - border, height - border);
 		p.cameraController.update(); // Update Camera Position
 
-//		Gdx.gl.glViewport(x, y, width - border, height - border);
+		// Gdx.gl.glViewport(x, y, width - border, height - border);
 
 		p.menuHandler.renderActivMenu(batch);
 	}

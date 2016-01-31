@@ -9,7 +9,8 @@ public class BulletObject extends GameObject{
 
 	public BulletObject(GameObject obj, int damage, PlayerObject shooter) {
 		super(obj.model, obj.constructionInfo);
-		obj.dispose();
+		obj.dispose();	//super important !!!
+		GameClass.totalObjectsSpawned++;
 		GameClass.getInstance().physics.registerGameObject(this);
 		this.shooter = shooter;
 		init(damage);

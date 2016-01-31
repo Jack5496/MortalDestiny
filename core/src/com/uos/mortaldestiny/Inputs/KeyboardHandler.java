@@ -2,11 +2,14 @@ package com.uos.mortaldestiny.Inputs;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
 import com.uos.mortaldestiny.CameraController;
 import com.uos.mortaldestiny.GameClass;
 import com.uos.mortaldestiny.helper.Helper;
 import com.uos.mortaldestiny.player.Player;
+import com.uos.mortaldestiny.rendering.Renderer;
 
 public class KeyboardHandler {
 
@@ -39,7 +42,7 @@ public class KeyboardHandler {
 		p.jump = keys[Keys.SPACE];
 		
 		if(keys[Keys.Z]){
-			for(int i=0;i<200; i++){
+			for(int i=0;i<100; i++){
 				GameClass.getInstance().aiHandler.createAI(""+i);
 			}
 		}
@@ -97,7 +100,23 @@ public class KeyboardHandler {
 	}
 
 	public boolean keyTyped(char character) {
-		
+		if(keys[Keys.P]){
+			Renderer.renderOutlines = !Renderer.renderOutlines;
+		}
+		if(keys[Keys.O]){
+			Renderer.renderNormal = !Renderer.renderNormal;
+			int width = GameClass.getInstance().getWidth();
+			int height = GameClass.getInstance().getHeight();
+			if(Renderer.renderNormal){
+				Renderer.frameBuffer2 = new FrameBuffer(Format.RGBA8888, width, height, true);
+			}
+			else{
+				Renderer.frameBuffer2 = new FrameBuffer(Format.RGB888, width, height, true);
+			}
+		}
+		if(keys[Keys.I]){
+			Renderer.renderHUD = !Renderer.renderHUD;
+		}
 		return false;
 	}
 
