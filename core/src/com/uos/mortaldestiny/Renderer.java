@@ -35,7 +35,7 @@ public class Renderer {
 
 	int width = GameClass.getInstance().getWidth();
 	int height = GameClass.getInstance().getHeight();
-	FrameBuffer frameBuffer = new FrameBuffer(Format.RGB888, width, height, true);
+	
 
 	public void renderForPlayers() {
 		int amountPlayers = GameClass.getInstance().playerHandler.getPlayerAmount();
@@ -65,14 +65,16 @@ public class Renderer {
 		String efs = Gdx.files.internal("data/shaders/edgeFs.glsl").readString();
 		String evs = Gdx.files.internal("data/shaders/edgeVs.glsl").readString();
 
-//		String efs = Gdx.files.internal("data/shaders/grayFs.glsl").readString();
-//		String evs = Gdx.files.internal("data/shaders/grayVs.glsl").readString();
+//		String efs = Gdx.files.internal("data/shaders/fs.glsl").readString();
+//		String evs = Gdx.files.internal("data/shaders/vs.glsl").readString();
 		//
 		ShaderProgram outlineShader = new ShaderProgram(evs, efs);
 
 		FrontFaceDepthShaderProvider depthshaderprovider = new FrontFaceDepthShaderProvider();
 		ModelBatch depthModelBatch = new ModelBatch(depthshaderprovider);
 
+		FrameBuffer frameBuffer = new FrameBuffer(Format.RGB888, width, height, true);
+		
 		FrameBuffer dest = frameBuffer;
 		dest.begin();
 		{
@@ -97,9 +99,7 @@ public class Renderer {
 		Mesh fullScreenQuad = createFullScreenQuad();
 		
 		FrameBuffer src = dest;
-		Texture t = src.getColorBufferTexture();
-		
-		t.bind();
+		src.getColorBufferTexture().bind();
 		{
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 			outlineShader.begin();
@@ -111,8 +111,7 @@ public class Renderer {
 
 		SpriteBatch batch = GameClass.getInstance().renderer.batch;
 		batch.begin();
-//		batch.setShader(outlineShader);
-		TextureRegion fboRegion = new TextureRegion(t);
+		TextureRegion fboRegion = new TextureRegion(src.getColorBufferTexture());
 		fboRegion.flip(false, true);
 
 		batch.draw(fboRegion, 0, 0, width, height);
