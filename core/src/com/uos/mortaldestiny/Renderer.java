@@ -35,14 +35,13 @@ public class Renderer {
 
 	int width = GameClass.getInstance().getWidth();
 	int height = GameClass.getInstance().getHeight();
-	
 
 	public void renderForPlayers() {
 		int amountPlayers = GameClass.getInstance().playerHandler.getPlayerAmount();
 
 		// frameBuffer.begin();
 
-		Gdx.gl.glClearColor(0.3f, 0.3f, 0.3f, 1.f);
+		Gdx.gl.glClearColor(0, 0, 0, 1.f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		// switch (amountPlayers) {
@@ -62,20 +61,15 @@ public class Renderer {
 		//
 		// frameBuffer.end();
 
-		String efs = Gdx.files.internal("data/shaders/edgeFs.glsl").readString();
-		String evs = Gdx.files.internal("data/shaders/edgeVs.glsl").readString();
-
-//		String efs = Gdx.files.internal("data/shaders/fs.glsl").readString();
-//		String evs = Gdx.files.internal("data/shaders/vs.glsl").readString();
-		//
-		ShaderProgram outlineShader = new ShaderProgram(evs, efs);
+		ShaderProgram outlineShader = loadShader();
 
 		FrontFaceDepthShaderProvider depthshaderprovider = new FrontFaceDepthShaderProvider();
 		ModelBatch depthModelBatch = new ModelBatch(depthshaderprovider);
 
-		FrameBuffer frameBuffer = new FrameBuffer(Format.RGB888, width, height, true);
-		
-		FrameBuffer dest = frameBuffer;
+		FrameBuffer frameBuffer1 = new FrameBuffer(Format.RGB888, width, height, true);
+		FrameBuffer frameBuffer2 = new FrameBuffer(Format.RGB888, width, height, true);
+
+		FrameBuffer dest = frameBuffer1;
 		dest.begin();
 		{
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -97,27 +91,38 @@ public class Renderer {
 		dest.end();
 
 		Mesh fullScreenQuad = createFullScreenQuad();
-		
-		FrameBuffer src = new FrameBuffer(Format.RGB888, width, height, true);
-		FrameBuffer helper = new FrameBuffer(Format.RGB888, width, height, true);
-		src = dest;
+
+		FrameBuffer src = dest;
+		dest = frameBuffer2;
+		dest.begin();
 		src.getColorBufferTexture().bind();
 		{
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 			outlineShader.begin();
 			{
+				System.out.println(outlineShader.isCompiled());
+				
+				outlineShader.setUniformf("u_size", (float)src.getColorBufferTexture().getWidth(), (float)src.getColorBufferTexture().getHeight());
 				fullScreenQuad.render(outlineShader, GL20.GL_TRIANGLE_STRIP, 0, 4);
 			}
 			outlineShader.end();
 		}
-
+		dest.end();
 		SpriteBatch batch = GameClass.getInstance().renderer.batch;
 		batch.begin();
-		TextureRegion fboRegion = new TextureRegion(src.getColorBufferTexture());
+		TextureRegion fboRegion = new TextureRegion(dest.getColorBufferTexture());
 		fboRegion.flip(false, true);
 
 		batch.draw(fboRegion, 0, 0, width, height);
 		batch.end();
+	}
+	
+	public ShaderProgram loadShader(){
+		String efs = Gdx.files.internal("data/shaders/edgeFs.glsl").readString();
+		String evs = Gdx.files.internal("data/shaders/edgeVs.glsl").readString();
+		
+		ShaderProgram outlineShader = new ShaderProgram(evs, efs);
+		return outlineShader;
 	}
 
 	public Mesh createFullScreenQuad() {

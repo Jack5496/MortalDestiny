@@ -11,7 +11,9 @@ precision mediump float;
  
 attribute vec4 a_position;
 attribute vec2 a_texCoord0;
-uniform vec2 size;
+
+uniform vec2 u_size;
+
 varying MED vec2 v_texCoords0;
 varying MED vec2 v_texCoords1;
 varying MED vec2 v_texCoords2;
