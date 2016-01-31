@@ -2,6 +2,7 @@ package com.uos.mortaldestiny.world;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.ContactListener;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.uos.mortaldestiny.GameClass;
@@ -9,6 +10,7 @@ import com.uos.mortaldestiny.objects.BulletObject;
 import com.uos.mortaldestiny.objects.GameObject;
 import com.uos.mortaldestiny.objects.PlayerObject;
 import com.uos.mortaldestiny.objects.VoidZoneObject;
+import com.uos.mortaldestiny.player.AI;
 
 public class MyContactListener extends ContactListener {
 
@@ -50,7 +52,7 @@ public class MyContactListener extends ContactListener {
 
 		// fall off
 		if (obj1 instanceof VoidZoneObject && obj0 instanceof PlayerObject) {
-			((PlayerObject) obj0).respawn();
+			((PlayerObject) obj0).player.health = 0;
 		}
 
 		if (obj0 instanceof GameObject && !(obj0 instanceof BulletObject) && obj1 instanceof PlayerObject) {
@@ -62,15 +64,16 @@ public class MyContactListener extends ContactListener {
 		if (obj0 instanceof PlayerObject && obj1 instanceof BulletObject) {
 			BulletObject bullet = (BulletObject) obj1;
 			PlayerObject p = (PlayerObject) obj0;
+			if(p.player instanceof AI)
 			p.player.health -= bullet.damage;
 			if (p.player.health <= 0) {
-				bullet.shooter.player.points++;
+				bullet.shooter.player.addPoint();
 			}
-			bullet.myDelete();
+			bullet.dispose();
 		}
 
 		if (obj1 instanceof VoidZoneObject && obj0 instanceof GameObject && !(obj0 instanceof PlayerObject)) {
-			obj0.myDelete();
+			obj0.dispose();
 		}
 
 		int userValue0 = obj0.body.getUserValue();

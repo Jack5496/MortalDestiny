@@ -20,6 +20,7 @@ public class PlayerObject extends GameObject implements Disposable {
 
 	public PlayerObject(GameObject obj, Player player) {
 		super(obj.model, obj.constructionInfo);
+		obj.dispose();
 		init(player);
 	}
 	

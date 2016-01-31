@@ -8,6 +8,7 @@ import com.uos.mortaldestiny.Inputs.InputHandler;
 import com.uos.mortaldestiny.objects.GameObject;
 import com.uos.mortaldestiny.player.AIHandler;
 import com.uos.mortaldestiny.player.PlayerHandler;
+import com.uos.mortaldestiny.rendering.Renderer;
 import com.uos.mortaldestiny.world.Physics;
 import com.uos.mortaldestiny.world.WorldManager;
 

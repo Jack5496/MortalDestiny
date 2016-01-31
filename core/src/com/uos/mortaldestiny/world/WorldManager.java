@@ -16,7 +16,6 @@ public class WorldManager {
 	public void initTestWorld() {
 //		initTestWorldGround(5, 5);
 		initTestWorld(world);
-		physics.spawn("sphere");
 
 	}
 
@@ -31,7 +30,6 @@ public class WorldManager {
 	}
 
 	public static int getHeight(String parameters) {
-		System.out.println(parameters);
 		return Integer.parseInt(parameters.split(parameterSizeBreak)[1]);
 	}
 

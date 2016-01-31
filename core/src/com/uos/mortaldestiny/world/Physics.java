@@ -165,7 +165,6 @@ public class Physics implements Disposable {
 		player.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
 		// obj.body.setContactCallbackFilter(0);
 		player.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
-
 		return player;
 	}
 
@@ -213,9 +212,9 @@ public class Physics implements Disposable {
 		obj.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
 	}
 
-	public void spawn() {
-		spawn(constructors.getKeyAt(2 + MathUtils.random(constructors.size - 3)));
-	}
+//	public void spawn() {
+//		spawn(constructors.getKeyAt(2 + MathUtils.random(constructors.size - 3)));
+//	}
 
 	@Override
 	public void dispose() {

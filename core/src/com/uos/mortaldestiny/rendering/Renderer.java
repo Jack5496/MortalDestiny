@@ -1,31 +1,21 @@
-package com.uos.mortaldestiny;
-
-import java.io.IOException;
-import java.io.OutputStream;
+package com.uos.mortaldestiny.rendering;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.uos.mortaldestiny.GameClass;
+import com.uos.mortaldestiny.player.AIHandler;
 import com.uos.mortaldestiny.player.Player;
 
 public class Renderer {
@@ -36,101 +26,124 @@ public class Renderer {
 	public Renderer() {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		font.setColor(Color.RED);
+		font.setColor(1,1,1,1);
+		resizeFrameBuffers();
 	}
 
-	int width = GameClass.getInstance().getWidth();
-	int height = GameClass.getInstance().getHeight();
+	public void resizeFrameBuffers() {
+		int width = GameClass.getInstance().getWidth();
+		int height = GameClass.getInstance().getHeight();
+
+		frameBuffer = new FrameBuffer(Format.RGBA8888, width, height, true);
+		frameBuffer1 = new FrameBuffer(Format.RGBA8888, width, height, true);
+		frameBuffer2 = new FrameBuffer(Format.RGBA8888, width, height, true);
+	}
 
 	ShaderProgram outlineShader = loadShader();
 
-	FrameBuffer frameBuffer1 = new FrameBuffer(Format.RGBA8888, width, height, true);
-	FrameBuffer frameBuffer2 = new FrameBuffer(Format.RGBA8888, width, height, true);
+	FrameBuffer frameBuffer;
+	FrameBuffer frameBuffer1;
+	FrameBuffer frameBuffer2;
 
 	FrontFaceDepthShaderProvider depthshaderprovider = new FrontFaceDepthShaderProvider();
 	ModelBatch depthModelBatch = new ModelBatch(depthshaderprovider);
 
 	public void renderForPlayers() {
-		int amountPlayers = GameClass.getInstance().playerHandler.getPlayerAmount();
-
-		renderNormal();
+		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1.f);
+		Gdx.gl.glViewport(0, 0, GameClass.getInstance().getWidth(), GameClass.getInstance().getHeight());
+		renderWithBatch(GameClass.getInstance().physics.modelBatch);
 		renderOutlines();
+		renderFrameBuffer(frameBuffer2);
+		renderHUDForPlayers();
+	}
+	
+	private void renderHUD(Player p) {
+		int height = (int) p.cameraController.camera.viewportHeight;
+		// int width = (int) p.cameraController.camera.viewportWidth;
+		SpriteBatch batch = GameClass.getInstance().renderer.batch;
+		BitmapFont font = GameClass.getInstance().renderer.font;
+		
+		Runtime runtime = Runtime.getRuntime();
+
+		batch.enableBlending();
+		batch.begin();
+		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 5, height - 5);
+		font.draw(batch, "Objects: " + GameClass.instances.size, 80, height - 5);
+		Vector3 pos = p.getObjPos();
+		font.draw(batch, "X: " + (int) pos.x + "    | Y: " + (int) pos.y + "    | Z: " + (int) pos.z, 5, height - 20);
+		font.draw(batch, "Player Health: " + p.health, 5, height - 60);
+		font.draw(batch, "Points: " + p.points, 5, height - 75);
+		font.draw(batch, "Spawned Object Total: " + AIHandler.total, 5, height - 90);
+		batch.end();
+
+	}
+	
+	public void renderHUDForPlayers(){
+		for(Player p : GameClass.getInstance().playerHandler.getPlayers()){
+			renderHUD(p);
+		}
 	}
 
-	public void renderNormal() {
+	public void renderWithBatch(ModelBatch batch) {
 		int amountPlayers = GameClass.getInstance().playerHandler.getPlayerAmount();
 
-		Gdx.gl.glClearColor(0, 0, 0, 1.f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		switch (amountPlayers) {
 		case 1:
-			renderForOnePlayer(GameClass.getInstance().physics.modelBatch);
+			renderForOnePlayer(batch);
 			break;
 		case 2:
-			renderForTwoPlayer(GameClass.getInstance().physics.modelBatch);
+			renderForTwoPlayer(batch);
 			break;
 		case 3:
-			renderForThreePlayer(GameClass.getInstance().physics.modelBatch);
+			renderForThreePlayer(batch);
 			break;
 		case 4:
-			renderForFourPlayer(GameClass.getInstance().physics.modelBatch);
+			renderForFourPlayer(batch);
 			break;
 		}
 	}
 
-	public void renderOutlines() {
-		int amountPlayers = GameClass.getInstance().playerHandler.getPlayerAmount();
-
-		FrameBuffer src = null;
-		FrameBuffer dest = frameBuffer1;
-		dest.begin();
+	public void renderDepthMap(FrameBuffer frame) {
+		frame.begin();
 		{
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-			switch (amountPlayers) {
-			case 1:
-				renderForOnePlayer(depthModelBatch);
-				break;
-			case 2:
-				renderForTwoPlayer(depthModelBatch);
-				break;
-			case 3:
-				renderForThreePlayer(depthModelBatch);
-				break;
-			case 4:
-				renderForFourPlayer(depthModelBatch);
-				break;
-			}
+			renderWithBatch(depthModelBatch);
 		}
-		dest.end();
+		frame.end();
+	}
 
+	public void renderOutlines() {
+		renderDepthMap(frameBuffer1);
+		renderOutlines(frameBuffer2, frameBuffer1);
+	}
+
+	public void renderOutlines(FrameBuffer frame, FrameBuffer source) {
 		Mesh fullScreenQuad = createFullScreenQuad();
-
-		src = dest;
-		dest = frameBuffer2;
-		src.getColorBufferTexture().bind();
-		dest.begin();
+		source.getColorBufferTexture().bind();
+		frame.begin();
 		{
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 			outlineShader.begin();
 			{
-				outlineShader.setUniformf("u_size", (float) src.getColorBufferTexture().getWidth(),
-						(float) src.getColorBufferTexture().getHeight());
+				outlineShader.setUniformf("u_size", (float) source.getColorBufferTexture().getWidth(),
+						(float) source.getColorBufferTexture().getHeight());
 				fullScreenQuad.render(outlineShader, GL20.GL_TRIANGLE_STRIP, 0, 4);
 			}
 			outlineShader.end();
 		}
-		dest.end();
-		SpriteBatch batch = GameClass.getInstance().renderer.batch;
-		
+		frame.end();
+	}
 
-		TextureRegion fboRegion = new TextureRegion(dest.getColorBufferTexture());
+	public void renderFrameBuffer(FrameBuffer frame) {
+		SpriteBatch batch = GameClass.getInstance().renderer.batch;
+
+		TextureRegion fboRegion = new TextureRegion(frame.getColorBufferTexture());
 		fboRegion.flip(false, true);
-		
 
 		batch.enableBlending();
 		batch.begin();
-		batch.draw(fboRegion, 0, 0, width, height);
+		batch.draw(fboRegion, 0, 0, fboRegion.getRegionWidth(), fboRegion.getRegionHeight());
 		batch.disableBlending();
 		batch.end();
 	}
@@ -140,7 +153,7 @@ public class Renderer {
 		String evs = Gdx.files.internal("data/shaders/edgeVs.glsl").readString();
 
 		ShaderProgram outlineShader = new ShaderProgram(evs, efs);
-//		System.out.println(outlineShader.getLog());
+		// System.out.println(outlineShader.getLog());
 		return outlineShader;
 	}
 
@@ -175,7 +188,7 @@ public class Renderer {
 		p.cameraController.updateViewPort(width - border, height - border);
 		p.cameraController.update(); // Update Camera Position
 
-		Gdx.gl.glViewport(x, y, width - border, height - border);
+//		Gdx.gl.glViewport(x, y, width - border, height - border);
 
 		p.menuHandler.renderActivMenu(batch);
 	}

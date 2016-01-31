@@ -39,8 +39,8 @@ public class KeyboardHandler {
 		p.jump = keys[Keys.SPACE];
 		
 		if(keys[Keys.Z]){
-			for(int i=0;i<30; i++){
-				GameClass.getInstance().aiHandler.createAI("Zombie "+i);
+			for(int i=0;i<200; i++){
+				GameClass.getInstance().aiHandler.createAI(""+i);
 			}
 		}
 	}

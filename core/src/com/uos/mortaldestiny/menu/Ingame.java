@@ -57,25 +57,6 @@ public class Ingame implements Menu {
 		batch.begin(menuHandler.p.cameraController.camera);
 		batch.render(GameClass.instances, environment);
 		batch.end();
-
-		renderHUD(menuHandler.p);
-	}
-
-	private void renderHUD(Player p) {
-		int height = (int) p.cameraController.camera.viewportHeight;
-		// int width = (int) p.cameraController.camera.viewportWidth;
-		SpriteBatch batch = GameClass.getInstance().renderer.batch;
-		BitmapFont font = GameClass.getInstance().renderer.font;
-
-		batch.begin();
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 5, height - 5);
-		font.draw(batch, "Objects: " + GameClass.instances.size, 80, height - 5);
-		Vector3 pos = p.getObjPos();
-		font.draw(batch, "X: " + (int) pos.x + "    | Y: " + (int) pos.y + "    | Z: " + (int) pos.z, 5, height - 20);
-		font.draw(batch, "Player Health: " + p.health, 5, height - 60);
-		font.draw(batch, "Points: " + p.points, 5, height - 75);
-		batch.end();
-
 	}
 
 	@Override

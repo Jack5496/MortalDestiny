@@ -14,12 +14,13 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.uos.mortaldestiny;
+package com.uos.mortaldestiny.rendering;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider;
+import com.uos.mortaldestiny.rendering.FrontShader.Config;
 
 public class FrontFaceDepthShaderProvider extends BaseShaderProvider {
 	public final FrontShader.Config config;

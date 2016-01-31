@@ -41,6 +41,12 @@ public class Player {
 		cameraController.setTrack(obj);
 	}
 	
+	public void addPoint(){
+		points++;
+		health+=10;
+		if(health>100) health=100;
+	}
+	
 	public Vector3 getObjPos(){
 		return obj.myGetTranslation();
 	}

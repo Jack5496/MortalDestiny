@@ -23,7 +23,7 @@ public class GameObject extends ModelInstance implements Disposable {
 		motionState = new MyMotionState();
 		motionState.transform = transform;
 		this.constructionInfo = constructionInfo;
-		body = new btRigidBody(constructionInfo);
+		body = new btRigidBody(this.constructionInfo);
 		body.setMotionState(motionState);
 		body.userData = this;
 	}
@@ -33,15 +33,17 @@ public class GameObject extends ModelInstance implements Disposable {
 		motionState = new MyMotionState();
 		motionState.transform = transform;
 		this.constructionInfo = constructionInfo;
-		body = new btRigidBody(constructionInfo);
+		body = new btRigidBody(this.constructionInfo);
 		body.setMotionState(motionState);
 		body.userData = this;
 	}
 	
-	public void myDelete(){
-		GameClass.instances.removeValue(this, false);
-		GameClass.getInstance().physics.dynamicsWorld.removeCollisionObject(body);
-	}
+//	public void myDelete(){
+//		
+//		body.dispose();
+//		motionState.dispose();
+//		
+//	}
 	
 	public void update(float delta){
 		//here animations :P look in PlayerObject
@@ -49,6 +51,8 @@ public class GameObject extends ModelInstance implements Disposable {
 
 	@Override
 	public void dispose() {
+		GameClass.getInstance().physics.dynamicsWorld.removeCollisionObject(body);
+		GameClass.instances.removeValue(this, true);
 		body.dispose();
 		motionState.dispose();
 	}
@@ -198,7 +202,7 @@ public class GameObject extends ModelInstance implements Disposable {
 			this.constructionInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, shape, localInertia);
 		}
 
-		public GameObject construct() {
+		public GameObject construct() {			
 			if(node==null) return new GameObject(model,constructionInfo);
 			return new GameObject(model, node, constructionInfo);
 		}

@@ -69,7 +69,7 @@ public class AI extends Player{
 			}
 		}
 		
-		this.shoot = (distance<shootDis);
+//		this.shoot = (distance<shootDis);
 		
 		
 		return nearest;

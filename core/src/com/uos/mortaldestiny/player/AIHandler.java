@@ -28,6 +28,8 @@ public class AIHandler {
 	public AIHandler() {
 		localPlayers = new HashMap<String, AI>();
 	}
+	
+	public static int total = 0;
 
 	public void createAI(String name) {
 		if(localPlayers.containsKey(name)){
@@ -35,11 +37,14 @@ public class AIHandler {
 		}
 		else{
 //			GameClass.log(getClass(), "New AI: "+name);
+			name.concat(""+total);
 			AI p = new AI(name, (int)(Math.random()*5));
 			int width = WorldManager.getWidth(WorldManager.getParameters(WorldManager.world))*10;
 			int height = WorldManager.getHeight(WorldManager.getParameters(WorldManager.world))*10;
-			p.obj.mySetTranslation(new Vector3((int)(Math.random()*width),7,(int)(Math.random()*height)));
+			int x = Integer.parseInt(name);
+			p.obj.mySetTranslation(new Vector3(-7,-6,x*3));
 			localPlayers.put(name, p);
+			total++;
 		}
 	}
 	
@@ -54,17 +59,17 @@ public class AIHandler {
 			}
 		}
 		for(AI p : toDie){
-//			localPlayers.remove(p);
-			localPlayers.remove(p.name);
-			p.obj.myDelete();
-			createAI(p.name);
+			String name = p.name;
+			localPlayers.remove(p.name,p);
+			p.obj.dispose();
+			createAI(name);
 		}
 	}
 	
 	public void updateAIs(){
 		for(AI p : localPlayers.values()){
 			p.initVariables();
-			p.addAllPlayerAsTargets();//this should be done only once
+//			p.addAllPlayerAsTargets();//this should be done only once
 			p.addAllOtherFractionsAsEnemy();
 			p.updateInputVariables();
 			p.updateMyGameObjects();

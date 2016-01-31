@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.uos.mortaldestiny;
+package com.uos.mortaldestiny.rendering;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
