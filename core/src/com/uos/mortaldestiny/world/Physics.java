@@ -72,10 +72,11 @@ public class Physics implements Disposable {
 		Bullet.init();
 		initEnvironment();
 
-		String fs = Gdx.files.internal("data/shaders/fs.glsl").readString();
-		String vs = Gdx.files.internal("data/shaders/vs.glsl").readString();
+//		String fs = Gdx.files.internal("data/shaders/fs.glsl").readString();
+//		String vs = Gdx.files.internal("data/shaders/vs.glsl").readString();
 
-		modelBatch = new ModelBatch(vs,fs);
+//		modelBatch = new ModelBatch(vs,fs);	//getting wrong results :-/
+		modelBatch = new ModelBatch();
 		normalBatch = new ModelBatch();
 		constructors = new ArrayMap<String, GameObject.Constructor>(String.class, GameObject.Constructor.class);
 

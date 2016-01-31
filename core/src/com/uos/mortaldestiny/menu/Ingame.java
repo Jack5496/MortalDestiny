@@ -1,9 +1,15 @@
 package com.uos.mortaldestiny.menu;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
 import com.uos.mortaldestiny.GameClass;
 import com.uos.mortaldestiny.player.Player;
@@ -46,11 +52,11 @@ public class Ingame implements Menu {
 	}
 
 	@Override
-	public void render() {
+	public void render(ModelBatch batch) {
 		// TODO Auto-generated method stub
-		physics.modelBatch.begin(menuHandler.p.cameraController.camera);
-		physics.modelBatch.render(GameClass.instances, environment);
-		physics.modelBatch.end();
+		batch.begin(menuHandler.p.cameraController.camera);
+		batch.render(GameClass.instances, environment);
+		batch.end();
 
 		renderHUD(menuHandler.p);
 	}
@@ -69,6 +75,7 @@ public class Ingame implements Menu {
 		font.draw(batch, "Player Health: " + p.health, 5, height - 60);
 		font.draw(batch, "Points: " + p.points, 5, height - 75);
 		batch.end();
+
 	}
 
 	@Override

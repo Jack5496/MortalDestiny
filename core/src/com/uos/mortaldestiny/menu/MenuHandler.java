@@ -1,5 +1,6 @@
 package com.uos.mortaldestiny.menu;
 
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.uos.mortaldestiny.player.Player;
 
 public class MenuHandler {
@@ -12,8 +13,8 @@ public class MenuHandler {
 		this.p = p;
 	}
 	
-	public void renderActivMenu(){
-		activMenu.render();
+	public void renderActivMenu(ModelBatch batch){
+		activMenu.render(batch);
 	}
 	
 }
