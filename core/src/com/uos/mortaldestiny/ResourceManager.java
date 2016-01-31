@@ -2,6 +2,7 @@ package com.uos.mortaldestiny;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.model.Node;
@@ -72,6 +73,7 @@ public class ResourceManager {
 		assets.load(pathGrounds + "GroundTile5x5.g3db", Model.class);
 		assets.load(pathWalls + "Wall5x3x1.g3db", Model.class);
 		assets.load(pp, Model.class);
+		assets.load(Gdx.files.internal("data/trans.png").path(), Texture.class);
 	}
 	
 	public Model getG3DBModel(String path) {

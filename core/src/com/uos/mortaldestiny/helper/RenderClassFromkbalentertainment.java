@@ -1,4 +1,4 @@
-package com.fotm.graphics;
+package com.uos.mortaldestiny.helper;
 
 import java.util.LinkedList;
 
@@ -31,7 +31,7 @@ import com.fotm.graphics.shader.FrontFaceDepthShaderProvider;
 
 //import de.fruitfly.ovr.OculusRift;
 
-public class Renderer {
+public class RenderClassFromkbalentertainment {
 	public static float fboscale = 1f;
 
 	public static boolean or_initialized = false;
@@ -69,7 +69,7 @@ public class Renderer {
 	private static ShaderProgram lensshader;
 	private static Mesh fullScreenTriangle;
 
-	public Renderer() {
+	public RenderClassFromkbalentertainment() {
 
 	}
 

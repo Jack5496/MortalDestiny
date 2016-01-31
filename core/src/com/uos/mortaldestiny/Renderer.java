@@ -1,10 +1,15 @@
 package com.uos.mortaldestiny;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -20,6 +25,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.uos.mortaldestiny.player.Player;
 
 public class Renderer {
@@ -38,13 +44,20 @@ public class Renderer {
 
 	ShaderProgram outlineShader = loadShader();
 
-	FrameBuffer frameBuffer1 = new FrameBuffer(Format.RGB888, width, height, true);
-	FrameBuffer frameBuffer2 = new FrameBuffer(Format.RGB888, width, height, true);
+	FrameBuffer frameBuffer1 = new FrameBuffer(Format.RGBA8888, width, height, true);
+	FrameBuffer frameBuffer2 = new FrameBuffer(Format.RGBA8888, width, height, true);
 
 	FrontFaceDepthShaderProvider depthshaderprovider = new FrontFaceDepthShaderProvider();
 	ModelBatch depthModelBatch = new ModelBatch(depthshaderprovider);
 
 	public void renderForPlayers() {
+		int amountPlayers = GameClass.getInstance().playerHandler.getPlayerAmount();
+
+		renderNormal();
+		renderOutlines();
+	}
+
+	public void renderNormal() {
 		int amountPlayers = GameClass.getInstance().playerHandler.getPlayerAmount();
 
 		Gdx.gl.glClearColor(0, 0, 0, 1.f);
@@ -64,7 +77,12 @@ public class Renderer {
 			renderForFourPlayer(GameClass.getInstance().physics.modelBatch);
 			break;
 		}
+	}
 
+	public void renderOutlines() {
+		int amountPlayers = GameClass.getInstance().playerHandler.getPlayerAmount();
+
+		FrameBuffer src = null;
 		FrameBuffer dest = frameBuffer1;
 		dest.begin();
 		{
@@ -88,15 +106,15 @@ public class Renderer {
 
 		Mesh fullScreenQuad = createFullScreenQuad();
 
-		FrameBuffer src = dest;
+		src = dest;
 		dest = frameBuffer2;
-		dest.begin();
 		src.getColorBufferTexture().bind();
+		dest.begin();
 		{
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 			outlineShader.begin();
 			{
-				outlineShader.setUniformf("size", (float) src.getColorBufferTexture().getWidth(),
+				outlineShader.setUniformf("u_size", (float) src.getColorBufferTexture().getWidth(),
 						(float) src.getColorBufferTexture().getHeight());
 				fullScreenQuad.render(outlineShader, GL20.GL_TRIANGLE_STRIP, 0, 4);
 			}
@@ -104,12 +122,16 @@ public class Renderer {
 		}
 		dest.end();
 		SpriteBatch batch = GameClass.getInstance().renderer.batch;
-		batch.begin();
+		
+
 		TextureRegion fboRegion = new TextureRegion(dest.getColorBufferTexture());
 		fboRegion.flip(false, true);
+		
 
 		batch.enableBlending();
-//		batch.draw(fboRegion, 0, 0, width, height);
+		batch.begin();
+		batch.draw(fboRegion, 0, 0, width, height);
+		batch.disableBlending();
 		batch.end();
 	}
 
@@ -118,6 +140,7 @@ public class Renderer {
 		String evs = Gdx.files.internal("data/shaders/edgeVs.glsl").readString();
 
 		ShaderProgram outlineShader = new ShaderProgram(evs, efs);
+//		System.out.println(outlineShader.getLog());
 		return outlineShader;
 	}
 
