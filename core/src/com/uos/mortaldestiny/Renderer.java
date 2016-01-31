@@ -111,7 +111,7 @@ public class Renderer {
 
 		SpriteBatch batch = GameClass.getInstance().renderer.batch;
 		batch.begin();
-		batch.setShader(outlineShader);
+//		batch.setShader(outlineShader);
 		TextureRegion fboRegion = new TextureRegion(t);
 		fboRegion.flip(false, true);
 
