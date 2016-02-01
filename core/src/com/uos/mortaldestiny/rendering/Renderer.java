@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -53,8 +54,7 @@ public class Renderer {
 	public static FrameBuffer frameBuffer1;
 	public static FrameBuffer frameBuffer2;
 
-	FrontFaceDepthShaderProvider depthshaderprovider = new FrontFaceDepthShaderProvider();
-	ModelBatch depthModelBatch = new ModelBatch(depthshaderprovider);
+	ModelBatch depthModelBatch = new ModelBatch(new FrontFaceDepthShaderProvider());
 
 	public static boolean renderNormal = true;
 	public static boolean renderOutlines = true;
@@ -138,7 +138,7 @@ public class Renderer {
 	public void renderOutlines() {
 		renderDepthMap(frameBuffer1);
 
-//		resizeOutline();
+		// resizeOutline();
 		renderOutlines(frameBuffer2, frameBuffer1);
 	}
 
@@ -218,7 +218,8 @@ public class Renderer {
 		Gdx.gl.glViewport(x, y, width - border, height - border);
 
 		p.menuHandler.renderActivMenu(batch);
-//		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		// Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(),
+		// Gdx.graphics.getHeight());
 	}
 
 	private void renderForOnePlayer(ModelBatch batch) {

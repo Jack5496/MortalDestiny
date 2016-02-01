@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
+import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
@@ -57,6 +60,8 @@ public class Physics implements Disposable {
 	public btDynamicsWorld dynamicsWorld;
 	public btConstraintSolver constraintSolver;
 	public Environment environment;
+	
+	DirectionalShadowLight shadowLight;
 
 	public float spawnTimer;
 
@@ -65,7 +70,8 @@ public class Physics implements Disposable {
 	public void initEnvironment() {
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+//		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+		environment.add(new PointLight().set(0.8f, 0.8f, 0.8f, 5f, 4f, 5f, 10f));
 	}
 
 	public Physics() {
