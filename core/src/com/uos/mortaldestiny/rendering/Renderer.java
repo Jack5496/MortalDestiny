@@ -26,18 +26,26 @@ public class Renderer {
 	public Renderer() {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		font.setColor(1, 1, 1, 1);
+		font.setColor(1, 0, 0, 1);
 		resizeFrameBuffers();
 	}
 
-	public void resizeFrameBuffers() {
-		int width = GameClass.getInstance().getWidth();
-		int height = GameClass.getInstance().getHeight();
+	int width = GameClass.getInstance().getWidth();
+	int height = GameClass.getInstance().getHeight();
 
+	public void resizeFrameBuffers() {
 		frameBuffer = new FrameBuffer(Format.RGBA8888, width, height, true);
 		frameBuffer1 = new FrameBuffer(Format.RGBA8888, width, height, true);
 		frameBuffer2 = new FrameBuffer(Format.RGBA8888, width, height, true);
 	}
+
+	// public void resizeOutline(){
+	// float ratioX = (float)width/Gdx.graphics.getWidth();
+	// float ratioY = (float)height/Gdx.graphics.getHeight();
+	//
+	// frameBuffer2 = new FrameBuffer(Format.RGBA8888, (int) (width*ratioX),
+	// (int) (height*ratioY), true);
+	// }
 
 	ShaderProgram outlineShader = loadShader();
 
@@ -53,7 +61,7 @@ public class Renderer {
 	public static boolean renderHUD = true;
 
 	public void renderForPlayers() {
-		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1.f);
+		Gdx.gl.glClearColor(1, 1, 1, 1f);
 		Gdx.gl.glViewport(0, 0, GameClass.getInstance().getWidth(), GameClass.getInstance().getHeight());
 		if (renderNormal) {
 			renderWithBatch(GameClass.getInstance().physics.modelBatch);
@@ -72,8 +80,6 @@ public class Renderer {
 		// int width = (int) p.cameraController.camera.viewportWidth;
 		SpriteBatch batch = GameClass.getInstance().renderer.batch;
 		BitmapFont font = GameClass.getInstance().renderer.font;
-
-		Runtime runtime = Runtime.getRuntime();
 
 		batch.enableBlending();
 		batch.begin();
@@ -131,6 +137,8 @@ public class Renderer {
 
 	public void renderOutlines() {
 		renderDepthMap(frameBuffer1);
+
+//		resizeOutline();
 		renderOutlines(frameBuffer2, frameBuffer1);
 	}
 
@@ -142,6 +150,9 @@ public class Renderer {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 			outlineShader.begin();
 			{
+				float ratioX = (float) width / Gdx.graphics.getWidth();
+				float ratioY = (float) height / Gdx.graphics.getHeight();
+
 				outlineShader.setUniformf("u_size", (float) source.getColorBufferTexture().getWidth(),
 						(float) source.getColorBufferTexture().getHeight());
 				fullScreenQuad.render(outlineShader, GL20.GL_TRIANGLE_STRIP, 0, 4);
@@ -204,9 +215,10 @@ public class Renderer {
 		p.cameraController.updateViewPort(width - border, height - border);
 		p.cameraController.update(); // Update Camera Position
 
-		// Gdx.gl.glViewport(x, y, width - border, height - border);
+		Gdx.gl.glViewport(x, y, width - border, height - border);
 
 		p.menuHandler.renderActivMenu(batch);
+//		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	private void renderForOnePlayer(ModelBatch batch) {
