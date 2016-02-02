@@ -150,9 +150,6 @@ public class Renderer {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 			outlineShader.begin();
 			{
-				float ratioX = (float) width / Gdx.graphics.getWidth();
-				float ratioY = (float) height / Gdx.graphics.getHeight();
-
 				outlineShader.setUniformf("u_size", (float) source.getColorBufferTexture().getWidth(),
 						(float) source.getColorBufferTexture().getHeight());
 				fullScreenQuad.render(outlineShader, GL20.GL_TRIANGLE_STRIP, 0, 4);
@@ -210,12 +207,22 @@ public class Renderer {
 	}
 
 	int border = 1;
+	
+	boolean test = true;
 
 	private void renderForPlayer(Player p, int x, int y, int width, int height, ModelBatch batch) {
 		p.cameraController.updateViewPort(width - border, height - border);
 		p.cameraController.update(); // Update Camera Position
 
 		Gdx.gl.glViewport(x, y, width - border, height - border);
+		
+		if(test){
+			test = false;
+		}
+		else{
+			Gdx.gl.glViewport(x, y, this.width - border, this.height - border);
+			test = true;
+		}
 
 		p.menuHandler.renderActivMenu(batch);
 		// Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(),
