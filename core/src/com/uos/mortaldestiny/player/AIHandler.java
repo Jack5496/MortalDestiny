@@ -29,8 +29,6 @@ public class AIHandler {
 		localPlayers = new HashMap<String, AI>();
 	}
 	
-	
-
 	public void createAI(String name) {
 		if(localPlayers.containsKey(name)){
 			
@@ -38,8 +36,8 @@ public class AIHandler {
 		else{
 			AI p = new AI(name, (int)(Math.random()*5));
 			
-			int width = WorldManager.getWidth(WorldManager.getParameters(WorldManager.world))*10;
-			int height = WorldManager.getHeight(WorldManager.getParameters(WorldManager.world))*10;
+			int width = 10*10;
+			int height = 10*10;
 			p.obj.mySetTranslation(new Vector3(width*((float)Math.random())-5,7,height*((float)Math.random())-5));
 			localPlayers.put(name, p);
 		}

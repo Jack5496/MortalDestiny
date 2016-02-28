@@ -37,10 +37,6 @@ public class GameObject extends ModelInstance implements Disposable {
 		body.setMotionState(motionState);
 		body.userData = this;
 	}
-	
-	public void update(float delta){
-		//here animations :P look in PlayerObject
-	}
 
 	@Override
 	public void dispose() {
@@ -50,6 +46,11 @@ public class GameObject extends ModelInstance implements Disposable {
 		motionState.dispose();
 	}
 	
+	
+	public void update(float delta){
+		//here animations :P look in PlayerObject
+	}
+
 	public Vector3 myGetTranslation(){
 		Matrix4 tr = body.getCenterOfMassTransform();	//Get Transform (Rotation and Translation)
 		Vector3 trans = new Vector3();	//Create Vector to save Translation

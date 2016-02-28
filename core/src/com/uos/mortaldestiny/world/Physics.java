@@ -42,6 +42,9 @@ import com.uos.mortaldestiny.objects.GameObject;
 import com.uos.mortaldestiny.objects.PlayerObject;
 import com.uos.mortaldestiny.objects.VoidZoneObject;
 import com.uos.mortaldestiny.player.Player;
+import com.uos.mortaldestiny.worldGenerators.CityGenerator;
+import com.uos.mortaldestiny.worldTiles.CityStreetCross;
+import com.uos.mortaldestiny.worldTiles.CityStreetStraight;
 
 public class Physics implements Disposable {
 
@@ -50,7 +53,7 @@ public class Physics implements Disposable {
 
 	Model model;
 	ModelBuilder mb;
-	
+
 	ArrayMap<String, GameObject.Constructor> constructors;
 
 	public btCollisionConfiguration collisionConfig;
@@ -60,28 +63,29 @@ public class Physics implements Disposable {
 	public btDynamicsWorld dynamicsWorld;
 	public btConstraintSolver constraintSolver;
 	public Environment environment;
-	
+
 	DirectionalShadowLight shadowLight;
 
 	public float spawnTimer;
 
 	float size = 10;
-	
+
 	public void initEnvironment() {
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-//		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-		environment.add(new PointLight().set(0.8f, 0.8f, 0.8f, 5f, 4f, 5f, 10f));
+		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+		// environment.add(new PointLight().set(0.8f, 0.8f, 0.8f, 5f, 4f, 5f,
+		// 10f));
 	}
 
 	public Physics() {
 		Bullet.init();
 		initEnvironment();
 
-//		String fs = Gdx.files.internal("data/shaders/fs.glsl").readString();
-//		String vs = Gdx.files.internal("data/shaders/vs.glsl").readString();
+		// String fs = Gdx.files.internal("data/shaders/fs.glsl").readString();
+		// String vs = Gdx.files.internal("data/shaders/vs.glsl").readString();
 
-//		modelBatch = new ModelBatch(vs,fs);	//getting wrong results :-/
+		// modelBatch = new ModelBatch(vs,fs); //getting wrong results :-/
 		modelBatch = new ModelBatch();
 		normalBatch = new ModelBatch();
 		constructors = new ArrayMap<String, GameObject.Constructor>(String.class, GameObject.Constructor.class);
@@ -101,6 +105,16 @@ public class Physics implements Disposable {
 				.getG3DBModel(ResourceManager.getInstance().pathGrounds + "GroundTile5x5.g3db");
 		constructors.put("GroundTile5x5",
 				new GameObject.Constructor(GroundTile5x5, new btBoxShape(new Vector3(5, 1, 5)), 0f));
+		
+		Model GroundTile5x5Straight = ResourceManager.getInstance()
+				.getG3DBModel(CityGenerator.path+CityStreetStraight.path);
+		constructors.put("GroundTile5x5Straight",
+				new GameObject.Constructor(GroundTile5x5Straight, new btBoxShape(new Vector3(5, 1, 5)), 0f));
+		
+		Model GroundTile5x5Cross = ResourceManager.getInstance()
+				.getG3DBModel(CityGenerator.path+CityStreetCross.path);
+		constructors.put("GroundTile5x5Cross",
+				new GameObject.Constructor(GroundTile5x5Cross, new btBoxShape(new Vector3(5, 1, 5)), 0f));
 
 		Model box = ResourceManager.getInstance().getG3DBModel(ResourceManager.getInstance().pathModels + "1x1.g3db");
 		constructors.put("box", new GameObject.Constructor(box, new btBoxShape(new Vector3(1, 1, 1)), 1f));
@@ -138,17 +152,25 @@ public class Physics implements Disposable {
 		fo.body.setActivationState(Collision.DISABLE_DEACTIVATION);
 	}
 
-	public void spawnGroundTile(Vector3 pos) {
-		GameObject fo = constructors.get("GroundTile5x5").construct();
-		fo.mySetScale(1f);
-		fo.transform.trn(pos);
-		fo.calculateTransforms();
-		fo.body.setCollisionFlags(fo.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
-		GameClass.instances.add(fo);
-		dynamicsWorld.addRigidBody(fo.body);
-		fo.body.setContactCallbackFlag(MyContactListener.GROUND_FLAG);
-		fo.body.setContactCallbackFilter(0);
-		fo.body.setActivationState(Collision.DISABLE_DEACTIVATION);
+	public void spawnGroundTile(final Vector3 pos, final String name, final float degree) {
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				GameObject fo = constructors.get(name).construct();
+				fo.mySetScale(1f);
+				fo.transform.trn(pos);
+				fo.transform.rotate(0, 1, 0, degree);
+				fo.calculateTransforms();
+				fo.body.setCollisionFlags(
+						fo.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
+				GameClass.instances.add(fo);
+				dynamicsWorld.addRigidBody(fo.body);
+				fo.body.setContactCallbackFlag(MyContactListener.GROUND_FLAG);
+				fo.body.setContactCallbackFilter(0);
+				fo.body.setActivationState(Collision.DISABLE_DEACTIVATION);
+			}
+		});
+
 	}
 
 	public void addRigidBodyToDynamicsWorld(GameObject obj) {
@@ -174,20 +196,22 @@ public class Physics implements Disposable {
 		return player;
 	}
 
-//	public BulletObject spawnSack(int damage) {
-//		GameObject obj = constructors.get("sack").construct();
-//		BulletObject bullet = new BulletObject(obj, 20);
-//		bullet.transform.trn(MathUtils.random(-2.5f, 2.5f), 15f, MathUtils.random(-2.5f, 2.5f));
-//		bullet.body.proceedToTransform(bullet.transform);
-//		bullet.body.setCollisionFlags(
-//				bullet.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
-//		GameClass.instances.add(bullet);
-//		dynamicsWorld.addRigidBody(bullet.body);
-//		bullet.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
-//		bullet.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
-//
-//		return bullet;
-//	}
+	// public BulletObject spawnSack(int damage) {
+	// GameObject obj = constructors.get("sack").construct();
+	// BulletObject bullet = new BulletObject(obj, 20);
+	// bullet.transform.trn(MathUtils.random(-2.5f, 2.5f), 15f,
+	// MathUtils.random(-2.5f, 2.5f));
+	// bullet.body.proceedToTransform(bullet.transform);
+	// bullet.body.setCollisionFlags(
+	// bullet.body.getCollisionFlags() |
+	// btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+	// GameClass.instances.add(bullet);
+	// dynamicsWorld.addRigidBody(bullet.body);
+	// bullet.body.setContactCallbackFlag(MyContactListener.OBJECT_FLAG);
+	// bullet.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
+	//
+	// return bullet;
+	// }
 
 	public GameObject spawn(String key) {
 		GameObject obj = constructors.get(key).construct();
@@ -203,12 +227,12 @@ public class Physics implements Disposable {
 		obj.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
 		return obj;
 	}
-	
-	public GameObject constructGameObject(String key){
+
+	public GameObject constructGameObject(String key) {
 		return constructors.get(key).construct();
 	}
-	
-	public void registerGameObject(GameObject obj){
+
+	public void registerGameObject(GameObject obj) {
 		obj.body.proceedToTransform(obj.transform);
 		obj.body.setCollisionFlags(
 				obj.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
@@ -218,9 +242,10 @@ public class Physics implements Disposable {
 		obj.body.setContactCallbackFilter(MyContactListener.GROUND_FLAG);
 	}
 
-//	public void spawn() {
-//		spawn(constructors.getKeyAt(2 + MathUtils.random(constructors.size - 3)));
-//	}
+	// public void spawn() {
+	// spawn(constructors.getKeyAt(2 + MathUtils.random(constructors.size -
+	// 3)));
+	// }
 
 	@Override
 	public void dispose() {

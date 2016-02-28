@@ -97,21 +97,14 @@ public class GameClass implements ApplicationListener {
 		playerHandler.updatePlayers(); // Players set PlayerObjects animations
 		aiHandler.updateAIs();
 		
-		updateGameObjectsAnimations(delta); // PlayerObjects calc animation
+		updateGameObjectsInformations(delta); // PlayerObjects calc animation
 
 		physics.dynamicsWorld.stepSimulation(delta, 5, 1f / 60f); // Calcs
 																	// Physics
-
-		if ((physics.spawnTimer -= delta) < 0 && amount < 10) { // spawn 10
-																// random
-																// GameObjects
-//			 physics.spawn("box");
-			physics.spawnTimer = 1.5f;
-			amount++;
-		}
 	}
-
-	private void updateGameObjectsAnimations(float delta) {
+	
+	
+	private void updateGameObjectsInformations(float delta) {
 		for (GameObject o : instances) {
 			o.update(delta);
 		}
@@ -135,10 +128,10 @@ public class GameClass implements ApplicationListener {
 		physics.dispose();
 	}
 	
-	public static void log(Class c, String msg){
+	public static void log(Class<?> c, String msg){
 		System.out.println(c.getSimpleName()+": "+msg);
 	}
-
+	
 	@Override
 	public void pause() {
 	}

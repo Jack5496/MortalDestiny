@@ -43,7 +43,7 @@ public class KeyboardHandler {
 		
 		if(keys[Keys.Z]){
 			for(int i=0;i<100; i++){
-				GameClass.getInstance().aiHandler.createAI(""+i);
+				GameClass.getInstance().aiHandler.createAI("AI."+i);
 			}
 		}
 	}

@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.uos.mortaldestiny.worldGenerators.CityGenerator;
+import com.uos.mortaldestiny.worldTiles.CityStreetCross;
+import com.uos.mortaldestiny.worldTiles.CityStreetStraight;
 
 public class ResourceManager {
 
@@ -72,6 +75,11 @@ public class ResourceManager {
 		assets.load(Gdx.files.internal(pathModels + "sack.g3db").path(), Model.class);
 		assets.load(pathGrounds + "GroundTile5x5.g3db", Model.class);
 		assets.load(pathWalls + "Wall5x3x1.g3db", Model.class);
+		
+		assets.load(CityGenerator.path+CityStreetStraight.path, Model.class);
+		assets.load(CityGenerator.path+CityStreetCross.path, Model.class);
+		
+		
 		assets.load(pp, Model.class);
 	}
 	

@@ -17,8 +17,10 @@ public class Player {
 	public Vector3 stickLeft;
 	public boolean stickLeftDown;
 
-	public Vector3 stickRight;
-
+	public Vector3 stickRight;	
+	
+	public Vector3 testPos;
+	
 	public float boostValue;
 	public boolean jump;
 	public boolean shoot;
@@ -50,7 +52,7 @@ public class Player {
 	}
 
 	public Vector3 getObjPos() {
-		return obj.myGetTranslation();
+		return testPos;
 	}
 
 	public void dispose() {
@@ -68,6 +70,8 @@ public class Player {
 		healthCap = 100;
 		boostValue = 0;
 		points = 0;
+		
+		testPos = obj.myGetTranslation();
 	}
 
 	boolean done = false;
@@ -111,6 +115,8 @@ public class Player {
 
 		obj.moveHorizontal(dir);
 		obj.mySetYaw(stickRight);
+		
+		testPos = obj.myGetTranslation();
 	}
 
 }
